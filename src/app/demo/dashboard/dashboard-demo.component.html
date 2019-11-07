@@ -1,0 +1,7 @@
+<c-card>
+    <c-table [option]="option" #tableTemplate>
+        <ng-template let-item="item" #imageTemplate>
+            <img [src]="item.image"/>
+        </ng-template>
+    </c-table>
+</c-card>
