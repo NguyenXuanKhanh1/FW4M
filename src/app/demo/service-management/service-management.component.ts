@@ -42,8 +42,6 @@ export class ServiceManagementComponent implements OnInit {
   public option: TableOption;
   @ViewChild("imageTemplate", { static: true })
   public imageTemplate: TemplateRef<any>;
-  // public apiUrl = 'http://192.168.110.112:8001/services';
-  // public apiUrl = 'http://www.mocky.io/v2/5dd146a13200005d0006fa6e'
 
   constructor(
     private _modalService: ModalService,
@@ -59,6 +57,10 @@ export class ServiceManagementComponent implements OnInit {
       inlineEdit: false,
       mode: TableMode.full,
       searchFields: ["name", "host"],
+      // displayText: {
+      //   pageTitle: 'test',
+      //   allTitle: 'aaa'
+      // },
       topButtons: [
         {
           icon: "fa fa-plus",
@@ -71,6 +73,7 @@ export class ServiceManagementComponent implements OnInit {
               template: AddServiceComponent,
               btnAcceptTitle: 'Add',
               acceptCallback: () => {
+                this.tableTemplate.reload().subscribe();
               }
             }));
           }
@@ -93,8 +96,7 @@ export class ServiceManagementComponent implements OnInit {
         {
           icon: "fa fa-remove",
           executeAsync: (item) => {
-            console.log(item);
-            
+            this._serviceManagementService.deleteData(item.id)
           }
         }
       ],
@@ -127,8 +129,8 @@ export class ServiceManagementComponent implements OnInit {
       ],
       serviceProvider: {
         searchAsync: request => {
-          setTimeout(() => {this.tableTemplate.reload(true)}, 0)
-          return this._serviceManagementService.getData();
+
+          return this._serviceManagementService.getData(request);
         }
       }
     });
