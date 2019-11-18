@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { MenuTab, AdminLayoutComponent } from 'ngx-fw4c';
 import { TabDemoComponent, ValidationDemoComponent, ButtonDemoComponent } from './demo';
 import { DashboardDemoComponent } from './demo/dashboard';
+import { ServiceManagementComponent } from './demo/service-management/service-management.component';
 
 const menuTabs: MenuTab[] = [
   {
@@ -28,6 +29,13 @@ const menuTabs: MenuTab[] = [
         icon: 'fa fa-twitter',
         children: [
           { state: 'validation', name: 'Validation', type: 'link', icon: 'fa fa-calendar-check-o' }
+        ]
+      },
+      {
+        label: 'Service Management',
+        icon: 'fa fa-bar-chart',
+        children: [
+          { state: 'service', name: 'Service', type: 'link', icon: 'fa fa-calendar-check-o' }
         ]
       } 
     ]
@@ -65,6 +73,10 @@ const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardDemoComponent
+      },
+      {
+        path: 'service',
+        component: ServiceManagementComponent
       }
     ]
   }

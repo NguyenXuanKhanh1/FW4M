@@ -1,0 +1,59 @@
+<katana-card>
+  <div #formRef>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Name <small>(Required)</small></label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="name" id="name" validation-name="Name" [(ngModel)]="item.name" required>
+      </div>
+    </div>
+    
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Host <small>(Required)</small></label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="host" id="host" validation-name="Host" [(ngModel)]="item.host" required>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Protocol <small>(Semi-optional)</small></label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="protocol" id="protocol" validation-name="Protocol" [(ngModel)]="item.protocol">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Port <small>(Semi-optional)</small></label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" name="port" id="port" validation-name="Port" [(ngModel)]="item.port" required>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Path <small>(Optional)</small></label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="path" id="path" [(ngModel)]="item.path">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Retries <small>(Optional)</small></label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" name="retries" id="retries" [(ngModel)]="item.retries">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Connect timeout <small>(Optional)</small></label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" name="connect_timeout" id="connect_timeout" [(ngModel)]="item.connect_timeout">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Write timeout <small>(Optional)</small></label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" name="write_timeout" id="write_timeout" [(ngModel)]="item.write_timeout">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Read timeout <small>(Optional)</small></label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" name="read_timeout" id="read_timeout" [(ngModel)]="item.read_timeout">
+      </div>
+    </div>
+  </div>
+</katana-card>

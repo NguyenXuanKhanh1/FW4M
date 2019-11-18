@@ -6,12 +6,18 @@ import { ButtonDemoComponent } from './button';
 import { FormsModule } from '@angular/forms';
 import { Framework4CModule } from 'ngx-fw4c';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { ServiceManagementComponent } from './service-management/service-management.component';
+import { AddServiceComponent } from './service-management/add-service/add-service.component';
+
 
 const declarations = [
   TabDemoComponent,
   ValidationDemoComponent,
   DashboardDemoComponent,
-  ButtonDemoComponent
+  ButtonDemoComponent,
+  ServiceManagementComponent,
+  AddServiceComponent
 ];
 
 @NgModule({
@@ -21,7 +27,8 @@ const declarations = [
   imports: [
     FormsModule,
     HttpClientModule,
-    Framework4CModule.forRoot()
+    Framework4CModule.forRoot(),
+    BrowserModule
   ]
 })
 

@@ -110,3 +110,26 @@ export declare class Breadcrumb {
     state?: string;
     constructor(init?: Partial<Breadcrumb>);
 }
+export declare class MediaItem {
+    src: string;
+    name: string;
+    fullSrc: string;
+    constructor(init?: Partial<MediaItem>);
+}
+export declare class Audit {
+    createdDate?: Date;
+    createdBy?: string;
+    lastModifiedDate?: Date;
+    lastModifiedBy?: string;
+    constructor(init?: Partial<Audit>);
+}
+export declare class TrackingGroup {
+    date: Date;
+    details: TrackingDetail[];
+    constructor(init?: Partial<TrackingGroup>);
+}
+export declare class TrackingDetail {
+    description: string;
+    time: Date;
+    constructor(init?: Partial<TrackingDetail>);
+}
