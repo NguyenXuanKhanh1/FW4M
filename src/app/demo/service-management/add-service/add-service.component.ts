@@ -16,7 +16,7 @@ export class AddServiceComponent implements OnInit, AfterViewInit {
     name: 'Name'
   }
   public item = new Service;
-  public apiUrl = "http://192.168.110.112:8001/services";
+  public apiUrl = "http://192.168.35.108:8001/services";
   public body: any;
   public header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
   constructor(

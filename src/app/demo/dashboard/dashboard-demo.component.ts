@@ -1,5 +1,4 @@
 import { Component, ViewChild, TemplateRef, OnInit } from "@angular/core";
-import { ButtonDemoComponent } from "../button";
 import { of } from "rxjs";
 import {
   TableOption,
@@ -60,9 +59,9 @@ export class DashboardDemoComponent implements OnInit {
 
   private initTable() {
     this.option = new TableOption({
-      // localData: () => {
-      //   return this.items;
-      // },
+      localData: () => {
+        return this.items;
+      },
       topButtons: [
         {
           icon: "fa fa-plus",
@@ -160,8 +159,8 @@ export class DashboardDemoComponent implements OnInit {
         searchAsync: request => {
           // debugger
           console.log(request);
-          return this._dataService.getData(request);
-          // return of(true)
+          // return this._dataService.getData(request);
+          return of(true)
         }
       }
     });

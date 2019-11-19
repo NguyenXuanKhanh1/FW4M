@@ -1,25 +1,24 @@
 <katana-card>
-    <div #formRef>
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label">{{ label.username }} <small>(Semi-optional)</small></label>
-        <div class="col-sm-10">
-          <input type="string" class="form-control" name="username" id="username" validation-name="Username"
-            [(ngModel)]="item.username">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label">{{ label.custom_id }} <small>(Semi-optional)</small></label>
-        <div class="col-sm-10">
-          <input type="string" class="form-control" name="custom_id" id="custom_id" validation-name="Custom_id"
-            [(ngModel)]="item.custom_id">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label">{{ label.tags }} <small>(Semi-optional)</small></label>
-        <div class="col-sm-10">
-          <!-- <input type="string" class="form-control" name="tags" id="tags" validation-name="Tags" [(ngModel)]="item.tags"> -->
-          <katana-chips name="tags" id="tags" validation-name="Tags" [(model)]="item.tags"></katana-chips>
-        </div>
+  <div #formRef>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">{{ label.username }} <small>(Semi-optional)</small></label>
+      <div class="col-sm-10">
+        <input type="string" class="form-control" name="username" id="username" validation-name="Username"
+          [(ngModel)]="item.username">
       </div>
     </div>
-  </katana-card>  
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">{{ label.custom_id }} <small>(Semi-optional)</small></label>
+      <div class="col-sm-10">
+        <input type="string" class="form-control" name="custom_id" id="custom_id" validation-name="Custom_id"
+          [(ngModel)]="item.custom_id">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">{{ label.tags }} <small>(Semi-optional)</small></label>
+      <div class="col-sm-10">
+        <katana-chips name="tags" id="tags" validation-name="Tags" [(model)]="item.tags"></katana-chips>
+      </div>
+    </div>
+  </div>
+</katana-card>

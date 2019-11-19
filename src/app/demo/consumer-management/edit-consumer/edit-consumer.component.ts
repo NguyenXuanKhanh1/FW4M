@@ -1,13 +1,15 @@
-import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Input, AfterViewInit } from '@angular/core';
 import { Consumer } from '../consumer';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService } from 'ngx-fw4c';
+import { EditConsumerService } from './edit-consumer.service';
 
 @Component({
   selector: 'app-edit-consumer',
   templateUrl: './edit-consumer.component.html',
   styleUrls: ['./edit-consumer.component.scss']
 })
-export class EditConsumerComponent implements OnInit {
+export class EditConsumerComponent implements AfterViewInit{
 
   @ViewChild("formRef", { static: true }) public formRef: ElementRef;
   @Input() public item = new Consumer;
@@ -19,16 +21,46 @@ export class EditConsumerComponent implements OnInit {
     tags: "Tags"
   }
 
-  constructor() { }
+  constructor(
+    private _validationService: ValidationService,
+    private _editConsumerService :EditConsumerService
+  ) { }
 
-  ngOnInit() {
+  ngAfterViewInit(): void {
+    this.initValidations();
+  }
+  
+  public initValidations(): void {
+    var options = [
+      new ValidationOption({
+        validationName: 'Username',
+        valueResolver: () => this.item.username,
+        relevantFields: () => ['Custom_id'],
+        rules: [
+          new RequiredValidationRule()
+        ]
+      }),
+      new ValidationOption({
+        validationName: 'Custom_id',
+        valueResolver: () => this.item.custom_id,
+        rules: [
+          new RequiredValidationRule()
+        ]
+      })
+    ]
+    var validator = new ClientValidator({
+      formRef: this.formRef,
+      options: options
+    });
+    this._validationService.init({ validator });
   }
 
-  isValid() {
+  public isValid(): boolean {
     return true;
   }
-  callback() {
+
+  public callback(): Observable<Consumer> {
     this.body = JSON.stringify(this.item);
-    return of(this.body);
+    return this._editConsumerService.updateData(this.item.id, this.body);
   }
 }

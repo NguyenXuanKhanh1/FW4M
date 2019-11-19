@@ -1,34 +1,9 @@
-import {
-  Component,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-  OnInit,
-  Input,
-  TemplateRef
-} from "@angular/core";
-import {
-  ValidationService,
-  ValidationOption,
-  ClientValidator,
-  CustomValidationRule,
-  RequiredValidationRule,
-  ValidationRuleResponse
-} from "ngx-fw4c";
-import { of } from "rxjs";
-import {
-  TableOption,
-  ModalService,
-  DataService,
-  TemplateViewModel,
-  TableComponent,
-  ConfirmViewModel,
-  TableConstant,
-  TableMode,
-  TableColumnType
-} from "ngx-fw4c";
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, Input, TemplateRef } from "@angular/core";
+import { ValidationService, ValidationOption, ClientValidator, CustomValidationRule, RequiredValidationRule, ValidationRuleResponse } from "ngx-fw4c";
+import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType } from "ngx-fw4c";
 import { ConsumerManagementService } from './consumer-management.service';
 import { AddConsumerComponent } from './add-consumer/add-consumer.component';
+import { EditConsumerComponent } from './edit-consumer/edit-consumer.component';
 @Component({
   selector: 'app-consumer-management',
   templateUrl: './consumer-management.component.html',
@@ -51,11 +26,7 @@ export class ConsumerManagementComponent implements OnInit {
     this.option = new TableOption({
       inlineEdit: false,
       mode: TableMode.full,
-      searchFields: ["name", "host"],
-      // displayText: {
-      //   pageTitle: 'test',
-      //   allTitle: 'aaa'
-      // },
+      searchFields: ['username', 'custom_id'],
       topButtons: [
         {
           icon: "fa fa-plus",
@@ -76,7 +47,7 @@ export class ConsumerManagementComponent implements OnInit {
         {
           icon: "fa fa-refresh",
           title: () => "Reload",
-          executeAsync: item => {
+          executeAsync: () => {
             this.tableTemplate.reload();
           }
         }
@@ -84,23 +55,36 @@ export class ConsumerManagementComponent implements OnInit {
       actions: [
         {
           icon: "fa fa-edit",
-          executeAsync: () => {
-            //call other api....
+          executeAsync: (consumer) => {
+            this._modalService.showTemplateDialog(new TemplateViewModel({
+              template: EditConsumerComponent,
+              customSize: 'modal-lg',
+              title: 'Edit Consumer',
+              btnAcceptTitle: 'Edit',
+              data: {
+                item: consumer
+              },
+              cancelCallback: () => {
+                this.tableTemplate.reload();
+              },
+              acceptCallback: item => {
+                this.tableTemplate.reload();
+              }
+            }))
           }
         },
         {
           icon: "fa fa-remove",
-          executeAsync: (item) => {
+          executeAsync: (consumer) => {
             this._modalService.showConfirmDialog(new ConfirmViewModel({
               btnAcceptTitle: 'Delete',
               message: 'Are you sure to delete this consumer?',
               acceptCallback: () => {
-                this._consumerManagementService.deleteData(item.id).subscribe(() => {
+                this._consumerManagementService.deleteData(consumer.id).subscribe(() => {
                   this.tableTemplate.reload();
                 })
               }
             }))
-
           }
         }
       ],
@@ -125,7 +109,7 @@ export class ConsumerManagementComponent implements OnInit {
           allowFilter: false
         },
         {
-          type: TableColumnType.String,
+          type: TableColumnType.DateTime,
           title: () => "Created",
           valueRef: () => "created_at",
           allowFilter: false
@@ -133,7 +117,7 @@ export class ConsumerManagementComponent implements OnInit {
       ],
       serviceProvider: {
         searchAsync: request => {
-          return this._consumerManagementService.getData(request);
+          return this._consumerManagementService.readData(request);
         }
       }
     });

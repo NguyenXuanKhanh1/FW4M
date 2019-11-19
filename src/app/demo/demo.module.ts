@@ -1,8 +1,5 @@
 import { NgModule } from '@angular/core';
-import { TabDemoComponent } from './tab';
-import { ValidationDemoComponent } from './validation';
 import { DashboardDemoComponent } from './dashboard';
-import { ButtonDemoComponent } from './button';
 import { FormsModule } from '@angular/forms';
 import { Framework4CModule } from 'ngx-fw4c';
 import { HttpClientModule } from '@angular/common/http';
@@ -11,17 +8,16 @@ import { ServiceManagementComponent } from './service-management/service-managem
 import { AddServiceComponent } from './service-management/add-service/add-service.component';
 import { ConsumerManagementComponent } from './consumer-management/consumer-management.component';
 import { AddConsumerComponent } from './consumer-management/add-consumer/add-consumer.component';
+import { EditConsumerComponent } from './consumer-management/edit-consumer/edit-consumer.component';
 
 
 const declarations = [
-  TabDemoComponent,
-  ValidationDemoComponent,
   DashboardDemoComponent,
-  ButtonDemoComponent,
   ServiceManagementComponent,
   AddServiceComponent,
   ConsumerManagementComponent,
-  AddConsumerComponent
+  AddConsumerComponent,
+  EditConsumerComponent
 ];
 
 @NgModule({

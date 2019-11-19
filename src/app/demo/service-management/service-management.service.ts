@@ -11,7 +11,7 @@ export class ServiceManagementService {
 
   public totalRecords: number = 0;
   public item = [];
-  public apiUrl = 'http://192.168.110.112:8001/services'
+  public apiUrl = 'http://192.168.35.108:8001/services'
   constructor(private http: HttpClient) {
 
   }
