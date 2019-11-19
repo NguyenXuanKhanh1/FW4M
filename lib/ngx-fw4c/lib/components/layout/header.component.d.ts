@@ -1,3 +1,4 @@
+import { ElementRef } from "@angular/core";
 import { DefaultLayoutService } from './layout.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ActionService } from '../shared/services/action.service';
@@ -12,15 +13,18 @@ export declare class DefaultHeaderComponent {
     protected actionService: ActionService;
     protected aggregatorService: AggregatorService;
     protected authenticationService: AuthenticationService;
+    private _aggregatorService;
     notifications: NotificationDetail[];
     logo: string;
     title: string;
+    menu: ElementRef;
     loading: boolean;
     filter: string;
     user: UserViewModel;
     isMobile: boolean;
-    constructor(layoutService: DefaultLayoutService, router: Router, route: ActivatedRoute, actionService: ActionService, aggregatorService: AggregatorService, authenticationService: AuthenticationService);
+    constructor(layoutService: DefaultLayoutService, router: Router, route: ActivatedRoute, actionService: ActionService, aggregatorService: AggregatorService, authenticationService: AuthenticationService, _aggregatorService: AggregatorService);
     ngOnInit(): void;
     toggleMenu(): void;
     logout(): void;
+    private registerEvents;
 }

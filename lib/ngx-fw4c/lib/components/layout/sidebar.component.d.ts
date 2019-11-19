@@ -1,10 +1,10 @@
-import { AfterViewInit, OnInit, EventEmitter } from "@angular/core";
+import { OnInit, EventEmitter, OnChanges } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
 import { DefaultLayoutService } from './layout.service';
 import { MenuService } from '../shared/services/menu.service';
 import { ExtendedMainMenuGroup, MenuTab, MenuItem, Breadcrumb } from '../shared/models/base.model';
 import { ActionService } from '../shared/services/action.service';
-export declare class DefaultSidebarComponent implements OnInit, AfterViewInit {
+export declare class DefaultSidebarComponent implements OnInit, OnChanges {
     workspaceLayoutService: DefaultLayoutService;
     protected route: ActivatedRoute;
     protected router: Router;
@@ -13,10 +13,11 @@ export declare class DefaultSidebarComponent implements OnInit, AfterViewInit {
     menuTabs: MenuTab[];
     navigateTo: (menu: string, router: Router) => void;
     set: (role: string) => MenuItem;
+    setActive: boolean;
     change: EventEmitter<Breadcrumb[]>;
+    currentUrl: string;
     menuItems: ExtendedMainMenuGroup[];
     isCollapsedSideBar: string;
-    currentUrl: string;
     collapsedItems: ExtendedMainMenuGroup[];
     isSupplier: boolean;
     tabs: {
@@ -29,7 +30,7 @@ export declare class DefaultSidebarComponent implements OnInit, AfterViewInit {
     isMobile: boolean;
     clicked: boolean;
     constructor(workspaceLayoutService: DefaultLayoutService, route: ActivatedRoute, router: Router, menuService: MenuService, actionService: ActionService);
-    ngAfterViewInit(): void;
+    ngOnChanges(): void;
     ngOnInit(): void;
     toggleMenu(): void;
     removeActiveStateNavigationMenu(): void;

@@ -28,3 +28,4 @@ export * from './timeline';
 export * from './chip';
 export * from './panel';
 export * from './list';
+export * from './treeview';
