@@ -9,7 +9,7 @@ export declare class AuthenticationService extends MockService {
     private _cacheService;
     private _router;
     currentUser: UserViewModel;
-    protected api: string;
+    api: string;
     constructor(httpClient: HttpClient, _cacheService: CacheService, _router: Router);
     search(request: AuthenticationSearchRequest): Observable<AuthenticationSearchResponse>;
     retrieve(request: AuthenticationRetrieveRequest): Observable<AuthenticationRetrieveResponse>;

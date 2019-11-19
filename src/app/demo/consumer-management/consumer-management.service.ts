@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { map} from 'rxjs/operators';
 import { ConsumerResponse, ConsumerRequest } from './consumer.model';
-import { Consumer } from './consumer';
+import { ValidationRuleResponse } from 'ngx-fw4c';
 
 @Injectable({
 	providedIn: 'root'

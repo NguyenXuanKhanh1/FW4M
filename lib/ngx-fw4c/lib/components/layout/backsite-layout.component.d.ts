@@ -5,9 +5,11 @@ import { AggregatorService } from '../shared/services/aggregator.service';
 import { NotificationDetail } from '../shared/models/notification.model';
 import { MenuTab, Breadcrumb } from '../shared/models/base.model';
 import { ActionService } from '../shared/services/action.service';
+import { AuthenticationService } from '../auth/auth.service';
 export declare class AdminLayoutComponent implements OnInit, AfterViewInit {
     workspaceLayoutService: DefaultLayoutService;
     route: ActivatedRoute;
+    authenticationService: AuthenticationService;
     protected router: Router;
     protected actionService: ActionService;
     protected aggregatorService: AggregatorService;
@@ -21,9 +23,12 @@ export declare class AdminLayoutComponent implements OnInit, AfterViewInit {
     breadcrumbs: Breadcrumb[];
     breadcrumb: Breadcrumb;
     url: string;
-    constructor(workspaceLayoutService: DefaultLayoutService, route: ActivatedRoute, router: Router, actionService: ActionService, aggregatorService: AggregatorService);
+    authUrl: string;
+    setActive: boolean;
+    constructor(workspaceLayoutService: DefaultLayoutService, route: ActivatedRoute, authenticationService: AuthenticationService, router: Router, actionService: ActionService, aggregatorService: AggregatorService);
     ngOnInit(): void;
     ngAfterViewInit(): void;
     closeImage(): void;
     changeMenu(items: Breadcrumb[]): void;
+    private registerEvents;
 }

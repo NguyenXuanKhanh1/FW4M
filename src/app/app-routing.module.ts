@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MenuTab, AdminLayoutComponent } from 'ngx-fw4c';
+import { MenuTab, AdminLayoutComponent, AuthComponent } from 'ngx-fw4c';
 import { DashboardDemoComponent } from './demo/dashboard';
 import { ServiceManagementComponent } from './demo/service-management/service-management.component';
 import { ConsumerManagementComponent } from './demo/consumer-management/consumer-management.component';
@@ -66,6 +66,14 @@ const routes: Routes = [
       {
         path: 'edit-consumer',
         component: EditConsumerComponent
+      },
+      {
+        path: 'auth',
+        component: AuthComponent,
+        data: {
+          successPath: '/dashboard',
+          success: true
+        }
       }
     ]
   }

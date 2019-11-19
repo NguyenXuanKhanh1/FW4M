@@ -32,7 +32,7 @@ export declare class ValidationService {
     setElementError(element: Element, action: ValidationRule, option: ValidationOption): string;
     clearErrorItemElement(element: any, action: ValidationRule): void;
     isDirty(callback?: (items: ChangedItem[]) => void): boolean;
-    validateElement(element: any, option: ValidationOption): Observable<ValidationOption>;
+    validateElement(element: any, option: ValidationOption, all?: boolean): Observable<ValidationOption>;
     private validateRelevantFields;
     private retrieveSummaryErrors;
     private findElementOption;
