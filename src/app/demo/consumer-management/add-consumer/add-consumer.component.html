@@ -1,0 +1,24 @@
+<katana-card>
+  <div #formRef>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Username <small>(Semi-optional)</small></label>
+      <div class="col-sm-10">
+        <input type="string" class="form-control" name="username" id="username" validation-name="Username"
+          [(ngModel)]="item.username">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Custom ID <small>(Semi-optional)</small></label>
+      <div class="col-sm-10">
+        <input type="string" class="form-control" name="custom_id" id="custom_id" validation-name="Custom_id"
+          [(ngModel)]="item.custom_id">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Tags <small>(Semi-optional)</small></label>
+      <div class="col-sm-10">
+        <input type="string" class="form-control" name="tags" id="tags" validation-name="Tags" [(ngModel)]="item.tags">
+      </div>
+    </div>
+  </div>
+</katana-card>

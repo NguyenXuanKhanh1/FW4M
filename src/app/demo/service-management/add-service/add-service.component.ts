@@ -13,7 +13,7 @@ import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationSe
 export class AddServiceComponent implements OnInit, AfterViewInit {
   @ViewChild("formRef", { static: true }) public formRef: ElementRef;
   label = {
-    name: 'asdas'
+    name: 'Name'
   }
   public item = new Service;
   public apiUrl = "http://192.168.110.112:8001/services";
@@ -66,7 +66,7 @@ export class AddServiceComponent implements OnInit, AfterViewInit {
     
   }
 
-  loadDefaultValue(): void {
+  private loadDefaultValue(): void {
     this.item.retries = 5;
     this.item.connect_timeout = 60000;
     this.item.write_timeout = 60000;
@@ -80,12 +80,11 @@ export class AddServiceComponent implements OnInit, AfterViewInit {
   callback(): Observable<any> {
     this.body = JSON.stringify(this.item);
     console.log(this.item);
-    return of(this.postData())
+    return of(this.postData());
   }
 
   postData():void {
-    this.http.post(this.apiUrl, this.body, this.header).subscribe(()=> {
-    });
+    this.http.post(this.apiUrl, this.body, this.header).subscribe();
   }
 
 }

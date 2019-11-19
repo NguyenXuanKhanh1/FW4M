@@ -4,6 +4,7 @@ import { MenuTab, AdminLayoutComponent } from 'ngx-fw4c';
 import { TabDemoComponent, ValidationDemoComponent, ButtonDemoComponent } from './demo';
 import { DashboardDemoComponent } from './demo/dashboard';
 import { ServiceManagementComponent } from './demo/service-management/service-management.component';
+import { ConsumerManagementComponent } from './demo/consumer-management/consumer-management.component';
 
 const menuTabs: MenuTab[] = [
   {
@@ -36,6 +37,13 @@ const menuTabs: MenuTab[] = [
         icon: 'fa fa-bar-chart',
         children: [
           { state: 'service', name: 'Service', type: 'link', icon: 'fa fa-calendar-check-o' }
+        ]
+      },
+      {
+        label: 'Consumer Management',
+        icon: 'fa fa-line-chart',
+        children: [
+          { state: 'consumer', name: 'Comsumer', type: 'link', icon: 'fa fa-calendar-check-o' }
         ]
       } 
     ]
@@ -77,6 +85,10 @@ const routes: Routes = [
       {
         path: 'service',
         component: ServiceManagementComponent
+      },
+      {
+        path: 'consumer',
+        component: ConsumerManagementComponent
       }
     ]
   }

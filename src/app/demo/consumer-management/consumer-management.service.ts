@@ -2,30 +2,21 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ServiceRequest, ServiceResponse } from './service.model';
+import { ConsumerResponse, ConsumerRequest } from './consumer.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServiceManagementService {
+export class ConsumerManagementService {
 
   public totalRecords: number = 0;
   public item = [];
-  public apiUrl = 'http://192.168.110.112:8001/services'
+  public apiUrl = 'http://192.168.35.108:8001/consumers'
   constructor(private http: HttpClient) {
 
   }
 
-  public getData(request: ServiceRequest): Observable<ServiceResponse> {
-    // this.http.get(this.apiUrl).subscribe((res: any)=> {
-    //   this.totalRecords = res.data.length;
-    //   this.items = res.data;
-    // })
-    // return of({
-    //   "status": true,
-    //   "totalRecords": this.totalRecords,
-    //   "items": this.items
-    // })
+  public getData(request: ConsumerRequest): Observable<ConsumerResponse> {
     return this.http.get(this.apiUrl).pipe(map((res: any) => {
       var response = ({
         status: true,

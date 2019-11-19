@@ -27,30 +27,26 @@ import {
   TableMode,
   TableColumnType
 } from "ngx-fw4c";
-import { AddServiceComponent } from './add-service/add-service.component';
-import { ServiceManagementService } from './service-management.service';
-
+import { ConsumerManagementService } from './consumer-management.service';
+import { AddConsumerComponent } from './add-consumer/add-consumer.component';
 @Component({
-  selector: 'app-service-management',
-  templateUrl: './service-management.component.html',
-  styleUrls: ['./service-management.component.scss']
+  selector: 'app-consumer-management',
+  templateUrl: './consumer-management.component.html',
+  styleUrls: ['./consumer-management.component.scss']
 })
-export class ServiceManagementComponent implements OnInit {
-  @ViewChild("formRef", { static: true }) public formRef: ElementRef;
-  @ViewChild("tableTemplate", { static: true }) public tableTemplate: TableComponent;
+export class ConsumerManagementComponent implements OnInit {
   public option: TableOption;
-  @ViewChild("imageTemplate", { static: true })
-  public imageTemplate: TemplateRef<any>;
+  @ViewChild("tableTemplate", { static: true }) public tableTemplate: TableComponent;
 
   constructor(
     private _modalService: ModalService,
-    private _serviceManagementService: ServiceManagementService
+    private _consumerManagementService: ConsumerManagementService
   ) { }
 
   ngOnInit() {
     this.initTable();
-
   }
+
   private initTable() {
     this.option = new TableOption({
       inlineEdit: false,
@@ -67,9 +63,9 @@ export class ServiceManagementComponent implements OnInit {
           title: () => "New",
           executeAsync: item => {
             this._modalService.showTemplateDialog(new TemplateViewModel({
+              template: AddConsumerComponent,
               customSize: 'modal-lg',
-              title: 'Add New Service',
-              template: AddServiceComponent,
+              title: 'Add New Consumer',
               btnAcceptTitle: 'Add',
               acceptCallback: () => {
                 this.tableTemplate.reload().subscribe();
@@ -97,11 +93,11 @@ export class ServiceManagementComponent implements OnInit {
           executeAsync: (item) => {
             this._modalService.showConfirmDialog(new ConfirmViewModel({
               btnAcceptTitle: 'Delete',
-              message: 'Are you sure to delete this service?',
+              message: 'Are you sure to delete this consumer?',
               acceptCallback: () => {
-                this._serviceManagementService.deleteData(item.id).subscribe(() => {
-                  this.tableTemplate.reload()
-                });
+                this._consumerManagementService.deleteData(item.id).subscribe(() => {
+                  this.tableTemplate.reload();
+                })
               }
             }))
 
@@ -111,15 +107,15 @@ export class ServiceManagementComponent implements OnInit {
       mainColumns: [
         {
           type: TableColumnType.String,
-          title: () => "Name",
-          valueRef: () => "name",
+          title: () => "Username",
+          valueRef: () => "username",
           width: 500,
           allowFilter: false
         },
         {
           type: TableColumnType.String,
-          title: () => "Host",
-          valueRef: () => "host",
+          title: () => "Custom_ID",
+          valueRef: () => "custom_id",
           allowFilter: false
         },
         {
@@ -137,10 +133,10 @@ export class ServiceManagementComponent implements OnInit {
       ],
       serviceProvider: {
         searchAsync: request => {
-
-          return this._serviceManagementService.getData(request);
+          return this._consumerManagementService.getData(request);
         }
       }
     });
   }
+
 }
