@@ -3,7 +3,7 @@ import { Consumer } from '../../common/consumer.model';
 import { Observable, of } from 'rxjs';
 import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService } from 'ngx-fw4c';
 import { EditConsumerService } from './edit-consumer.service';
-import { LanguageEN } from '../../common/language.model';
+import { LanguageEN, LanguageVN } from '../../common/language.model';
 
 @Component({
   selector: 'app-edit-consumer',
@@ -14,7 +14,14 @@ export class EditConsumerComponent implements AfterViewInit{
 
   @ViewChild("formRef", { static: true }) public formRef: ElementRef;
   @Input() public item = new Consumer;
-  public label = new LanguageEN;
+
+  @Input() public reload: () => any;
+
+  public label = {
+    username: "Username",
+    custom_id: "Custom ID",
+    tags: "Tags",
+  }
 
   constructor(
     private _validationService: ValidationService,
@@ -51,10 +58,23 @@ export class EditConsumerComponent implements AfterViewInit{
   }
 
   public isValid(): boolean {
-    return true;
+    return this._validationService.isValid(true, false);
+  }  
+
+  public callback(): Observable<any> {
+    return (this._editConsumerService.updateData(this.item.id, this.item));
   }
 
-  public callback(): Observable<Consumer> {
-    return this._editConsumerService.updateData(this.item.id, JSON.stringify(this.item));
+  /* Callback */
+  // public callback(): Observable<any> {
+	// 	this._editConsumerService.updateData(this.item.id, this.item).subscribe(() => {
+	// 		debugger
+	// 		this.reload();
+	// 	});
+	// 	return of(true);
+	// }
+
+  public getValidator(): ValidationService {
+    return this._validationService;
   }
 }

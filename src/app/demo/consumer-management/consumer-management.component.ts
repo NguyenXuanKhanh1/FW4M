@@ -15,6 +15,7 @@ export class ConsumerManagementComponent implements OnInit {
 
   constructor(
     private _modalService: ModalService,
+    private _dataService: DataService,
     private _consumerManagementService: ConsumerManagementService
   ) { }
 
@@ -35,10 +36,11 @@ export class ConsumerManagementComponent implements OnInit {
           executeAsync: item => {
             this._modalService.showTemplateDialog(new TemplateViewModel({
               template: AddConsumerComponent,
+              validationKey: 'AddConsumerComponent',
               customSize: 'modal-lg',
               title: 'Add New Consumer',
               btnAcceptTitle: 'Add',
-              acceptCallback: () => {
+              acceptCallback: (response, close) => {
                 this.tableTemplate.reload().subscribe();
               }
             }));
@@ -57,17 +59,23 @@ export class ConsumerManagementComponent implements OnInit {
           icon: "fa fa-edit",
           executeAsync: (consumer) => {
             this._modalService.showTemplateDialog(new TemplateViewModel({
+              validationKey: 'EditConsumerComponent',
               template: EditConsumerComponent,
               customSize: 'modal-lg',
               title: 'Edit Consumer',
               btnAcceptTitle: 'Edit',
+              
               data: {
-                item: consumer
-              },
+								reload: () => {
+									debugger
+									this.tableTemplate.reload().subscribe();
+                },
+                item: this._dataService.cloneItem(consumer),
+							},
               cancelCallback: () => {
                 this.tableTemplate.reload();
               },
-              acceptCallback: item => {
+              acceptCallback:  (response, close) => {
                 this.tableTemplate.reload();
               }
             }))
@@ -111,7 +119,7 @@ export class ConsumerManagementComponent implements OnInit {
         {
           type: TableColumnType.DateTime,
           title: () => "Created",
-          valueRef: () => "created_at",
+          valueRef: () => "created_at_1",
           allowFilter: false
         }
       ],

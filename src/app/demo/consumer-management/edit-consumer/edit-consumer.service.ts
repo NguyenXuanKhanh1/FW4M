@@ -11,7 +11,12 @@ export class EditConsumerService {
     private _system: SystemConstant) { }
   
   public updateData(id: string, body: any) {
-    return this.http.put(this._system.apiURL + this._system.consumers + '/' + id, body, this._system.header);
+    
+    //body.created_at =  (body.created_at / 1000) as number;
+    //const value = ((<Date>body.created_at).getTime())/1000;
+    //body.created_at =  value;
+    
+    return this.http.patch(this._system.apiURL + this._system.consumers + '/' + id, body, this._system.header);
   }
 
 }

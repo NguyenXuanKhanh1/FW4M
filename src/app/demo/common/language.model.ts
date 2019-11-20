@@ -5,7 +5,7 @@ export class LanguageEN {
 }
 
 export class LanguageVN {
-    public username: "Tài khoản";
-    public custom_id: "Mã người dùng";
-    public tags: "Thẻ";
+    username?: "Tài khoản";
+    custom_id?: "Mã người dùng";
+    tags?: "Thẻ";
 }

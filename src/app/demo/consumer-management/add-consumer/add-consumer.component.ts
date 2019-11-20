@@ -13,7 +13,11 @@ import { LanguageEN } from '../../common/language.model';
 export class AddConsumerComponent implements AfterViewInit {
   @Input() public item: Consumer = new Consumer();
   @ViewChild('formRef', { static: true }) public formRef: ElementRef;
-  public label = new LanguageEN;
+  public label = {
+    username: "Username",
+    custom_id: "Custom ID",
+    tags: "Tags",
+  }
 
   constructor(
     private _validationService: ValidationService,
@@ -49,12 +53,29 @@ export class AddConsumerComponent implements AfterViewInit {
     this._validationService.init({ validator });
   }
 
+  // public isValid(): boolean {
+  //   return this._validationService.isValid(false);
+  // }
+
+  // public callback(): Observable<Consumer> {
+  //   return this._addConsumerService.postData(JSON.stringify(this.item));
+  // }
+
   public isValid(): boolean {
-    return this._validationService.isValid(false);
+    return this._validationService.isValid(true, false);
+  }
+  
+
+  public callback(): Observable<any> {
+    return (
+      this._addConsumerService.postData(this.item)
+      // status: '????????',
+      // message: 'ok ok'
+    );
   }
 
-  public callback(): Observable<Consumer> {
-    return this._addConsumerService.postData(JSON.stringify(this.item));
+  public getValidator(): ValidationService {
+    return this._validationService;
   }
 
 }

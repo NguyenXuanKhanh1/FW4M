@@ -1,13 +1,16 @@
 import { RendererFactory2, EventEmitter } from '@angular/core';
 import { ValidationOption, ClientValidator, SummaryError, ValidationRule, ChangedItem } from './validation.model';
 import { Observable } from 'rxjs';
-import { DataService, ActionService } from '../services';
+import { DataService } from '../services/data.service';
 import { ValidationProvider } from './validation.provider';
+import { ActionService } from '../services/action.service';
+import { AggregatorService } from '../services/aggregator.service';
 export declare class ValidationService {
     protected rendererFactory: RendererFactory2;
     protected validationProvider: ValidationProvider;
     private _dataService;
     private _actionService;
+    private _aggregatorService;
     onDestroy: EventEmitter<void>;
     private elements;
     private validator;
@@ -19,11 +22,13 @@ export declare class ValidationService {
     private subscriptions;
     private virtualValidationOptions;
     private changedItems;
-    constructor(rendererFactory: RendererFactory2, validationProvider: ValidationProvider, _dataService: DataService, _actionService: ActionService);
+    private key;
+    constructor(rendererFactory: RendererFactory2, validationProvider: ValidationProvider, _dataService: DataService, _actionService: ActionService, _aggregatorService: AggregatorService);
     ngOnDestroy(): void;
     init(model: {
         validator: ClientValidator;
     }): void;
+    setKey(key: string): void;
     updateAsync(relatedProvidersToRegister?: ValidationService[]): void;
     executeAsync(validCallback: (errors?: SummaryError[]) => any, invalidCallback?: (errors?: SummaryError[]) => any): Observable<boolean>;
     isValid(show?: boolean, focus?: boolean): boolean;
