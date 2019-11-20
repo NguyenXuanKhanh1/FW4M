@@ -1,8 +1,9 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { Consumer } from '../consumer';
+import { Consumer } from '../../common/consumer.model';
 import { ValidationService, ValidationOption, RequiredValidationRule, ClientValidator, CustomValidationRule } from 'ngx-fw4c';
 import { of, Observable } from 'rxjs';
 import { AddConsumerService } from './add-consumer.service';
+import { LanguageEN } from '../../common/language.model';
 
 @Component({
   selector: 'app-add-consumer',
@@ -12,12 +13,7 @@ import { AddConsumerService } from './add-consumer.service';
 export class AddConsumerComponent implements AfterViewInit {
   @Input() public item: Consumer = new Consumer();
   @ViewChild('formRef', { static: true }) public formRef: ElementRef;
-
-  public label = {
-    username: 'Username',
-    custom_id: 'Custom ID',
-    tags: 'Tags'
-  }
+  public label = new LanguageEN;
 
   constructor(
     private _validationService: ValidationService,

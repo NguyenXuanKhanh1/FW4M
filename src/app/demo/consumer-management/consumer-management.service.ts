@@ -1,22 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map} from 'rxjs/operators';
-import { ConsumerResponse, ConsumerRequest } from './consumer.model';
-import { ValidationRuleResponse } from 'ngx-fw4c';
+import { map } from 'rxjs/operators';
+import { ConsumerResponse, ConsumerRequest } from '../common/consumer.model';
+import { SystemConstant } from '../common/system-constant';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class ConsumerManagementService {
-
-	public apiUrl = 'http://192.168.35.108:8001/consumers'
-	public header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
-	constructor(private http: HttpClient) { }
+	
+	constructor(private http: HttpClient,
+		private _system: SystemConstant ) { }
 
 	public readData(request: ConsumerRequest): Observable<ConsumerResponse> {
-		return this.http.get(this.apiUrl).pipe(map((res: any) => {
+		return this.http.get(this._system.apiURL +  this._system.consumers).pipe(map((res: any) => {
 			for (let i = 0; i < res.data.length; i++) {
 				res.data[i].created_at = res.data[i].created_at * 1000;
 			}
@@ -30,14 +28,7 @@ export class ConsumerManagementService {
 	}
 
 	public deleteData(id: string) {
-		return this.http.delete(this.apiUrl + '/' + id);
+		return this.http.delete(this._system.apiURL + this._system.consumers+ '/' + id);
 	}
 
-	public validateString(string: string): Observable<ValidationRuleResponse> {
-		let regex = /[A-Za-z0-9]/;
-		return of(new ValidationRuleResponse({
-			status: regex.test(string) && string !== "",
-			message: 'Please input right format'
-		}));
-	}
 }

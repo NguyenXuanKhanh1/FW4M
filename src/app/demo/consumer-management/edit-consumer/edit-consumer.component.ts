@@ -1,8 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild, Input, AfterViewInit } from '@angular/core';
-import { Consumer } from '../consumer';
+import { Consumer } from '../../common/consumer.model';
 import { Observable, of } from 'rxjs';
 import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService } from 'ngx-fw4c';
 import { EditConsumerService } from './edit-consumer.service';
+import { LanguageEN } from '../../common/language.model';
 
 @Component({
   selector: 'app-edit-consumer',
@@ -13,13 +14,7 @@ export class EditConsumerComponent implements AfterViewInit{
 
   @ViewChild("formRef", { static: true }) public formRef: ElementRef;
   @Input() public item = new Consumer;
-  public body: string;
-
-  public label = {
-    username: "Username",
-    custom_id: "Custom ID",
-    tags: "Tags"
-  }
+  public label = new LanguageEN;
 
   constructor(
     private _validationService: ValidationService,
@@ -60,7 +55,6 @@ export class EditConsumerComponent implements AfterViewInit{
   }
 
   public callback(): Observable<Consumer> {
-    this.body = JSON.stringify(this.item);
-    return this._editConsumerService.updateData(this.item.id, this.body);
+    return this._editConsumerService.updateData(this.item.id, JSON.stringify(this.item));
   }
 }

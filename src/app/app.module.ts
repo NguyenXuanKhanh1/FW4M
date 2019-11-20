@@ -6,6 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DemoModule } from './demo';
 import { HttpClientModule } from '@angular/common/http';
+import { SystemConstant } from './demo/common/system-constant';
+import { Validation } from './demo/common/validation';
+import { Consumer } from './demo/common/consumer.model';
+import { LanguageEN, LanguageVN } from './demo/common/language.model';
 
 @NgModule({
   declarations: [
@@ -23,7 +27,13 @@ import { HttpClientModule } from '@angular/common/http';
   exports: [
     DemoModule
   ],
-  providers: [],
+  providers: [
+    SystemConstant, 
+    Validation,
+    Consumer,
+    LanguageEN,
+    LanguageVN
+  ],
   bootstrap: [AppComponent]
 })
 
