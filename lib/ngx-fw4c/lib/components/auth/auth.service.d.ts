@@ -4,13 +4,16 @@ import { AuthenticationLoginRequest, AuthenticationLoginResponse, UserViewModel,
 import { CacheService } from '../shared/services/cache.service';
 import { Router } from '@angular/router';
 import { MockService } from '../shared/services/mock.service';
+import { MenuTab } from '../shared/models/base.model';
 export declare class AuthenticationService extends MockService {
     protected httpClient: HttpClient;
     private _cacheService;
     private _router;
     currentUser: UserViewModel;
-    api: string;
+    protected menuTabs: MenuTab[];
     constructor(httpClient: HttpClient, _cacheService: CacheService, _router: Router);
+    setApi(url: string): void;
+    getApi(): string;
     search(request: AuthenticationSearchRequest): Observable<AuthenticationSearchResponse>;
     retrieve(request: AuthenticationRetrieveRequest): Observable<AuthenticationRetrieveResponse>;
     login(request: AuthenticationLoginRequest): Observable<AuthenticationLoginResponse>;

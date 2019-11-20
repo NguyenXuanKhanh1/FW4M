@@ -1,4 +1,4 @@
-import { BaseRequest, BaseResponse, SearchBaseRequest, SearchBaseResponse } from '../shared/models';
+import { BaseRequest, BaseResponse, SearchBaseRequest, SearchBaseResponse, MenuTab } from '../shared/models/base.model';
 import { FileViewModel } from '../shared/file/file.model';
 export declare class UserViewModel {
     id: string;
@@ -25,6 +25,7 @@ export declare class AuthenticationLoginRequest extends BaseRequest<Authenticati
 }
 export declare class AuthenticationLoginResponse extends BaseResponse<AuthenticationViewModel> {
     user?: UserViewModel;
+    menuTabs?: MenuTab[];
     token?: string;
     constructor(init?: Partial<AuthenticationLoginResponse>);
 }

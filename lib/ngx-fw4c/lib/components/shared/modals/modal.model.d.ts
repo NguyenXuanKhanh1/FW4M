@@ -43,7 +43,7 @@ export declare class TemplateViewModel extends BaseTemplate {
     btnAcceptTitle?: string;
     btnCancelTitle?: string;
     autoClose?: boolean;
-    acceptCallback?: (response?: any, provider?: any, close?: () => any) => any;
-    cancelCallback?: (response?: any, provider?: any, close?: () => any) => any;
+    acceptCallback?: (response?: any, close?: () => any, provider?: any) => any;
+    cancelCallback?: (response?: any, close?: () => any, provider?: any) => any;
     constructor(init?: Partial<TemplateViewModel>);
 }

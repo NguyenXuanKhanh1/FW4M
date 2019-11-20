@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { SystemConstant } from '../../common/system-constant';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EditConsumerService {
-  public apiUrl = "http://192.168.35.108:8001/consumers";
-  public header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+    private _system: SystemConstant) { }
   
   public updateData(id: string, body: any) {
-    return this.http.put(this.apiUrl + '/' + id, body, this.header);
+    
+    //body.created_at =  (body.created_at / 1000) as number;
+    //const value = ((<Date>body.created_at).getTime())/1000;
+    //body.created_at =  value;
+    
+    return this.http.patch(this._system.apiURL + this._system.consumers + '/' + id, body, this._system.header);
   }
+
 }

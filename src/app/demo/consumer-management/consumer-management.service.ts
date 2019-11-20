@@ -1,43 +1,36 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map} from 'rxjs/operators';
-import { ConsumerResponse, ConsumerRequest } from './consumer.model';
-import { ValidationRuleResponse } from 'ngx-fw4c';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, of } from "rxjs";
+import { map } from "rxjs/operators";
+import { ConsumerResponse, ConsumerRequest } from "../common/consumer.model";
+import { SystemConstant } from "../common/system-constant";
 
 @Injectable({
-	providedIn: 'root'
+  providedIn: "root"
 })
 export class ConsumerManagementService {
+  constructor(private http: HttpClient, private _system: SystemConstant) {}
 
-	public apiUrl = 'http://192.168.35.108:8001/consumers'
-	public header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
+  public readData(request: ConsumerRequest): Observable<ConsumerResponse> {
+    return this.http.get(this._system.apiURL + this._system.consumers).pipe(
+      map((res: any) => {
+        for (let i = 0; i < res.data.length; i++) {
+          var value = new Date(res.data[i].created_at * 1000);
+          res.data[i].created_at = value;
+        }
+        var response = {
+          status: true,
+          totalRecords: res.data.length,
+          items: res.data
+        };
+        return response;
+      })
+    );
+  }
 
-	constructor(private http: HttpClient) { }
-
-	public readData(request: ConsumerRequest): Observable<ConsumerResponse> {
-		return this.http.get(this.apiUrl).pipe(map((res: any) => {
-			for (let i = 0; i < res.data.length; i++) {
-				res.data[i].created_at = res.data[i].created_at * 1000;
-			}
-			var response = ({
-				status: true,
-				totalRecords: res.data.length,
-				items: res.data
-			});
-			return response;
-		}));
-	}
-
-	public deleteData(id: string) {
-		return this.http.delete(this.apiUrl + '/' + id);
-	}
-
-	public validateString(string: string): Observable<ValidationRuleResponse> {
-		let regex = /[A-Za-z0-9]/;
-		return of(new ValidationRuleResponse({
-			status: regex.test(string) && string !== "",
-			message: 'Please input right format'
-		}));
-	}
+  public deleteData(id: string) {
+    return this.http.delete(
+      this._system.apiURL + this._system.consumers + "/" + id
+    );
+  }
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Input } from '@angular/core';
-import { Consumer } from '../consumer';
+import { Consumer } from '../../common/consumer.model';
 import { ValidationService, ValidationOption, RequiredValidationRule, ClientValidator, CustomValidationRule } from 'ngx-fw4c';
 import { of, Observable } from 'rxjs';
 import { AddConsumerService } from './add-consumer.service';
+import { LanguageEN } from '../../common/language.model';
 
 @Component({
   selector: 'app-add-consumer',
@@ -12,11 +13,10 @@ import { AddConsumerService } from './add-consumer.service';
 export class AddConsumerComponent implements AfterViewInit {
   @Input() public item: Consumer = new Consumer();
   @ViewChild('formRef', { static: true }) public formRef: ElementRef;
-
   public label = {
-    username: 'Username',
-    custom_id: 'Custom ID',
-    tags: 'Tags'
+    username: "Username",
+    custom_id: "Custom ID",
+    tags: "Tags",
   }
 
   constructor(
@@ -53,12 +53,29 @@ export class AddConsumerComponent implements AfterViewInit {
     this._validationService.init({ validator });
   }
 
+  // public isValid(): boolean {
+  //   return this._validationService.isValid(false);
+  // }
+
+  // public callback(): Observable<Consumer> {
+  //   return this._addConsumerService.postData(JSON.stringify(this.item));
+  // }
+
   public isValid(): boolean {
-    return this._validationService.isValid(false);
+    return this._validationService.isValid(true, false);
+  }
+  
+
+  public callback(): Observable<any> {
+    return (
+      this._addConsumerService.postData(this.item)
+      // status: '????????',
+      // message: 'ok ok'
+    );
   }
 
-  public callback(): Observable<Consumer> {
-    return this._addConsumerService.postData(JSON.stringify(this.item));
+  public getValidator(): ValidationService {
+    return this._validationService;
   }
 
 }
