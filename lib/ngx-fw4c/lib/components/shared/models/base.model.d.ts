@@ -76,6 +76,7 @@ export declare class ExtendedMainMenuGroup {
     label: string;
     children: any[];
     icon: string;
+    selected?: boolean;
     constructor(init?: Partial<ExtendedMainMenuGroup>);
 }
 export declare class KeyValueItem {
@@ -104,6 +105,7 @@ export declare class MenuItem {
     items: ExtendedMainMenuGroup[];
     subName: string;
     name?: string;
+    selected?: boolean;
     constructor(init?: Partial<MenuItem>);
 }
 export declare class Breadcrumb {

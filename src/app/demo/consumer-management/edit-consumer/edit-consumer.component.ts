@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, Input, AfterViewInit } from '@angular/core';
 import { Consumer } from '../../common/consumer.model';
 import { Observable, of } from 'rxjs';
-import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService } from 'ngx-fw4c';
+import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService, CustomValidationRule, ValidationRuleResponse } from 'ngx-fw4c';
 import { EditConsumerService } from './edit-consumer.service';
 import { LanguageEN, LanguageVN } from '../../common/language.model';
 
@@ -33,35 +33,46 @@ export class EditConsumerComponent implements AfterViewInit{
   }
   
   public initValidations(): void {
-    var options = [
-      new ValidationOption({
-        validationName: 'Username',
-        valueResolver: () => this.item.username,
-        relevantFields: () => ['Custom_id'],
-        rules: [
-          new RequiredValidationRule()
-        ]
-      }),
-      new ValidationOption({
-        validationName: 'Custom_id',
-        valueResolver: () => this.item.custom_id,
-        rules: [
-          new RequiredValidationRule()
-        ]
-      })
-    ]
-    var validator = new ClientValidator({
-      formRef: this.formRef,
-      options: options
-    });
-    this._validationService.init({ validator });
-  }
+		var options = [
+			new ValidationOption({
+				validationName: 'Username',
+				valueResolver: () => this.item.username,
+				relevantFields: () => ['Custom_id'],
+				rules: [
+					new CustomValidationRule(value => {
+						return of(new ValidationRuleResponse({
+							message: 'test',
+							status: this.item.username != undefined || this.item.custom_id != undefined
+						}));
+					}, true)
+				]
+			}),
+			new ValidationOption({
+				validationName: 'Custom_id',
+				valueResolver: () => this.item.custom_id,
+				rules: [
+					new CustomValidationRule(value => {
+						return of(new ValidationRuleResponse({
+							message: 'test',
+							status: this.item.username != undefined || this.item.custom_id != undefined
+						}));
+					})
+				]
+			})
+		]
+		var validator = new ClientValidator({
+			formRef: this.formRef,
+			options: options
+		});
+		this._validationService.init({ validator });
+	}
 
   public isValid(): boolean {
     return this._validationService.isValid(true, false);
   }  
 
   public callback(): Observable<any> {
+    delete this.item.created_at_2;
     return (this._editConsumerService.updateData(this.item.id, this.item));
   }
 

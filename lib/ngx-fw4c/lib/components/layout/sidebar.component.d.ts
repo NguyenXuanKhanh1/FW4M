@@ -13,6 +13,7 @@ export declare class DefaultSidebarComponent implements OnInit, OnChanges {
     menuTabs: MenuTab[];
     navigateTo: (menu: string, router: Router) => void;
     set: (role: string) => MenuItem;
+    menuType: string;
     setActive: boolean;
     change: EventEmitter<Breadcrumb[]>;
     currentUrl: string;

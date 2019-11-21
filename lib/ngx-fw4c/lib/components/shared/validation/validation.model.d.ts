@@ -34,7 +34,7 @@ export declare class PhoneValidationRule extends ValidationRule {
     constructor(overridenErrorMessage?: (element?: any, rowIndex?: string) => string);
 }
 export declare class CustomValidationRule extends ValidationRule {
-    constructor(execute: (value?: any, payload?: any, rowIndex?: number) => Observable<ValidationRuleResponse>, overridenErrorMessage?: (element?: any, rowIndex?: string) => string, isValid?: boolean);
+    constructor(execute: (value?: any, payload?: any, rowIndex?: number) => Observable<ValidationRuleResponse>, required?: boolean, overridenErrorMessage?: (element?: any, rowIndex?: string) => string, isValid?: boolean);
 }
 export declare class ValidationOption {
     validationName: string;
