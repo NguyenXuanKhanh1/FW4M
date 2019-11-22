@@ -4,37 +4,39 @@ import { ValidationService, ValidationOption, RequiredValidationRule, ClientVali
 import { of, Observable } from 'rxjs';
 import { AddConsumerService } from './add-consumer.service';
 import { LanguageEN } from '../../common/language.model';
+import { Validation } from '../../common/validation';
 
 @Component({
-  selector: 'app-add-consumer',
-  templateUrl: './add-consumer.component.html',
-  styleUrls: ['./add-consumer.component.scss']
+	selector: 'app-add-consumer',
+	templateUrl: './add-consumer.component.html',
+	styleUrls: ['./add-consumer.component.scss']
 })
 export class AddConsumerComponent implements AfterViewInit, OnChanges {
-  @Input() public item: Consumer = new Consumer();
-  @Input() public reload: () => void;
-  @ViewChild('formRef', { static: true }) public formRef: ElementRef;
-  public label = {
-    username: "Username",
-    custom_id: "Custom ID",
-    tags: "Tags",
-  }
+	@Input() public item: Consumer = new Consumer();
+	@Input() public reload: () => void;
+	@ViewChild('formRef', { static: true }) public formRef: ElementRef;
+	public validation = new Validation();
+	public label = {
+		username: "Username",
+		custom_id: "Custom ID",
+		tags: "Tags",
+	}
 
-  constructor(
-    private _validationService: ValidationService,
-    private _addConsumerService: AddConsumerService
-  ) { }
+	constructor(
+		private _validationService: ValidationService,
+		private _addConsumerService: AddConsumerService
+	) { }
 
-  ngAfterViewInit(): void {
-    this.initValidations();
-  }
-  
-  ngOnChanges(): void {
-    var test = this.item;
-    debugger
-  }
+	ngAfterViewInit(): void {
+		this.initValidations();
+	}
 
-  public initValidations(): void {
+	ngOnChanges(): void {
+		var test = this.item;
+		debugger
+	}
+
+	public initValidations(): void {
 		var options = [
 			new ValidationOption({
 				validationName: 'Username',
@@ -43,10 +45,13 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 				rules: [
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
-							message: 'test',
+							message: "At least one of these fields must be non-empty: 'custom_id', 'username'",
 							status: this.item.username != undefined || this.item.custom_id != undefined
 						}));
-					}, true)
+					}, true),
+					new CustomValidationRule(value => {
+						return this.validation.validateString(value);
+					})
 				]
 			}),
 			new ValidationOption({
@@ -55,9 +60,12 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 				rules: [
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
-							message: 'test',
+							message: "At least one of these fields must be non-empty: 'custom_id', 'username'",
 							status: this.item.username != undefined || this.item.custom_id != undefined
 						}));
+					}),
+					new CustomValidationRule(value => {
+						return this.validation.validateString(value);
 					})
 				]
 			})
@@ -69,25 +77,17 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 		this._validationService.init({ validator });
 	}
 
-  // public isValid(): boolean {
-  //   return this._validationService.isValid(false);
-  // }
+	public isValid(): boolean {
+		return this._validationService.isValid(true, false);
+	}
 
-  // public callback(): Observable<Consumer> {
-  //   return this._addConsumerService.postData(JSON.stringify(this.item));
-  // }
 
-  public isValid(): boolean {
-    return this._validationService.isValid(true, false);
-  }
-  
+	public callback(): Observable<any> {
+		return of(true);
+	}
 
-  public callback(): Observable<any> {
-    return of(true);
-  }
-
-  public getValidator(): ValidationService {
-    return this._validationService;
-  }
+	public getValidator(): ValidationService {
+		return this._validationService;
+	}
 
 }
