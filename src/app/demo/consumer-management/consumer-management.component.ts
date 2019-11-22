@@ -48,38 +48,37 @@ export class ConsumerManagementComponent implements OnInit {
     private _addConsumerService: AddConsumerService,
     private _consumerManagementService: ConsumerManagementService,
     private http: HttpClient
-  ) {}
+  ) { }
 
   ngOnInit() {
+    this.getData();
     this.initTable();
   }
-
-  
-
-  private initTable() {
-    var data = [];
-    this._consumerManagementService.readData().subscribe(res => {
-      console.log(res.totalRecords)
+  public data = [];
+  private getData(): void {
+    this.data = [];
+    this._consumerManagementService.readConsumer().subscribe(res => {
       for (let index = 0; index < res.totalRecords; index++) {
-        data.push({
+        this.data.push({
           custom_id: res.items[index].custom_id,
           id: res.items[index].id,
           tags: res.items[index].tags,
           username: res.items[index].username,
           created_at_2: res.items[index].created_at_2
-        });        
+        });
       }
       this.tableTemplate.reload();
     });
-    this.option = new TableOption({
-      localData: () =>{
-        return data
-      },
+  }
 
+  private initTable() {
+    this.option = new TableOption({
+      localData: () => {
+        return this.data
+      },
       inlineEdit: false,
       mode: TableMode.full,
-      searchFields: ["tags"],
-      displayText: {},
+      searchFields: ['username', 'custom_id', 'tags'],
       topButtons: [
         {
           icon: "fa fa-plus",
@@ -103,10 +102,9 @@ export class ConsumerManagementComponent implements OnInit {
                   close,
                   provider: AddConsumerComponent
                 ) => {
-                  debugger;
                   item = provider.item;
-                  this._addConsumerService.postData(item).subscribe(() => {
-                    this.tableTemplate.reload().subscribe();
+                  this._addConsumerService.createConsumer(item).subscribe(() => {
+                    this.getData();
                   });
                 }
               })
@@ -142,7 +140,7 @@ export class ConsumerManagementComponent implements OnInit {
                   this.tableTemplate.reload();
                 },
                 acceptCallback: (response, close) => {
-                  this.tableTemplate.reload();
+                  this.getData();
                 }
               })
             );
@@ -156,25 +154,38 @@ export class ConsumerManagementComponent implements OnInit {
                 btnAcceptTitle: "Delete",
                 message: "Are you sure to delete this consumer?",
                 acceptCallback: () => {
-                  this._consumerManagementService
-                    .deleteData(consumer.id)
-                    .subscribe(() => {
-                      this.tableTemplate.reload();
+                  this._consumerManagementService.deleteConsumer(consumer.id).subscribe(() => {
+                      this.getData();
                     });
                 }
               })
             );
           }
-        }
+        },
+        {
+          type: TableConstant.ActionType.Toolbar,
+          icon: 'fa fa-trash-o',
+          customClass: 'danger',
+          title: () => 'Remove',
+          executeAsync: () => {
+            let selectedItems = this.tableTemplate.selectedItems;
+            // console.log(selectedItems);
+            for (let index = 0; index < selectedItems.length; index++) {
+              this._consumerManagementService.deleteConsumer(selectedItems[index].id).subscribe(()=> {
+                debugger
+                console.log( this.tableTemplate.items)
+                debugger
+              });
+            }
+            // this.getData();
+          }
+        },
       ],
       mainColumns: [
         {
           type: TableColumnType.String,
           title: () => "Username",
           valueRef: () => "username",
-          // direction: 'DESC',
-          // defaultSorter: false,
-          // order: 1,
           width: 300,
           allowFilter: true
         },
@@ -182,31 +193,24 @@ export class ConsumerManagementComponent implements OnInit {
           type: TableColumnType.String,
           title: () => "Custom_ID",
           valueRef: () => "custom_id",
-          allowFilter: false
+          allowFilter: true
         },
         {
           type: TableColumnType.String,
           title: () => "Tags",
           valueRef: () => "tags",
-          allowFilter: false
+          allowFilter: true
         },
         {
           type: TableColumnType.DateTime,
           title: () => "Created",
           valueRef: () => "created_at_2",
-          allowFilter: false
+          allowFilter: true
         }
       ],
 
       serviceProvider: {
-        // searchAsync: request => {
-        //   // console.log(request);
-        //   // this.tableTemplate.setFilter('tags', request.searchText)
-        //   return this._consumerManagementService.readData(request);
-        // }
         searchAsync: () => {
-          // console.log(request);
-          // this.tableTemplate.setFilter('tags', request.searchText)
           return of(true);
         }
       }

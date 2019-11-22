@@ -11,7 +11,7 @@ export class AddConsumerService {
   constructor(private http: HttpClient,
     private _system: SystemConstant) { }
 
-  public postData(body: any): Observable<any> {
+  public createConsumer(body: any): Observable<any> {
     return this.http.post(this._system.apiURL + this._system.consumers, body, this._system.header);
   }
 }

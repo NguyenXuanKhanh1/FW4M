@@ -1,4 +1,4 @@
-export class Consumer {
+export class ConsumerViewModel {
     id?: string;
     custom_id?: string;
     tags?: string[];
@@ -16,7 +16,7 @@ export class ConsumerRequest {
 
 export class ConsumerResponse {
     status: boolean;
-    items: Consumer;
+    items: ConsumerViewModel;
     totalRecords: number;
 }
 
