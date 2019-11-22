@@ -27,6 +27,8 @@ export declare class AdminLayoutComponent implements OnInit, AfterViewInit {
     url: string;
     authUrl: string;
     setActive: boolean;
+    menuType: string;
+    isMobile: boolean;
     constructor(workspaceLayoutService: DefaultLayoutService, route: ActivatedRoute, authenticationService: AuthenticationService, router: Router, actionService: ActionService, aggregatorService: AggregatorService, cacheService: CacheService);
     ngOnInit(): void;
     ngAfterViewInit(): void;

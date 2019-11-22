@@ -44,7 +44,8 @@ const routes: Routes = [
         label: 'CMC Global',
         url: '/dashboard'
       },
-      menuTabs: menuTabs
+      menuTabs: menuTabs,
+      menuType: 'LEFT'
     },
     children: [      
       {
