@@ -124,7 +124,7 @@ export declare class TableOption {
     paging?: boolean;
     selectedItems?: any[];
     serviceProvider?: TableServiceProvider;
-    localData?: () => any[];
+    localData?: () => Observable<any[]>;
     request?: TableRequest;
     mainColumns: TableColumn[];
     displayText?: TableText;

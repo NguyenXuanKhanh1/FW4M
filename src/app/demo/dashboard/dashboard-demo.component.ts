@@ -38,29 +38,10 @@ export class DashboardDemoComponent implements OnInit {
     this.initTable();
   }
 
-  // private getData() {
-  //   this.items = [];
-  //   console.log('aaaaaaaaaa');
-  //   this.http.get(this.apiUrl).subscribe((res: any) => {
-  //     for (let index = 0; index < res.length; index++) {
-  //       this.items.push({
-  //         id: res[index].id,
-  //         name: res[index].name,
-  //         title: res[index].title,
-  //         image: res[index].icon,
-  //         role1: res[index].tags[0],
-  //         role2: res[index].tags[1],
-  //         description: res[index].description
-  //       });
-  //     }
-  //     this.tableTemplate.reload();
-  //   });
-  // }
-
   private initTable() {
     this.option = new TableOption({
       localData: () => {
-        return this.items;
+        return of(this.items);
       },
       topButtons: [
         {
