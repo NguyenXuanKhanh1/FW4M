@@ -36,12 +36,8 @@ export declare class DefaultSidebarComponent implements OnInit, OnChanges {
     ngOnChanges(): void;
     ngOnInit(): void;
     toggleMenu(): void;
-    removeActiveStateNavigationMenu(): void;
-    toggleGroup(group: ExtendedMainMenuGroup, $event: any): void;
-    isGroupCollapsed(group: ExtendedMainMenuGroup): boolean;
     toggleOpenedSidebar(): void;
     loadMenu(menu: string): void;
     selectItem(item: any): void;
-    changeItem(item: any): void;
     private selectMenu;
 }

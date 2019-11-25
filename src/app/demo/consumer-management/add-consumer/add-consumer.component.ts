@@ -82,6 +82,7 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 
 
   public callback(): Observable<any> {
+    delete this.item.created_at_2;
     return of(true);
   }
 

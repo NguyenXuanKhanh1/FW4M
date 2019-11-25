@@ -11,7 +11,7 @@ export class EditConsumerService {
     private _system: SystemConstant) { }
   
   public updateConsumer(id: string, body: any) {    
-    return this.http.patch(this._system.apiURL + this._system.consumers + '/' + id, body, this._system.header);
+    return this.http.put(this._system.apiURL + this._system.consumers + '/' + id, body, this._system.header);
   }
 
 }
