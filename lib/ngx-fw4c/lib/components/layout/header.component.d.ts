@@ -48,4 +48,5 @@ export declare class DefaultHeaderComponent {
     selectSubMenu(child: MenuItem): void;
     private registerEvents;
     private initMenu;
+    private setMenu;
 }

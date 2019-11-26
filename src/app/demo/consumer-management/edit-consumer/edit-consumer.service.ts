@@ -10,12 +10,7 @@ export class EditConsumerService {
   constructor(private http: HttpClient,
     private _system: SystemConstant) { }
   
-  public updateData(id: string, body: any) {
-    
-    //body.created_at =  (body.created_at / 1000) as number;
-    //const value = ((<Date>body.created_at).getTime())/1000;
-    //body.created_at =  value;
-    
+  public updateConsumer(id: string, body: any) {    
     return this.http.patch(this._system.apiURL + this._system.consumers + '/' + id, body, this._system.header);
   }
 

@@ -31,7 +31,7 @@ import { AddConsumerComponent } from "./add-consumer/add-consumer.component";
 import { EditConsumerComponent } from "./edit-consumer/edit-consumer.component";
 import { HttpClient } from "@angular/common/http";
 import { AddConsumerService } from "./add-consumer/add-consumer.service";
-import { of } from 'rxjs';
+import { of } from "rxjs";
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./consumer-management.component.html",
@@ -41,7 +41,6 @@ export class ConsumerManagementComponent implements OnInit {
 	public option: TableOption;
 	@ViewChild("tableTemplate", { static: true })
 	public tableTemplate: TableComponent;
-	public data = [];
 	constructor(
 		private _modalService: ModalService,
 		private _dataService: DataService,
@@ -54,9 +53,10 @@ export class ConsumerManagementComponent implements OnInit {
 		this.getData();
 		this.initTable();
 	}
-
+	public data = [];
 	private getData(): void {
-		this._consumerManagementService.readData().subscribe(res => {
+		this.data = [];
+		this._consumerManagementService.readConsumer().subscribe(res => {
 			for (let index = 0; index < res.totalRecords; index++) {
 				this.data.push({
 					custom_id: res.items[index].custom_id,
@@ -73,13 +73,11 @@ export class ConsumerManagementComponent implements OnInit {
 	private initTable() {
 		this.option = new TableOption({
 			localData: () => {
-				return this.data
+				return of(this.data);
 			},
-
 			inlineEdit: false,
 			mode: TableMode.full,
-			searchFields: ["tags"],
-			displayText: {},
+			searchFields: ["username", "tags", "custom_id"],
 			topButtons: [
 				{
 					icon: "fa fa-plus",
@@ -97,21 +95,21 @@ export class ConsumerManagementComponent implements OnInit {
 									reload: () => {
 										this.tableTemplate.reload().subscribe();
 									}
-								}, acceptCallback: (response, close, provider: AddConsumerComponent) => {
+								},
+								acceptCallback: (
+									response,
+									close,
+									provider: AddConsumerComponent
+								) => {
 									item = provider.item;
-									this._addConsumerService.postData(item).subscribe(() => {
-										this.getData();
-									});
+									this._addConsumerService
+										.createConsumer(item)
+										.subscribe(() => {
+											this.getData();
+										});
 								}
 							})
 						);
-					}
-				},
-				{
-					icon: "fa fa-refresh",
-					title: () => "Reload",
-					executeAsync: () => {
-						this.tableTemplate.reload();
 					}
 				}
 			],
@@ -130,7 +128,7 @@ export class ConsumerManagementComponent implements OnInit {
 									reload: () => {
 										this.tableTemplate.reload().subscribe();
 									},
-									item: consumer
+									item: this._dataService.cloneItem(consumer)
 								},
 								cancelCallback: () => {
 									this.tableTemplate.reload();
@@ -151,7 +149,7 @@ export class ConsumerManagementComponent implements OnInit {
 								message: "Are you sure to delete this consumer?",
 								acceptCallback: () => {
 									this._consumerManagementService
-										.deleteData(consumer.id)
+										.deleteConsumer(consumer.id)
 										.subscribe(() => {
 											this.getData();
 										});
@@ -159,7 +157,24 @@ export class ConsumerManagementComponent implements OnInit {
 							})
 						);
 					}
-				}
+				},
+				{
+					type: TableConstant.ActionType.Toolbar,
+					customClass: 'danger',
+					icon: "fa fa-trash-o",
+					title: () => "Remove",
+					executeAsync: () => {
+					  console.log(this.tableTemplate.selectedItems);
+					  let select = this.tableTemplate.selectedItems;
+					  for (let index = 0; index < select.length; index++) {
+						this._consumerManagementService.deleteConsumer(select[index].id).subscribe(); 
+						this.data.splice(this.data.indexOf(select[index]), 1)     
+					  }
+					  console.log(this.data);
+					  this.tableTemplate.reload();
+					  
+					}
+				  }
 			],
 			mainColumns: [
 				{
@@ -167,28 +182,27 @@ export class ConsumerManagementComponent implements OnInit {
 					title: () => "Username",
 					valueRef: () => "username",
 					width: 300,
-					allowFilter: true
+					allowFilter: false
 				},
 				{
 					type: TableColumnType.String,
 					title: () => "Custom_ID",
 					valueRef: () => "custom_id",
-					allowFilter: false
+					allowFilter: true
 				},
 				{
 					type: TableColumnType.String,
 					title: () => "Tags",
 					valueRef: () => "tags",
-					allowFilter: false
+					allowFilter: true
 				},
 				{
 					type: TableColumnType.DateTime,
 					title: () => "Created",
 					valueRef: () => "created_at_2",
-					allowFilter: false
+					allowFilter: true
 				}
 			],
-
 			serviceProvider: {
 				searchAsync: () => {
 					return of(true);

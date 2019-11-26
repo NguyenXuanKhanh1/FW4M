@@ -8,7 +8,7 @@ import { DemoModule } from './demo';
 import { HttpClientModule } from '@angular/common/http';
 import { SystemConstant } from './demo/common/system-constant';
 import { Validation } from './demo/common/validation';
-import { Consumer } from './demo/common/consumer.model';
+import { ConsumerViewModel } from './demo/common/consumer.model';
 import { LanguageEN, LanguageVN } from './demo/common/language.model';
 
 @NgModule({
@@ -30,7 +30,7 @@ import { LanguageEN, LanguageVN } from './demo/common/language.model';
   providers: [
     SystemConstant, 
     Validation,
-    Consumer,
+    ConsumerViewModel,
     LanguageEN,
     LanguageVN
   ],
