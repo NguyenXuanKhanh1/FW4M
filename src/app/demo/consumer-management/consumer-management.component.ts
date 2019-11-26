@@ -41,7 +41,6 @@ export class ConsumerManagementComponent implements OnInit {
 	public option: TableOption;
 	@ViewChild("tableTemplate", { static: true })
 	public tableTemplate: TableComponent;
-
 	constructor(
 		private _modalService: ModalService,
 		private _dataService: DataService,
@@ -204,7 +203,6 @@ export class ConsumerManagementComponent implements OnInit {
 					allowFilter: true
 				}
 			],
-
 			serviceProvider: {
 				searchAsync: () => {
 					return of(true);
