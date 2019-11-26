@@ -32,6 +32,7 @@ import { EditConsumerComponent } from "./edit-consumer/edit-consumer.component";
 import { HttpClient } from "@angular/common/http";
 import { AddConsumerService } from "./add-consumer/add-consumer.service";
 import { of } from "rxjs";
+import { ImportConsumerComponent } from './import-consumer/import-consumer.component';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./consumer-management.component.html",
@@ -90,6 +91,7 @@ export class ConsumerManagementComponent implements OnInit {
 								validationKey: "AddConsumerComponent",
 								customSize: "modal-lg",
 								title: "Add New Consumer",
+								icon: "fa fa-plus",
 								btnAcceptTitle: "Add",
 								data: {
 									reload: () => {
@@ -110,6 +112,23 @@ export class ConsumerManagementComponent implements OnInit {
 								}
 							})
 						);
+					}
+				},
+				{
+					icon: "fa fa-download",
+					customClass: "success",
+					title: () => "Import",
+					executeAsync: item => {
+						this._modalService.showTemplateDialog(new TemplateViewModel({
+							template: ImportConsumerComponent,
+							validationKey: "ImportConsumerComponent",
+							title: "Import Consumer",
+							icon: 'fa fa-download',
+							btnAcceptTitle: "Import",
+							acceptCallback: (response, close, provider: ImportConsumerComponent) => {
+								
+							}
+						}));
 					}
 				}
 			],
@@ -164,17 +183,17 @@ export class ConsumerManagementComponent implements OnInit {
 					icon: "fa fa-trash-o",
 					title: () => "Remove",
 					executeAsync: () => {
-					  console.log(this.tableTemplate.selectedItems);
-					  let select = this.tableTemplate.selectedItems;
-					  for (let index = 0; index < select.length; index++) {
-						this._consumerManagementService.deleteConsumer(select[index].id).subscribe(); 
-						this.data.splice(this.data.indexOf(select[index]), 1)     
-					  }
-					  console.log(this.data);
-					  this.tableTemplate.reload();
-					  
+						console.log(this.tableTemplate.selectedItems);
+						let select = this.tableTemplate.selectedItems;
+						for (let index = 0; index < select.length; index++) {
+							this._consumerManagementService.deleteConsumer(select[index].id).subscribe();
+							this.data.splice(this.data.indexOf(select[index]), 1)
+						}
+						console.log(this.data);
+						this.tableTemplate.reload();
+
 					}
-				  }
+				}
 			],
 			mainColumns: [
 				{
