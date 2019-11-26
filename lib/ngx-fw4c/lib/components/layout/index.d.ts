@@ -9,3 +9,4 @@ export * from './layout.service';
 export * from './navbar.component';
 export * from './sidebar.component';
 export * from './toolbar.component';
+export * from './recommendation';

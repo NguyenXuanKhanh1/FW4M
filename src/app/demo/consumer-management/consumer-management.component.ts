@@ -27,6 +27,8 @@ import { EditConsumerService } from './edit-consumer/edit-consumer.service';
 import { ConsumerViewModel } from '../common/consumer.model';
 import { TabComponent } from 'ngx-fw4c/lib/components/shared/tab/tab.component';
 import { DateFormatter } from 'ngx-bootstrap';
+import { del } from 'selenium-webdriver/http';
+import { debug } from 'util';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./consumer-management.component.html",
@@ -94,21 +96,26 @@ export class ConsumerManagementComponent implements OnInit {
 										this.tableTemplate.reload().subscribe();
 									}
 								},
-								acceptCallback: (
-									response,
-									close,
-									provider: AddConsumerComponent
-								) => {
+								acceptCallback: (response, close, provider: AddConsumerComponent) => {
 									item = provider.item;
-									delete item.created_at_2;
-									this._addConsumerService
-										.createConsumer(item)
-										.subscribe(() => {
-											this.getData();
-										});
+									this._addConsumerService.createConsumer(item).subscribe(() => {
+										this.getData();
+									});
 								}
 							})
 						);
+					}
+				},
+				{
+					icon: 'fa fa-get-pocket',
+					customClass: 'success',
+					title: () => 'Export',
+					executeAsync: (item, element, provider: TableComponent) => {
+						for (let index = 0; index < this.data.length; index++) {
+							const element = this.data[index];
+							delete element.created_at_2;							
+						}
+						this._consumerManagementService.exportToExcel(this.data,'nxkhanh')
 					}
 				}
 			],
@@ -191,7 +198,6 @@ export class ConsumerManagementComponent implements OnInit {
 					title: () => "Remove",
 					executeAsync: (item, element, provider: TableComponent) => {
 						console.log(provider.selectedItems);
-
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
 							this._consumerManagementService.deleteConsumer(select[index].id).subscribe();
@@ -199,7 +205,6 @@ export class ConsumerManagementComponent implements OnInit {
 						}
 						console.log(this.data);
 						this.tableTemplate.reload();
-
 					}
 				},
 				{
@@ -212,12 +217,10 @@ export class ConsumerManagementComponent implements OnInit {
 						for (let index = 0; index < select.length; index++) {
 							let element = select[index];
 							delete element.created_at_2;
-							let string = element.username.split('_copy');
-							let checkUsername = this.data.filter((x: any) => x.username.includes(string[0]))
-							if (checkUsername && checkUsername.filter((x: any) => x.username.includes('_copy'))) {
-								element.username = element.username == null ? 'copy' : string[0] + '_copy' + checkUsername.length;
-							} else {
-								element.username = element.username == null ? 'copy' : string[0] + '_copy' + (checkUsername.length);
+							let string = select[index].username.split('_copy');
+							let checkUsername = this.data.filter((x: any) => x.username.includes(element.username))							
+							if (checkUsername ) {
+								element.username = element.username + '_copy' + (checkUsername.length);
 							}
 							this.data.push(element)
 							this._addConsumerService.createConsumer(element).subscribe(() => {

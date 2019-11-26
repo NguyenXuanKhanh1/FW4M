@@ -3,7 +3,7 @@ import { DefaultLayoutService } from './layout.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AggregatorService } from '../shared/services/aggregator.service';
 import { NotificationDetail } from '../shared/models/notification.model';
-import { MenuTab, Breadcrumb } from '../shared/models/base.model';
+import { MenuTab, Breadcrumb, RecommendationResponse } from '../shared/models/base.model';
 import { ActionService } from '../shared/services/action.service';
 import { AuthenticationService } from '../auth/auth.service';
 import { CacheService } from '../shared/services/cache.service';
@@ -29,6 +29,7 @@ export declare class AdminLayoutComponent implements OnInit, AfterViewInit {
     setActive: boolean;
     menuType: string;
     isMobile: boolean;
+    recommendation: RecommendationResponse;
     constructor(workspaceLayoutService: DefaultLayoutService, route: ActivatedRoute, authenticationService: AuthenticationService, router: Router, actionService: ActionService, aggregatorService: AggregatorService, cacheService: CacheService);
     ngOnInit(): void;
     ngAfterViewInit(): void;
