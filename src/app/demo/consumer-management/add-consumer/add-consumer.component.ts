@@ -7,9 +7,9 @@ import { LanguageEN } from '../../common/language.model';
 import { Validation } from '../../common/validation';
 
 @Component({
-  selector: 'app-add-consumer',
-  templateUrl: './add-consumer.component.html',
-  styleUrls: ['./add-consumer.component.scss']
+	selector: 'app-add-consumer',
+	templateUrl: './add-consumer.component.html',
+	styleUrls: ['./add-consumer.component.scss']
 })
 export class AddConsumerComponent implements AfterViewInit, OnChanges {
   @Input() public item = new ConsumerViewModel();
@@ -80,14 +80,13 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
     return this._validationService.isValid(true, false);
   }
 
-
   public callback(): Observable<any> {
     delete this.item.created_at_2;
     return of(true);
   }
 
-  public getValidator(): ValidationService {
-    return this._validationService;
-  }
+	public getValidator(): ValidationService {
+		return this._validationService;
+	}
 
 }

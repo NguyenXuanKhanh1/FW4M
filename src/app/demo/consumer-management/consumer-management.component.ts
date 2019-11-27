@@ -29,6 +29,7 @@ import { TabComponent } from 'ngx-fw4c/lib/components/shared/tab/tab.component';
 import { DateFormatter } from 'ngx-bootstrap';
 import { del } from 'selenium-webdriver/http';
 import { debug } from 'util';
+import { ImportConsumerComponent } from './import-consumer/import-consumer.component';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./consumer-management.component.html",
@@ -38,7 +39,6 @@ export class ConsumerManagementComponent implements OnInit {
 	public option: TableOption;
 	@ViewChild("tableTemplate", { static: true })
 	public tableTemplate: TableComponent;
-
 	constructor(
 		private _modalService: ModalService,
 		private _dataService: DataService,
@@ -90,6 +90,7 @@ export class ConsumerManagementComponent implements OnInit {
 								validationKey: "AddConsumerComponent",
 								customSize: "modal-lg",
 								title: "Add New Consumer",
+								icon: "fa fa-plus",
 								btnAcceptTitle: "Add",
 								data: {
 									reload: () => {
@@ -106,16 +107,34 @@ export class ConsumerManagementComponent implements OnInit {
 						);
 					}
 				},
-				{
+        {
 					icon: 'fa fa-get-pocket',
 					customClass: 'success',
 					title: () => 'Export',
-					executeAsync: (item, element, provider: TableComponent) => {
+					executeAsync: item => {
+						executeAsync: (item, element, provider: TableComponent) => {
 						for (let index = 0; index < this.data.length; index++) {
 							const element = this.data[index];
 							delete element.created_at_2;							
 						}
 						this._consumerManagementService.exportToExcel(this.data,'nxkhanh')
+					}
+				},
+				{
+					icon: "fa fa-download",
+					customClass: "success",
+					title: () => "Import",
+					executeAsync: item => {
+						this._modalService.showTemplateDialog(new TemplateViewModel({
+							template: ImportConsumerComponent,
+							validationKey: "ImportConsumerComponent",
+							title: "Import Consumer",
+							icon: 'fa fa-download',
+							btnAcceptTitle: "Import",
+							acceptCallback: (response, close, provider: ImportConsumerComponent) => {
+								
+							}
+						}));
 					}
 				}
 			],
@@ -213,22 +232,7 @@ export class ConsumerManagementComponent implements OnInit {
 					icon: "fa fa-copyright",
 					title: () => "Copy",
 					executeAsync: () => {
-						let select = this._dataService.cloneItems(this.tableTemplate.selectedItems);
-						for (let index = 0; index < select.length; index++) {
-							let element = select[index];
-							delete element.created_at_2;
-							let string = select[index].username.split('_copy');
-							let checkUsername = this.data.filter((x: any) => x.username.includes(element.username))							
-							if (checkUsername ) {
-								element.username = element.username + '_copy' + (checkUsername.length);
-							}
-							this.data.push(element)
-							this._addConsumerService.createConsumer(element).subscribe(() => {
-								if (index == select.length - 1) {
-									this.getData()
-								}
-							});
-						}
+
 					}
 				}
 			],
@@ -259,7 +263,6 @@ export class ConsumerManagementComponent implements OnInit {
 					allowFilter: true
 				}
 			],
-
 			serviceProvider: {
 				searchAsync: () => {
 					return of(true);
