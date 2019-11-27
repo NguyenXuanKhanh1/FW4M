@@ -149,12 +149,12 @@ export class ConsumerManagementComponent implements OnInit {
 								acceptCallback: () => {
 									this.tableTemplate.copy(consumer, true, (cloneItem: ConsumerViewModel) => {
 										delete cloneItem.created_at_2;
-										let string = cloneItem.username.split('_copy');
-										let checkUsername = this.data.filter((x: any) => x.username.includes(string[0]))
-										if (checkUsername && checkUsername.filter((x: any) => x.username.includes('_copy'))) {
-											cloneItem.username = cloneItem.username == null ? 'copy' : string[0] + '_copy' + checkUsername.length;
-										} else {
-											cloneItem.username = cloneItem.username == null ? 'copy' : string[0] + '_copy' + (checkUsername.length);
+										let checkUsername = cloneItem.username && this.data.filter((x: any) => x.username.includes(cloneItem.username) 
+											&& x.username.length >= cloneItem.username.length + 6 && x.username.length <= cloneItem.username.length + 10)
+										let checkCustom_id = cloneItem.custom_id && this.data.filter((x: any) => x.custom_id.includes(cloneItem.custom_id) 
+											&& x.custom_id.length >= cloneItem.custom_id.length + 6 && x.custom_id.length <= cloneItem.custom_id.length + 10)
+										if (checkUsername) {
+											cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
 										}
 										this._addConsumerService.createConsumer(cloneItem).subscribe(() => {								
 											this.getData();
@@ -186,7 +186,6 @@ export class ConsumerManagementComponent implements OnInit {
 								},
 								acceptCallback: (response, close) => {
 									this.getData();
-									// this.tableTemplate.changedRows
 								}
 							})
 						);
@@ -232,7 +231,22 @@ export class ConsumerManagementComponent implements OnInit {
 					icon: "fa fa-copyright",
 					title: () => "Copy",
 					executeAsync: () => {
-
+						let select = this._dataService.cloneItems(this.tableTemplate.selectedItems);
+						for (let index = 0; index < select.length; index++) {
+							let element = select[index];
+							delete element.created_at_2;
+							let checkUsername = element.username && this.data.filter((x: any) => x.username.includes(element.username) 
+								&& x.username.length >= element.username.length + 6 && x.username.length <= element.username.length + 10)
+							if (checkUsername) {
+								element.username = element.username + '_copy' + (checkUsername.length + 1);
+							}
+							this.data.push(element)
+							this._addConsumerService.createConsumer(element).subscribe(() => {
+								if (index == select.length - 1) {
+									this.getData()
+								}
+							});
+						}
 					}
 				}
 			],
