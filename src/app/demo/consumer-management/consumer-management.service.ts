@@ -8,8 +8,8 @@ import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 
 
-const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-const EXCEL_EXTENSION = '.xlsx';
+const EXCEL_TYPE = 'text/csv;charset=utf-8';
+const EXCEL_EXTENSION = '.csv';
 
 @Injectable({
   providedIn: "root"
@@ -17,7 +17,6 @@ const EXCEL_EXTENSION = '.xlsx';
 
 export class ConsumerManagementService {
   constructor(private http: HttpClient, private _system: SystemConstant) {}
-
   public readConsumer(): Observable<ConsumerResponse> {    
     return this.http.get(this._system.apiURL + this._system.consumers).pipe(
       map((res: any) => {
@@ -62,21 +61,6 @@ export class ConsumerManagementService {
         }).join(separator);
       }).join('\n');
     const blob = new Blob([excel], { type: EXCEL_TYPE });
-    FileSaver.saveAs(blob, excelFileName + '_export_' + new  Date().getTime() + EXCEL_EXTENSION);
-
-
-    
-    
-  }
-  // public exportToExcel(data: any[], excelFileName: string): void {
-  //   const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-  //   const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-  //   const excelBuffer: any = XLSX.write(workbook, { bookType: 'csv', type: 'array' });
-  //   this.saveAsExcelFile(excelBuffer, excelFileName);
-  // }
-
-  private saveAsExcelFile(buffer: any, fileName: string): void {
-    const data: Blob = new Blob([buffer], {type: EXCEL_TYPE});
-    FileSaver.saveAs(data, fileName + '_export_' + new  Date().getTime() + EXCEL_EXTENSION);
+    FileSaver.saveAs(blob, excelFileName + '_export_' + new  Date().getTime() + EXCEL_EXTENSION);    
   }
 }

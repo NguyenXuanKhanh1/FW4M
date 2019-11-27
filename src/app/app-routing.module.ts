@@ -29,7 +29,7 @@ const menuTabs: MenuTab[] = [
         label: 'Consumer Management',
         icon: 'fa fa-line-chart',
         children: [
-          { state: 'consumer', name: 'Comsumer', type: 'link', icon: 'fa fa-calendar-check-o' }
+          { state: 'consumer', name: 'Consumer', type: 'link', icon: 'fa fa-calendar-check-o' }
         ]
       } 
     ]
