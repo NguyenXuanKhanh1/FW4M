@@ -98,11 +98,7 @@ export class ConsumerManagementComponent implements OnInit {
 										this.tableTemplate.reload().subscribe();
 									}
 								},
-								acceptCallback: (
-									response,
-									close,
-									provider: AddConsumerComponent
-								) => {
+								acceptCallback: (response, close, provider: AddConsumerComponent) => {
 									item = provider.item;
 									this._addConsumerService
 										.createConsumer(item)
@@ -125,8 +121,23 @@ export class ConsumerManagementComponent implements OnInit {
 							title: "Import Consumer",
 							icon: 'fa fa-download',
 							btnAcceptTitle: "Import",
+							data: {
+								reload: () => {
+									this.tableTemplate.reload().subscribe();
+								}
+							},
 							acceptCallback: (response, close, provider: ImportConsumerComponent) => {
-								
+								for (let index = 0; index < response.length; index++) {
+									delete response[index].id;
+									delete response[index].created_at;
+									this._addConsumerService.createConsumer(response[index])
+										.subscribe(() => {
+											if(index == response.length -1){
+												this.getData()
+											}
+										});
+									
+								}
 							}
 						}));
 					}
@@ -186,11 +197,13 @@ export class ConsumerManagementComponent implements OnInit {
 						console.log(this.tableTemplate.selectedItems);
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
-							this._consumerManagementService.deleteConsumer(select[index].id).subscribe();
-							this.data.splice(this.data.indexOf(select[index]), 1)
+							this._consumerManagementService.deleteConsumer(select[index].id).subscribe(() => {
+								if (index == select.length - 1) {
+									this.getData()
+								}
+							});
+							
 						}
-						console.log(this.data);
-						this.tableTemplate.reload();
 
 					}
 				}

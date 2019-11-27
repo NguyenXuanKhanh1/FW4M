@@ -11,8 +11,8 @@ import * as XLSX from 'xlsx';
 export class ImportConsumerComponent implements AfterViewInit {
 
 	public fileUploaded: File;
-	public storeData: any;
-	public worksheet: any;
+	public data: any = [];
+	public arrayBuffer: any;
 	@ViewChild('formRef', { static: true }) public formRef: ElementRef;
 
 	constructor(
@@ -31,27 +31,50 @@ export class ImportConsumerComponent implements AfterViewInit {
 		return this._validationService.isValid(true, true);
 	}
 
+	public uploadFile(event): void {
+		this.fileUploaded = event.target.files[0];
+		this.upload();
+	}
+
 	public callback(): Observable<any> {
-		this.fileUploaded = this.formRef.nativeElement.files[0];
-		this.readExcel();
-		return of(this.formRef);
+		return of(this.data);
 	}
 
 	public getValidator(): ValidationService {
 		return this._validationService;
 	}
 
-	public readExcel() {
+	public readExcel(): any {
 		let readFile = new FileReader();
-		readFile.onload = event => {
+		readFile.onload = () => {
 			const data = readFile.result;
-			this.worksheet = XLSX.read(data, { type: "binary" });
-			this.storeData = this.worksheet.SheetNames.reduce((initial, name) => {
-				const sheet = this.worksheet.Sheets[name];
+			let worksheet = XLSX.read(data, { type: "binary" });
+			let storeData = worksheet.SheetNames.reduce((initial, name) => {
+				const sheet = worksheet.Sheets[name];
 				initial[name] = XLSX.utils.sheet_to_json(sheet);
 				return initial;
 			}, {});
+			this.data = storeData;
 		};
+		console.log(this.data);
 		readFile.readAsBinaryString(this.fileUploaded);
+	}
+
+	upload() {
+		let fileReader = new FileReader();
+		fileReader.onload = () => {
+			this.arrayBuffer = fileReader.result;
+			var data = new Uint8Array(this.arrayBuffer);
+			var arr = new Array();
+			for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+			var bstr = arr.join("");
+			var workbook = XLSX.read(bstr, { type: "binary" });
+			var first_sheet_name = workbook.SheetNames[0];
+			var worksheet = workbook.Sheets[first_sheet_name];
+			var element = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+			this.data = element;
+		}
+		console.log(this.data);
+		fileReader.readAsArrayBuffer(this.fileUploaded);
 	}
 }
