@@ -29,7 +29,7 @@ export declare class ValidationService {
         validator: ClientValidator;
     }): void;
     setKey(key: string): void;
-    updateAsync(relatedProvidersToRegister?: ValidationService[]): void;
+    updateAsync(relatedProvidersToRegister?: ValidationService[], item?: any): void;
     executeAsync(validCallback: (errors?: SummaryError[]) => any, invalidCallback?: (errors?: SummaryError[]) => any): Observable<boolean>;
     isValid(show?: boolean, focus?: boolean): boolean;
     handleErrors(callback?: (response: SummaryError[]) => void): void;
@@ -37,6 +37,8 @@ export declare class ValidationService {
     setElementError(element: Element, action: ValidationRule, option: ValidationOption): string;
     clearErrorItemElement(element: any, action: ValidationRule): void;
     isDirty(callback?: (items: ChangedItem[]) => void): boolean;
+    syncErrorMessages(element: any, option: ValidationOption): SummaryError | null;
+    validateElementAsync(element: any, option: ValidationOption): Observable<SummaryError[]>;
     validateElement(element: any, option: ValidationOption, all?: boolean): Observable<ValidationOption>;
     private validateRelevantFields;
     private retrieveSummaryErrors;
@@ -47,6 +49,5 @@ export declare class ValidationService {
     private registerElements;
     private registerEvents;
     private handleBlurEvent;
-    private syncErrorMessages;
     private addRelatedProviders;
 }

@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { TableOption, ModalService,	DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode,	TableColumnType } from "ngx-fw4c";
+import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType } from "ngx-fw4c";
 import { ConsumerManagementService } from "./consumer-management.service";
 import { AddConsumerComponent } from "./add-consumer/add-consumer.component";
 import { EditConsumerComponent } from "./edit-consumer/edit-consumer.component";
@@ -119,19 +119,24 @@ export class ConsumerManagementComponent implements OnInit {
 								for (let index = 0; index < response.length; index++) {
 									delete response[index].id;
 									delete response[index].created_at;
+									if (response[index].tags !== undefined) {
+										let tags = response[index].tags.split(',');
+										delete response[index].tags;
+										response[index].tags = tags;
+									}
 									this._addConsumerService.createConsumer(response[index])
 										.subscribe(() => {
-											if(index == response.length -1){
+											if (index == response.length - 1) {
 												this.getData()
 											}
 										});
-									
+
 								}
 							}
 						}));
 					}
 				},
-					{
+				{
 					icon: 'fa fa-save',
 					customClass: 'warning',
 					title: () => 'Save',
@@ -140,7 +145,7 @@ export class ConsumerManagementComponent implements OnInit {
 							return false;
 						}
 						else return true;
-					},					
+					},
 					executeAsync: (consumer, element, provider: TableComponent) => {
 						let editLine = this.tableTemplate.changedRows;
 						for (let index = 0; index < editLine.length; index++) {
@@ -151,7 +156,7 @@ export class ConsumerManagementComponent implements OnInit {
 								this.tableTemplate.changedRows = [];
 								this.getData();
 							})
-						}						
+						}
 
 					}
 				}
@@ -254,7 +259,7 @@ export class ConsumerManagementComponent implements OnInit {
 									this.getData()
 								}
 							});
-							
+
 						}
 						console.log(this.data);
 						this.tableTemplate.reload();
