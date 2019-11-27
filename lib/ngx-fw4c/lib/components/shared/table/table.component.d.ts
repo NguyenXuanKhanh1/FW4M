@@ -1,5 +1,5 @@
 import { OnInit, ElementRef, RendererFactory2, AfterViewInit, OnDestroy } from '@angular/core';
-import { TableOption, TableColumn, TableAction, EdittedField } from './table.model';
+import { TableOption, TableColumn, TableAction, EdittedField, ChangedRow } from './table.model';
 import { TableRowDetailDirective } from './table-row-detail.directive';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { DataService } from '../services/data.service';
@@ -41,11 +41,13 @@ export declare class TableComponent implements OnInit, AfterViewInit, OnDestroy 
     hasDetailTemplate: boolean;
     hasPageSizeChooser: boolean;
     changePage$: BehaviorSubject<number>;
+    changedRows: ChangedRow[];
     private request;
     private previousRequest;
     private recursiveCounter;
     private subscriptions;
     protected edittedFields: EdittedField[];
+    protected previousItems: any[];
     constructor(thisElement: ElementRef, rendererFactory: RendererFactory2, dataService: DataService);
     ngOnInit(): void;
     ngAfterViewInit(): void;
@@ -53,7 +55,7 @@ export declare class TableComponent implements OnInit, AfterViewInit, OnDestroy 
     init(): void;
     callback(): Observable<any>;
     copy(item: any, refresh?: boolean, execute?: (item: any) => void, callback?: (copyItem: any) => void): void;
-    acceptInlineEdit(field: string, index: number): void;
+    acceptInlineEdit(item: any, field: string, index: number): void;
     cancelInlineEdit(item: any, field: string, index: number): void;
     closeInlineEdit(field: string, index: number): void;
     editInline(item: any, field: string, index: number): void;

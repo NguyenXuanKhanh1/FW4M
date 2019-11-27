@@ -7,4 +7,6 @@ export declare class KeyConst {
     static SignOut: string;
     static Menu: string;
     static AuthApi: string;
+    static KeywordChanged: string;
+    static Search: string;
 }

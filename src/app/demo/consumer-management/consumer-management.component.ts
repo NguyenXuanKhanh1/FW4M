@@ -1,16 +1,7 @@
-import {
-	Component,
-	ViewChild,
-	ElementRef,
-	AfterViewInit,
-	OnInit,
-	Input,
-	TemplateRef
-} from "@angular/core";
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, Input, TemplateRef } from "@angular/core";
 import {
 	ValidationService,
-	ValidationOption,
-	ClientValidator,
+	ValidationOption, ClientValidator,
 	CustomValidationRule,
 	RequiredValidationRule,
 	ValidationRuleResponse
@@ -32,6 +23,12 @@ import { EditConsumerComponent } from "./edit-consumer/edit-consumer.component";
 import { HttpClient } from "@angular/common/http";
 import { AddConsumerService } from "./add-consumer/add-consumer.service";
 import { of } from "rxjs";
+import { EditConsumerService } from './edit-consumer/edit-consumer.service';
+import { ConsumerViewModel } from '../common/consumer.model';
+import { TabComponent } from 'ngx-fw4c/lib/components/shared/tab/tab.component';
+import { DateFormatter } from 'ngx-bootstrap';
+import { del } from 'selenium-webdriver/http';
+import { debug } from 'util';
 import { ImportConsumerComponent } from './import-consumer/import-consumer.component';
 @Component({
 	selector: "app-consumer-management",
@@ -47,6 +44,7 @@ export class ConsumerManagementComponent implements OnInit {
 		private _dataService: DataService,
 		private _addConsumerService: AddConsumerService,
 		private _consumerManagementService: ConsumerManagementService,
+		private _editConsumerService: EditConsumerService,
 		private http: HttpClient
 	) { }
 
@@ -64,10 +62,11 @@ export class ConsumerManagementComponent implements OnInit {
 					id: res.items[index].id,
 					tags: res.items[index].tags,
 					username: res.items[index].username,
-					created_at_2: res.items[index].created_at_2
+					created_at_2: res.items[index].created_at_2,
+					created_at: res.items[index].created_at
 				});
 			}
-			this.tableTemplate.reload();
+			this.tableTemplate.reload(true);
 		});
 	}
 
@@ -98,20 +97,27 @@ export class ConsumerManagementComponent implements OnInit {
 										this.tableTemplate.reload().subscribe();
 									}
 								},
-								acceptCallback: (
-									response,
-									close,
-									provider: AddConsumerComponent
-								) => {
+								acceptCallback: (response, close, provider: AddConsumerComponent) => {
 									item = provider.item;
-									this._addConsumerService
-										.createConsumer(item)
-										.subscribe(() => {
-											this.getData();
-										});
+									this._addConsumerService.createConsumer(item).subscribe(() => {
+										this.getData();
+									});
 								}
 							})
 						);
+					}
+				},
+        {
+					icon: 'fa fa-get-pocket',
+					customClass: 'success',
+					title: () => 'Export',
+					executeAsync: item => {
+						executeAsync: (item, element, provider: TableComponent) => {
+						for (let index = 0; index < this.data.length; index++) {
+							const element = this.data[index];
+							delete element.created_at_2;							
+						}
+						this._consumerManagementService.exportToExcel(this.data,'nxkhanh')
 					}
 				},
 				{
@@ -134,6 +140,32 @@ export class ConsumerManagementComponent implements OnInit {
 			],
 			actions: [
 				{
+					icon: "fa fa-copy",
+					executeAsync: (consumer) => {
+						this._modalService.showConfirmDialog(
+							new ConfirmViewModel({
+								btnAcceptTitle: "Copy",
+								message: "Are you sure to copy this consumer?",
+								acceptCallback: () => {
+									this.tableTemplate.copy(consumer, true, (cloneItem: ConsumerViewModel) => {
+										delete cloneItem.created_at_2;
+										let string = cloneItem.username.split('_copy');
+										let checkUsername = this.data.filter((x: any) => x.username.includes(string[0]))
+										if (checkUsername && checkUsername.filter((x: any) => x.username.includes('_copy'))) {
+											cloneItem.username = cloneItem.username == null ? 'copy' : string[0] + '_copy' + checkUsername.length;
+										} else {
+											cloneItem.username = cloneItem.username == null ? 'copy' : string[0] + '_copy' + (checkUsername.length);
+										}
+										this._addConsumerService.createConsumer(cloneItem).subscribe(() => {								
+											this.getData();
+										});
+									})
+								}
+							})
+						);
+					}
+				},
+				{
 					icon: "fa fa-edit",
 					executeAsync: consumer => {
 						this._modalService.showTemplateDialog(
@@ -154,6 +186,7 @@ export class ConsumerManagementComponent implements OnInit {
 								},
 								acceptCallback: (response, close) => {
 									this.getData();
+									// this.tableTemplate.changedRows
 								}
 							})
 						);
@@ -182,8 +215,8 @@ export class ConsumerManagementComponent implements OnInit {
 					customClass: 'danger',
 					icon: "fa fa-trash-o",
 					title: () => "Remove",
-					executeAsync: () => {
-						console.log(this.tableTemplate.selectedItems);
+					executeAsync: (item, element, provider: TableComponent) => {
+						console.log(provider.selectedItems);
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
 							this._consumerManagementService.deleteConsumer(select[index].id).subscribe();
@@ -191,6 +224,14 @@ export class ConsumerManagementComponent implements OnInit {
 						}
 						console.log(this.data);
 						this.tableTemplate.reload();
+					}
+				},
+				{
+					type: TableConstant.ActionType.Toolbar,
+					customClass: 'success',
+					icon: "fa fa-copyright",
+					title: () => "Copy",
+					executeAsync: () => {
 
 					}
 				}
