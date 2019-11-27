@@ -9,6 +9,7 @@ import { AddServiceComponent } from './service-management/add-service/add-servic
 import { ConsumerManagementComponent } from './consumer-management/consumer-management.component';
 import { AddConsumerComponent } from './consumer-management/add-consumer/add-consumer.component';
 import { EditConsumerComponent } from './consumer-management/edit-consumer/edit-consumer.component';
+import { ImportConsumerComponent } from './consumer-management/import-consumer/import-consumer.component';
 
 
 const declarations = [
@@ -17,7 +18,8 @@ const declarations = [
   AddServiceComponent,
   ConsumerManagementComponent,
   AddConsumerComponent,
-  EditConsumerComponent
+  EditConsumerComponent,
+  ImportConsumerComponent
 ];
 
 @NgModule({
