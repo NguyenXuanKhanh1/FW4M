@@ -138,13 +138,14 @@ export declare class TrackingDetail {
     constructor(init?: Partial<TrackingDetail>);
 }
 export declare class RecommendationResponse {
-    keywords?: string[];
-    adwords?: any[];
-    historyKeywords?: string[];
-    categories?: any[];
-    products?: any[];
-    tags?: string[];
+    selectedMenu?: string;
     keyword?: string;
+    show: boolean;
+    searchPath?: string;
+    template?: Type<any>;
+    label: string;
+    deboundTime: number;
+    all: boolean;
     constructor(init?: Partial<RecommendationResponse>);
 }
 export interface ICallback<T> {

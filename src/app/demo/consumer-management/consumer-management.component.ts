@@ -1,37 +1,13 @@
-import {
-	Component,
-	ViewChild,
-	ElementRef,
-	AfterViewInit,
-	OnInit,
-	Input,
-	TemplateRef
-} from "@angular/core";
-import {
-	ValidationService,
-	ValidationOption,
-	ClientValidator,
-	CustomValidationRule,
-	RequiredValidationRule,
-	ValidationRuleResponse
-} from "ngx-fw4c";
-import {
-	TableOption,
-	ModalService,
-	DataService,
-	TemplateViewModel,
-	TableComponent,
-	ConfirmViewModel,
-	TableConstant,
-	TableMode,
-	TableColumnType
-} from "ngx-fw4c";
+import { Component, ViewChild, OnInit } from "@angular/core";
+import { TableOption, ModalService,	DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode,	TableColumnType } from "ngx-fw4c";
 import { ConsumerManagementService } from "./consumer-management.service";
 import { AddConsumerComponent } from "./add-consumer/add-consumer.component";
 import { EditConsumerComponent } from "./edit-consumer/edit-consumer.component";
 import { HttpClient } from "@angular/common/http";
 import { AddConsumerService } from "./add-consumer/add-consumer.service";
 import { of } from "rxjs";
+import { EditConsumerService } from './edit-consumer/edit-consumer.service';
+import { ConsumerViewModel } from '../common/consumer.model';
 import { ImportConsumerComponent } from './import-consumer/import-consumer.component';
 @Component({
 	selector: "app-consumer-management",
@@ -47,6 +23,7 @@ export class ConsumerManagementComponent implements OnInit {
 		private _dataService: DataService,
 		private _addConsumerService: AddConsumerService,
 		private _consumerManagementService: ConsumerManagementService,
+		private _editConsumerService: EditConsumerService,
 		private http: HttpClient
 	) { }
 
@@ -64,10 +41,11 @@ export class ConsumerManagementComponent implements OnInit {
 					id: res.items[index].id,
 					tags: res.items[index].tags,
 					username: res.items[index].username,
-					created_at_2: res.items[index].created_at_2
+					created_at_2: res.items[index].created_at_2,
+					created_at: res.items[index].created_at
 				});
 			}
-			this.tableTemplate.reload();
+			this.tableTemplate.reload(true);
 		});
 	}
 
@@ -76,7 +54,7 @@ export class ConsumerManagementComponent implements OnInit {
 			localData: () => {
 				return of(this.data);
 			},
-			inlineEdit: false,
+			inlineEdit: true,
 			mode: TableMode.full,
 			searchFields: ["username", "tags", "custom_id"],
 			topButtons: [
@@ -100,17 +78,28 @@ export class ConsumerManagementComponent implements OnInit {
 								},
 								acceptCallback: (response, close, provider: AddConsumerComponent) => {
 									item = provider.item;
-									this._addConsumerService
-										.createConsumer(item)
-										.subscribe(() => {
-											this.getData();
-										});
+									this._addConsumerService.createConsumer(item).subscribe(() => {
+										this.getData();
+									});
 								}
 							})
 						);
 					}
 				},
 				{
+					icon: 'fa fa-print',
+					customClass: 'success',
+					title: () => 'Export',
+					executeAsync: () => {
+						for (let index = 0; index < this.data.length; index++) {
+							const element = this.data[index];
+							delete element.created_at_2;
+						}
+						this._consumerManagementService.exportToExcel(this.data, 'nxkhanh')
+					}
+				},
+				{
+
 					icon: "fa fa-download",
 					customClass: "success",
 					title: () => "Import",
@@ -141,9 +130,72 @@ export class ConsumerManagementComponent implements OnInit {
 							}
 						}));
 					}
+				},
+					{
+					icon: 'fa fa-save',
+					customClass: 'warning',
+					title: () => 'Save',
+					hide: () => {
+						if (this.tableTemplate.changedRows.length > 0) {
+							return false;
+						}
+						else return true;
+					},					
+					executeAsync: (consumer, element, provider: TableComponent) => {
+						let editLine = this.tableTemplate.changedRows;
+						for (let index = 0; index < editLine.length; index++) {
+							const element = editLine[index];
+							delete element.currentItem.created_at_2;
+							console.log(element.currentItem.created_at)
+							this._editConsumerService.updateConsumer(element.currentItem.id, element.currentItem).subscribe(() => {
+								this.tableTemplate.changedRows = [];
+								this.getData();
+							})
+						}						
+
+					}
 				}
 			],
 			actions: [
+				{
+					icon: "fa fa-copy",
+					executeAsync: (consumer) => {
+						this._modalService.showConfirmDialog(
+							new ConfirmViewModel({
+								btnAcceptTitle: "Copy",
+								message: "Are you sure to copy this consumer?",
+								acceptCallback: () => {
+									this.tableTemplate.copy(consumer, true, (cloneItem: ConsumerViewModel) => {
+										delete cloneItem.created_at_2;
+										if (cloneItem.username !== null) {
+											let checkUsername = cloneItem.username && this.data.filter((x: any) => x.username && x.username.includes(cloneItem.username)
+												&& x.username.length >= cloneItem.username.length + 6 && x.username.length <= cloneItem.username.length + 10)
+											if (checkUsername) {
+												if (cloneItem.custom_id !== null) {
+													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
+													cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkUsername.length + 1)
+												}
+												else {
+													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
+												}
+											}
+										}
+										if (cloneItem.username === null) {
+											let checkCustom_id = cloneItem.custom_id && this.data.filter((x: any) => x.custom_id && x.custom_id.includes(cloneItem.custom_id)
+												&& x.custom_id.length >= cloneItem.custom_id.length + 6 && x.custom_id.length <= cloneItem.custom_id.length + 10)
+											if (checkCustom_id) {
+												cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkCustom_id.length + 1);
+											}
+										}
+										this._addConsumerService.createConsumer(cloneItem).subscribe(() => {
+											this.getData();
+										});
+									})
+								}
+							})
+						);
+					}
+				},
 				{
 					icon: "fa fa-edit",
 					executeAsync: consumer => {
@@ -193,8 +245,8 @@ export class ConsumerManagementComponent implements OnInit {
 					customClass: 'danger',
 					icon: "fa fa-trash-o",
 					title: () => "Remove",
-					executeAsync: () => {
-						console.log(this.tableTemplate.selectedItems);
+					executeAsync: (item, element, provider: TableComponent) => {
+						console.log(provider.selectedItems);
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
 							this._consumerManagementService.deleteConsumer(select[index].id).subscribe(() => {
@@ -204,7 +256,47 @@ export class ConsumerManagementComponent implements OnInit {
 							});
 							
 						}
-
+						console.log(this.data);
+						this.tableTemplate.reload();
+					}
+				},
+				{
+					type: TableConstant.ActionType.Toolbar,
+					customClass: 'success',
+					icon: "fa fa-copyright",
+					title: () => "Copy",
+					executeAsync: () => {
+						let select = this._dataService.cloneItems(this.tableTemplate.selectedItems);
+						for (let index = 0; index < select.length; index++) {
+							let element = select[index];
+							delete element.created_at_2;
+							if (element.username !== null) {
+								let checkUsername = element.username && this.data.filter((x: any) => x.username && x.username.includes(element.username)
+									&& x.username.length >= element.username.length + 5 && x.username.length <= element.username.length + 7)
+								if (checkUsername) {
+									if (element.custom_id !== null) {
+										element.username = element.username + '_copy' + (checkUsername.length + 1);
+										element.custom_id = element.custom_id + '_copy' + (checkUsername.length + 1)
+									}
+									else {
+										element.username = element.username + '_copy' + (checkUsername.length + 1);
+									}
+								}
+							}
+							if (element.username === null) {
+								let checkCustom_id = element.custom_id && this.data.filter((x: any) => x.custom_id && x.custom_id.includes(element.custom_id)
+									&& x.custom_id.length >= element.custom_id.length + 5 && x.custom_id.length <= element.custom_id.length + 7)
+								if (checkCustom_id) {
+									element.custom_id = element.custom_id + '_copy' + (checkCustom_id.length + 1);
+								}
+							}
+							this.data.push(element)
+							this._addConsumerService.createConsumer(element).subscribe(() => {
+								if (index == select.length - 1) {
+									this.getData()
+								}
+							});
+						}
 					}
 				}
 			],
@@ -214,7 +306,8 @@ export class ConsumerManagementComponent implements OnInit {
 					title: () => "Username",
 					valueRef: () => "username",
 					width: 300,
-					allowFilter: false
+					allowFilter: false,
+					editInline: true,
 				},
 				{
 					type: TableColumnType.String,

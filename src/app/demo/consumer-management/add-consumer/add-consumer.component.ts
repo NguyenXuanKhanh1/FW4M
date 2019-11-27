@@ -80,10 +80,10 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 		return this._validationService.isValid(true, false);
 	}
 
-
-	public callback(): Observable<any> {
-		return of(true);
-	}
+  public callback(): Observable<any> {
+    delete this.item.created_at_2;
+    return of(true);
+  }
 
 	public getValidator(): ValidationService {
 		return this._validationService;

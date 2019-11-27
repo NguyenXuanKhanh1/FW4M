@@ -112,10 +112,22 @@ export declare class TableDatetimeFormat {
     constructor(init: Partial<TableDatetimeFormat>);
 }
 export declare class EdittedField {
-    item: any;
+    item?: any;
     field?: string;
     index?: number;
     constructor(init: Partial<EdittedField>);
+}
+export declare class ChangedCell {
+    oldValue?: any;
+    field?: string;
+    currentValue?: any;
+    constructor(init: Partial<ChangedCell>);
+}
+export declare class ChangedRow {
+    currentItem?: any;
+    oldItem?: any;
+    cells?: ChangedCell[];
+    constructor(init: Partial<ChangedRow>);
 }
 export declare class TableOption {
     sort?: (a: any, b: any, orderBy: string) => number;
