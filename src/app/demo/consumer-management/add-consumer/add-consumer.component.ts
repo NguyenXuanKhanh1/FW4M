@@ -73,7 +73,6 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 				valueResolver: () => this.item.tags,
 				rules: [
 					new CustomValidationRule(value => {
-						console.log(value);
 						return this.validation.validateTags(value);
 					})
 				]

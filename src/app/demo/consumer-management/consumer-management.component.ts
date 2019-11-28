@@ -11,6 +11,7 @@ import { ConsumerViewModel } from '../common/consumer.model';
 import { ImportConsumerComponent } from './import-consumer/import-consumer.component';
 import { Validation } from '../common/validation';
 import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
+import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./consumer-management.component.html",
@@ -93,10 +94,9 @@ export class ConsumerManagementComponent implements OnInit {
 				{
 					icon: 'fa fa-download',
 					customClass: 'info',
-					lazyload: true,
 					title: () => 'Download',
 					executeAsync: () => {
-						this._consumerManagementService.exportToExcel1('template')
+						this._consumerManagementService.downloadTemplate('template')
 						// for (let index = 0; index < this.data.length; index++) {
 						// 	const element = this.data[index];
 						// 	delete element.created_at_2;
@@ -350,7 +350,14 @@ export class ConsumerManagementComponent implements OnInit {
 					type: TableColumnType.String,
 					title: () => "Tags",
 					valueRef: () => "tags",
-					allowFilter: true
+					allowFilter: true,
+					validationOption: new ValidationOption({
+						rules: [
+							new CustomValidationRule(value => {
+								return this.validation.validateTags(value);
+							})
+						]
+					})
 				},
 				{
 					type: TableColumnType.DateTime,

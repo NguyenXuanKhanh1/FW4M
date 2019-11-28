@@ -71,7 +71,7 @@ export class EditConsumerComponent implements AfterViewInit {
 				valueResolver: () => this.item.tags,
 				rules: [
 					new CustomValidationRule(value => {
-						return this.validation.validateString(value);
+						return this.validation.validateTags(value);
 					})
 				]
 			})
