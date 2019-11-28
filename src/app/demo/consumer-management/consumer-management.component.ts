@@ -9,6 +9,8 @@ import { of } from "rxjs";
 import { EditConsumerService } from './edit-consumer/edit-consumer.service';
 import { ConsumerViewModel } from '../common/consumer.model';
 import { ImportConsumerComponent } from './import-consumer/import-consumer.component';
+import { Validation } from '../common/validation';
+import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./consumer-management.component.html",
@@ -24,7 +26,9 @@ export class ConsumerManagementComponent implements OnInit {
 		private _addConsumerService: AddConsumerService,
 		private _consumerManagementService: ConsumerManagementService,
 		private _editConsumerService: EditConsumerService,
-		private http: HttpClient
+		private http: HttpClient,
+		private excelExportService: IgxExcelExporterService,
+		private validation: Validation
 	) { }
 
 	ngOnInit() {
@@ -87,6 +91,21 @@ export class ConsumerManagementComponent implements OnInit {
 					}
 				},
 				{
+					icon: 'fa fa-download',
+					customClass: 'info',
+					lazyload: true,
+					title: () => 'Download',
+					executeAsync: () => {
+						this._consumerManagementService.exportToExcel1('template')
+						// for (let index = 0; index < this.data.length; index++) {
+						// 	const element = this.data[index];
+						// 	delete element.created_at_2;
+						// 	delete element.id;
+						// }
+						// this.excelExportService.exportData(this.data, new IgxExcelExporterOptions("template" +  new Date().getTime()));
+					}
+				},
+				{
 					icon: 'fa fa-print',
 					customClass: 'success',
 					title: () => 'Export',
@@ -95,11 +114,10 @@ export class ConsumerManagementComponent implements OnInit {
 							const element = this.data[index];
 							delete element.created_at_2;
 						}
-						this._consumerManagementService.exportToExcel(this.data, 'nxkhanh')
+						this._consumerManagementService.exportToExcel(this.data, 'FW4C_consumer')
 					}
 				},
 				{
-
 					icon: "fa fa-download",
 					customClass: "success",
 					title: () => "Import",
@@ -124,13 +142,11 @@ export class ConsumerManagementComponent implements OnInit {
 										delete response[index].tags;
 										response[index].tags = tags;
 									}
-									this._addConsumerService.createConsumer(response[index])
-										.subscribe(() => {
-											if (index == response.length - 1) {
-												this.getData()
-											}
-										});
-
+									this._addConsumerService.createConsumer(response[index]).subscribe(() => {
+										if (index == response.length - 1) {
+											this.getData()
+										}
+									});
 								}
 							}
 						}));
@@ -157,7 +173,6 @@ export class ConsumerManagementComponent implements OnInit {
 								this.getData();
 							})
 						}
-
 					}
 				}
 			],
@@ -235,11 +250,9 @@ export class ConsumerManagementComponent implements OnInit {
 								btnAcceptTitle: "Delete",
 								message: "Are you sure to delete this consumer?",
 								acceptCallback: () => {
-									this._consumerManagementService
-										.deleteConsumer(consumer.id)
-										.subscribe(() => {
-											this.getData();
-										});
+									this._consumerManagementService.deleteConsumer(consumer.id).subscribe(() => {
+										this.getData();
+									});
 								}
 							})
 						);
@@ -259,7 +272,6 @@ export class ConsumerManagementComponent implements OnInit {
 									this.getData()
 								}
 							});
-
 						}
 						console.log(this.data);
 						this.tableTemplate.reload();
@@ -313,12 +325,26 @@ export class ConsumerManagementComponent implements OnInit {
 					width: 300,
 					allowFilter: false,
 					editInline: true,
+					validationOption: new ValidationOption({
+						rules: [
+							new CustomValidationRule(value => {
+								return this.validation.validateString(value);
+							})
+						]
+					})
 				},
 				{
 					type: TableColumnType.String,
 					title: () => "Custom_ID",
 					valueRef: () => "custom_id",
-					allowFilter: true
+					allowFilter: true,
+					validationOption: new ValidationOption({
+						rules: [
+							new CustomValidationRule(value => {
+								return this.validation.validateString(value);
+							})
+						]
+					})
 				},
 				{
 					type: TableColumnType.String,
