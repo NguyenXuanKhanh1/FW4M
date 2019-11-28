@@ -67,6 +67,16 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 						return this.validation.validateString(value);
 					})
 				]
+			}),
+			new ValidationOption({
+				validationName: 'Tags',
+				valueResolver: () => this.item.tags,
+				rules: [
+					new CustomValidationRule(value => {
+						console.log(value);
+						return this.validation.validateTags(value);
+					})
+				]
 			})
 		]
 		var validator = new ClientValidator({
