@@ -30,4 +30,5 @@ export declare class TextboxComponent implements OnDestroy, AfterViewInit {
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     submitNumeric(newValue: number): void;
+    getElement(): any;
 }

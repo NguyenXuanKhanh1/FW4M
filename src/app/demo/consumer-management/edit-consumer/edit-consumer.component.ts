@@ -65,6 +65,15 @@ export class EditConsumerComponent implements AfterViewInit {
 						return this.validation.validateString(value);
 					})
 				]
+			}),
+			new ValidationOption({
+				validationName: 'Tags',
+				valueResolver: () => this.item.tags,
+				rules: [
+					new CustomValidationRule(value => {
+						return this.validation.validateString(value);
+					})
+				]
 			})
 		]
 		var validator = new ClientValidator({

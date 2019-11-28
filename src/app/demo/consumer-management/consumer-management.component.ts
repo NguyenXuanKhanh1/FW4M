@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { TableOption, ModalService,	DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode,	TableColumnType } from "ngx-fw4c";
+import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, ValidationOption, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
 import { ConsumerManagementService } from "./consumer-management.service";
 import { AddConsumerComponent } from "./add-consumer/add-consumer.component";
 import { EditConsumerComponent } from "./edit-consumer/edit-consumer.component";
@@ -9,6 +9,7 @@ import { of } from "rxjs";
 import { EditConsumerService } from './edit-consumer/edit-consumer.service';
 import { ConsumerViewModel } from '../common/consumer.model';
 import { ImportConsumerComponent } from './import-consumer/import-consumer.component';
+import { Validation } from '../common/validation';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./consumer-management.component.html",
@@ -24,7 +25,8 @@ export class ConsumerManagementComponent implements OnInit {
 		private _addConsumerService: AddConsumerService,
 		private _consumerManagementService: ConsumerManagementService,
 		private _editConsumerService: EditConsumerService,
-		private http: HttpClient
+		private http: HttpClient,
+		private validation: Validation
 	) { }
 
 	ngOnInit() {
@@ -87,6 +89,15 @@ export class ConsumerManagementComponent implements OnInit {
 					}
 				},
 				{
+					icon: 'fa fa-download',
+					customClass: 'info',
+					lazyload: true,
+					title: () => 'Download',
+					executeAsync: () => {
+						return of(true)
+					}
+				},
+				{
 					icon: 'fa fa-print',
 					customClass: 'success',
 					title: () => 'Export',
@@ -95,7 +106,7 @@ export class ConsumerManagementComponent implements OnInit {
 							const element = this.data[index];
 							delete element.created_at_2;
 						}
-						this._consumerManagementService.exportToExcel(this.data, 'nxkhanh')
+						this._consumerManagementService.exportToExcel(this.data, 'FW4C_consumer')
 					}
 				},
 				{
@@ -119,19 +130,24 @@ export class ConsumerManagementComponent implements OnInit {
 								for (let index = 0; index < response.length; index++) {
 									delete response[index].id;
 									delete response[index].created_at;
+									if (response[index].tags !== undefined) {
+										let tags = response[index].tags.split(',');
+										delete response[index].tags;
+										response[index].tags = tags;
+									}
 									this._addConsumerService.createConsumer(response[index])
 										.subscribe(() => {
-											if(index == response.length -1){
+											if (index == response.length - 1) {
 												this.getData()
 											}
 										});
-									
+
 								}
 							}
 						}));
 					}
 				},
-					{
+				{
 					icon: 'fa fa-save',
 					customClass: 'warning',
 					title: () => 'Save',
@@ -140,7 +156,7 @@ export class ConsumerManagementComponent implements OnInit {
 							return false;
 						}
 						else return true;
-					},					
+					},
 					executeAsync: (consumer, element, provider: TableComponent) => {
 						let editLine = this.tableTemplate.changedRows;
 						for (let index = 0; index < editLine.length; index++) {
@@ -151,8 +167,7 @@ export class ConsumerManagementComponent implements OnInit {
 								this.tableTemplate.changedRows = [];
 								this.getData();
 							})
-						}						
-
+						}
 					}
 				}
 			],
@@ -230,11 +245,9 @@ export class ConsumerManagementComponent implements OnInit {
 								btnAcceptTitle: "Delete",
 								message: "Are you sure to delete this consumer?",
 								acceptCallback: () => {
-									this._consumerManagementService
-										.deleteConsumer(consumer.id)
-										.subscribe(() => {
-											this.getData();
-										});
+									this._consumerManagementService.deleteConsumer(consumer.id).subscribe(() => {
+										this.getData();
+									});
 								}
 							})
 						);
@@ -254,7 +267,6 @@ export class ConsumerManagementComponent implements OnInit {
 									this.getData()
 								}
 							});
-							
 						}
 						console.log(this.data);
 						this.tableTemplate.reload();
@@ -308,12 +320,26 @@ export class ConsumerManagementComponent implements OnInit {
 					width: 300,
 					allowFilter: false,
 					editInline: true,
+					validationOption: new ValidationOption({
+						rules: [
+							new CustomValidationRule(value => {
+								return this.validation.validateString(value);
+							})
+						]
+					})
 				},
 				{
 					type: TableColumnType.String,
 					title: () => "Custom_ID",
 					valueRef: () => "custom_id",
-					allowFilter: true
+					allowFilter: true,
+					validationOption: new ValidationOption({
+						rules: [
+							new CustomValidationRule(value => {
+								return this.validation.validateString(value);
+							})
+						]
+					})
 				},
 				{
 					type: TableColumnType.String,

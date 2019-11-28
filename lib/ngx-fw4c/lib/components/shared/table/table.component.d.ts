@@ -3,10 +3,13 @@ import { TableOption, TableColumn, TableAction, EdittedField, ChangedRow } from 
 import { TableRowDetailDirective } from './table-row-detail.directive';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { DataService } from '../services/data.service';
+import { ValidationService } from '../validation/validation.service';
+import { ValidationOption } from '../validation/validation.model';
 export declare class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     private thisElement;
     protected rendererFactory: RendererFactory2;
     protected dataService: DataService;
+    protected validationService: ValidationService;
     validationName: string;
     validationScope: string;
     option: TableOption;
@@ -14,6 +17,7 @@ export declare class TableComponent implements OnInit, AfterViewInit, OnDestroy 
     gotoRef: ElementRef;
     tableRef: ElementRef;
     rowDetailTemplate: TableRowDetailDirective;
+    wrapper: ElementRef;
     items: any[];
     totalRecords: number;
     loading: boolean;
@@ -48,14 +52,14 @@ export declare class TableComponent implements OnInit, AfterViewInit, OnDestroy 
     private subscriptions;
     protected edittedFields: EdittedField[];
     protected previousItems: any[];
-    constructor(thisElement: ElementRef, rendererFactory: RendererFactory2, dataService: DataService);
+    constructor(thisElement: ElementRef, rendererFactory: RendererFactory2, dataService: DataService, validationService: ValidationService);
     ngOnInit(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     init(): void;
     callback(): Observable<any>;
     copy(item: any, refresh?: boolean, execute?: (item: any) => void, callback?: (copyItem: any) => void): void;
-    acceptInlineEdit(item: any, field: string, index: number): void;
+    acceptInlineEdit(item: any, field: string, index: number, ref?: any, validationOption?: ValidationOption, callback?: (item: any, field: string) => any): void;
     cancelInlineEdit(item: any, field: string, index: number): void;
     closeInlineEdit(field: string, index: number): void;
     editInline(item: any, field: string, index: number): void;
@@ -100,5 +104,6 @@ export declare class TableComponent implements OnInit, AfterViewInit, OnDestroy 
     private initTableTableTexts;
     private initTableTableMessages;
     private initMainColumns;
+    private initValidations;
     private registerEvents;
 }

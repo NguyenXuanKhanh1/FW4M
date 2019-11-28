@@ -45,7 +45,10 @@ const routes: Routes = [
         url: '/dashboard'
       },
       menuTabs: menuTabs,
-      menuType: 'TOP'
+      menuType: 'TOP',
+      // recommendation: {
+      //   template: ConsumerManagementComponent
+      // }
     },
     children: [      
       {

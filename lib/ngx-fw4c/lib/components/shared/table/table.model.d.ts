@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { TableComponent } from './table.component';
 import { TemplateRef, ElementRef, Type } from '@angular/core';
+import { ValidationOption } from '../validation/validation.model';
 export interface TableEditInline {
     enabled?: boolean;
     autoCommit?: boolean;
@@ -14,6 +15,7 @@ export interface TableCell {
 export declare class TableColumn {
     title?: () => string;
     valueRef?: () => any;
+    inlineCallback?: (item?: any, field?: string) => any;
     direction?: string;
     allowSort?: boolean;
     allowFilter?: boolean;
@@ -25,6 +27,7 @@ export declare class TableColumn {
     type?: TableColumnType;
     showTooltip?: boolean;
     editInline?: boolean;
+    validationOption?: ValidationOption;
     callback?: (provider?: TableComponent, element?: ElementRef, $event?: any) => any;
     customTemplate?: () => TemplateRef<any>;
     hide?: () => boolean;
