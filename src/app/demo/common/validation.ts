@@ -2,11 +2,30 @@ import { Observable, of } from "rxjs";
 import { ValidationRuleResponse } from "ngx-fw4c";
 
 export class Validation {
-  public validateString(string: string): Observable<ValidationRuleResponse> {
+	public validateString(string: string): Observable<ValidationRuleResponse> {
 		let regex = /[<>:"\/\\|?*\.\s)]/;
 		return of(new ValidationRuleResponse({
 			status: !regex.test(string),
 			message: "Can't contain any of the following characters: \\ / : * ? \" < > |"
 		}));
+	}
+
+	public validateTags(tags: string[]): Observable<ValidationRuleResponse> {
+		let regex = /[<>:"\/\\|?*\.\s)]/;
+		let isFail = true;
+		if (tags.length > 0) {
+			for (let index = 0; index < tags.length; index++) {
+				const element = tags[index];
+				if (!regex.test(element)) {
+					continue;
+				} else {
+					isFail = false;
+				}
+			}
+			return of(new ValidationRuleResponse({
+				status: isFail,
+				message: "Can't contain any of the following characters: \\ / : * ? \" < > |"
+			}));
+		}
 	}
 }
