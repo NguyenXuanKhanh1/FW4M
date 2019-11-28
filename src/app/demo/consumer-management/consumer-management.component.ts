@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, ValidationOption, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
+import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType } from "ngx-fw4c";
 import { ConsumerManagementService } from "./consumer-management.service";
 import { AddConsumerComponent } from "./add-consumer/add-consumer.component";
 import { EditConsumerComponent } from "./edit-consumer/edit-consumer.component";
