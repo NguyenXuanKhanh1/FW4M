@@ -96,13 +96,25 @@ export class ConsumerManagementComponent implements OnInit {
 					customClass: 'info',
 					title: () => 'Download',
 					executeAsync: () => {
+						// this._consumerManagementService.downloadTemplate('template')
+						var data = [
+							{
+							  	custom_id: '',
+							  	id: '',
+							  	username: '',
+							  	tags: '',
+							  	created_at: ''
+							}
+						];
+						this.excelExportService.exportData(data, new IgxExcelExporterOptions("template" +  new Date().getTime()));
+					}
+				},
+				{
+					icon: 'fa fa-download',
+					customClass: 'warning',
+					title: () => 'Test',
+					executeAsync: () => {
 						this._consumerManagementService.downloadTemplate('template')
-						// for (let index = 0; index < this.data.length; index++) {
-						// 	const element = this.data[index];
-						// 	delete element.created_at_2;
-						// 	delete element.id;
-						// }
-						// this.excelExportService.exportData(this.data, new IgxExcelExporterOptions("template" +  new Date().getTime()));
 					}
 				},
 				{
@@ -113,8 +125,10 @@ export class ConsumerManagementComponent implements OnInit {
 						for (let index = 0; index < this.data.length; index++) {
 							const element = this.data[index];
 							delete element.created_at_2;
+							element.tags = element.tags? element.tags.toString():null;
 						}
-						this._consumerManagementService.exportToExcel(this.data, 'FW4C_consumer')
+						// this._consumerManagementService.exportToExcelWithHeader(this.data, 'FW4C_consumer')
+						this.excelExportService.exportData(this.data, new IgxExcelExporterOptions("FW4C" +  new Date().getTime()));
 					}
 				},
 				{

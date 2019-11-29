@@ -100,7 +100,8 @@ export class ConsumerManagementService {
     for(var C = range.s.c; C <= range.e.c; ++C) {
        var cell_address = {c:C, r:R};
        const headerCell = worksheet[XLSX.utils.encode_cell(cell_address)];
-       headerCell.s =  "FFFFAA00" ;
+       headerCell.s =  { rgb: "000000" };
+       console.log(headerCell);
     }
     console.log(worksheet);
     const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet },     SheetNames: ['data'] };
@@ -119,6 +120,15 @@ export class ConsumerManagementService {
       }
     ];
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    var range = XLSX.utils.decode_range(ws['!ref']);
+    let R = range.s.r
+    // for(var R = range.s.r; R <= range.e.r; ++R) {
+    for(var C = range.s.c; C <= range.e.c; ++C) {
+       var cell_address = {c:C, r:R};
+       const headerCell = ws[XLSX.utils.encode_cell(cell_address)];
+       headerCell.s =  { font: {color : {rgb: "FFFFAA00"}} };
+       console.log(headerCell);
+    }
     const wb: XLSX.WorkBook = { Sheets: { 'data': ws }, SheetNames: ['data'] };     
     const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     this.saveExcelFile(excelBuffer, fileName);

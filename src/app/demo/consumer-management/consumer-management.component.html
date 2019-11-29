@@ -1,5 +1,4 @@
 <katana-card>
-  <katana-viewer [uploadIcon]="'fa fa-add'" [uploadTitle]="'Upload'"></katana-viewer>
   <katana-table [option]="option" #tableTemplate>
     <ng-template let-item="item" katana-row-detail>
       <pre>{{ item | json }}</pre>
