@@ -45,7 +45,7 @@ export class ImportConsumerComponent implements AfterViewInit {
 		return this._validationService;
 	}
 
-	upload() {
+	public upload(): void {
 		let fileReader = new FileReader();
 		fileReader.onload = () => {
 			this.arrayBuffer = fileReader.result;

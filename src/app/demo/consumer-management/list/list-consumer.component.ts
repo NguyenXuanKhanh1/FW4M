@@ -1,17 +1,17 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, ValidationOption, CustomValidationRule } from "ngx-fw4c";
+import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, CustomValidationRule, ValidationOption } from "ngx-fw4c";
 import { ConsumerManagementService } from "../consumer-management.service";
-import { EditConsumerComponent } from "../edit/edit-consumer.component";
-import { EditConsumerService } from '../edit/edit-consumer.service';
-import { ConsumerViewModel } from '../consumer.model';
-import { ImportConsumerComponent } from '../import/import-consumer.component';
-import { Validation } from '../../common/validation';
+import { HttpClient } from "@angular/common/http";
+import { of } from "rxjs";
 import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
 import { ExportConsumerComponent } from '../export/export-consumer.component';
-import { ConsumerRequest } from '../consumer.model';
+import { ConsumerRequest, ConsumerViewModel } from '../consumer.model';
 import { map } from 'rxjs/operators';
-import { of } from 'zen-observable';
 import { ConsumerConstant } from '../consumer.const';
+import { EditConsumerComponent } from '../edit';
+import { ImportConsumerComponent } from '../import';
+import { EditConsumerService } from '../edit/edit-consumer.service';
+import { Validation } from '../../common/validation';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./list-consumer.component.html",
@@ -151,6 +151,9 @@ export class ListConsumerComponent implements OnInit {
 										response[index].tags = tags;
 									}
 									this._consumerService.createConsumer(response[index], new ConsumerRequest({})).subscribe(() => {
+										if (index == response.length - 1) {
+											
+										}
 									});
 								}
 							}
@@ -272,7 +275,11 @@ export class ListConsumerComponent implements OnInit {
 						console.log(provider.selectedItems);
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
-							this._consumerService.deleteConsumer(select[index].id).subscribe(() => { });
+							this._consumerService.deleteConsumer(select[index].id).subscribe(() => {
+								if (index == select.length - 1) {
+									
+								}
+							});
 						}
 						console.log(this.data);
 						this.tableTemplate.reload();
