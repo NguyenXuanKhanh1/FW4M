@@ -10,6 +10,7 @@ import { ConsumerViewModel } from './demo/common/consumer.model';
 import { IgxExcelExporterService } from 'igniteui-angular';
 import { ExportFile } from './demo/shared/export';
 import { ValidateConsumer } from './demo/shared/validate';
+import { SystemConstant } from './demo/common/system-constant';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ValidateConsumer } from './demo/shared/validate';
   providers: [
     ConsumerViewModel,
     ExportFile,
+    SystemConstant,
     ValidateConsumer,
     IgxExcelExporterService
   ],

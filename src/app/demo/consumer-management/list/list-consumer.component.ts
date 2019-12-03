@@ -68,7 +68,6 @@ export class ListConsumerComponent implements OnInit {
 								btnAcceptTitle: ConsumerConstant.Add,
 								acceptCallback: (response, close, provider: EditConsumerComponent) => {
 									item = provider.item;
-									console.log(item);
 									this._consumerService.createConsumer(item, new ConsumerRequest({})).subscribe(() => {
 										this.tableTemplate.reload();
 									});
@@ -95,13 +94,13 @@ export class ListConsumerComponent implements OnInit {
 										delete element.created_at_2
 									}
 									if (data === ConsumerConstant.CSV) {
-										this._consumerService.exportToCSV(this.tableTemplate.items, 'FW4C')
+										this._exportFile.exportToCSV(this.tableTemplate.items, 'FW4C')
 									}
 									if (data === ConsumerConstant.Excel) {
 										this.tableTemplate.exportToExcel("FW4C_export_" + new Date().getTime());
 									}
 									if (data === ConsumerConstant.PDF) {
-										// exportToPdf(this.tableTemplate.items, "FW4C_export_" + new Date().getTime());
+										this._exportFile.exportToPdf(this.tableTemplate.items, "FW4C_export_" + new Date().getTime());
 									}
 								}
 							})
@@ -151,9 +150,7 @@ export class ListConsumerComponent implements OnInit {
 										response[index].tags = tags;
 									}
 									this._consumerService.createConsumer(response[index], new ConsumerRequest({})).subscribe(() => {
-										if (index == response.length - 1) {
-
-										}
+										this.tableTemplate.reload();
 									});
 								}
 							}
@@ -214,6 +211,7 @@ export class ListConsumerComponent implements OnInit {
 											}
 										}
 										this._consumerService.createConsumer(cloneItem, new ConsumerRequest({})).subscribe(() => {
+											this.tableTemplate.reload();
 										});
 									})
 								}
@@ -258,7 +256,9 @@ export class ListConsumerComponent implements OnInit {
 								btnAcceptTitle: ConsumerConstant.Delete,
 								message: ConsumerConstant.MessageDelete,
 								acceptCallback: () => {
-									this._consumerService.deleteConsumer(consumer.id).subscribe(() => { });
+									this._consumerService.deleteConsumer(consumer.id).subscribe(() => { 
+										this.tableTemplate.reload();
+									});
 								}
 							})
 						);
@@ -271,7 +271,6 @@ export class ListConsumerComponent implements OnInit {
 					icon: "fa fa-trash-o",
 					title: () => ConsumerConstant.Remove,
 					executeAsync: (item, element, provider: TableComponent) => {
-						console.log(provider.selectedItems);
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
 							this._consumerService.deleteConsumer(select[index].id).subscribe(() => {
@@ -314,7 +313,9 @@ export class ListConsumerComponent implements OnInit {
 								}
 							}
 							this.data.push(element)
-							this._consumerService.createConsumer(element, new ConsumerRequest({})).subscribe(() => { });
+							this._consumerService.createConsumer(element, new ConsumerRequest({})).subscribe(() => {
+								this.tableTemplate.reload();
+							});
 						}
 					}
 				}
