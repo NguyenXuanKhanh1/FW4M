@@ -44,6 +44,7 @@
     "ng4-loading-spinner": "^1.2.3",
     "ngx-bootstrap": "^5.2.0",
     "ngx-pipes": "^2.6.0",
+    "pdfmake": "^0.1.62",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "xlsx": "^0.15.3",

@@ -2,13 +2,14 @@ import { Injectable, OnInit } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import { ConsumerResponse, ConsumerRequest, ConsumerViewModel } from "../common/consumer.model";
 import { SystemConstant } from "../common/system-constant";
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-
-import { IgxExcelExporterService } from 'igniteui-angular';
-
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { MockService } from 'ngx-fw4c';
+import { ConsumerRequest, ConsumerSearchRequest, ConsumerSearchResponse } from './consumer.model';
+import { ConsumerResponse } from '../common/consumer.model';
 
 const CSV_TYPE = 'text/csv;charset=utf-8';
 const CSV_EXTENSION = '.csv';
@@ -19,9 +20,19 @@ const EXCEL_EXTENTION = '.xlsx';
   providedIn: "root"
 })
 
-export class ConsumerManagementService {
-  constructor(private http: HttpClient, 
-    private _system: SystemConstant) { }
+export class ConsumerManagementService extends MockService {
+  protected api: string = 'http://192.168.35.108:8001/consumers';
+
+  constructor(
+    private http: HttpClient,
+    private _system: SystemConstant) {
+    super();
+  }
+
+  public search(request: ConsumerSearchRequest): Observable<ConsumerSearchResponse> {
+    return this.verify(this.http.get<ConsumerSearchResponse>(`${this.api}/search`, { params: request as any }), request.mockData);
+  }
+
   public readConsumer(): Observable<ConsumerResponse> {
     return this.http.get(this._system.apiURL + this._system.consumers).pipe(
       map((res: any) => {
@@ -32,7 +43,7 @@ export class ConsumerManagementService {
           status: true,
           totalRecords: res.data.length,
           items: res.data,
-        }; 
+        };
         return response;
       })
     )
@@ -74,7 +85,7 @@ export class ConsumerManagementService {
     var data = [];
     for (let index = 0; index < jsonData.length; index++) {
       const element = jsonData[index];
-      element.tags = element.tags? element.tags.toString():null;
+      element.tags = element.tags ? element.tags.toString() : null;
       data.push(element);
     }
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
@@ -88,23 +99,19 @@ export class ConsumerManagementService {
     var data = [];
     for (let index = 0; index < jsonData.length; index++) {
       const element = jsonData[index];
-      element.tags = element.tags? element.tags.toString():null;
+      element.tags = element.tags ? element.tags.toString() : null;
       data.push(element);
     }
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-    
-  
     var range = XLSX.utils.decode_range(worksheet['!ref']);
     let R = range.s.r
     // for(var R = range.s.r; R <= range.e.r; ++R) {
-    for(var C = range.s.c; C <= range.e.c; ++C) {
-       var cell_address = {c:C, r:R};
-       const headerCell = worksheet[XLSX.utils.encode_cell(cell_address)];
-       headerCell.s =  { rgb: "000000" };
-       console.log(headerCell);
+    for (var C = range.s.c; C <= range.e.c; ++C) {
+      var cell_address = { c: C, r: R };
+      const headerCell = worksheet[XLSX.utils.encode_cell(cell_address)];
+      headerCell.s = { rgb: "#FFFFFF" };
     }
-    console.log(worksheet);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet },     SheetNames: ['data'] };
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     this.saveExcelFile(excelBuffer, 'test');
   }
@@ -123,20 +130,49 @@ export class ConsumerManagementService {
     var range = XLSX.utils.decode_range(ws['!ref']);
     let R = range.s.r
     // for(var R = range.s.r; R <= range.e.r; ++R) {
-    for(var C = range.s.c; C <= range.e.c; ++C) {
-       var cell_address = {c:C, r:R};
-       const headerCell = ws[XLSX.utils.encode_cell(cell_address)];
-       headerCell.s =  { font: {color : {rgb: "FFFFAA00"}} };
-       console.log(headerCell);
+    for (var C = range.s.c; C <= range.e.c; ++C) {
+      var cell_address = { c: C, r: R };
+      const headerCell = ws[XLSX.utils.encode_cell(cell_address)];
+      headerCell.s = { font: { color: { rgb: "FFFFAA00" } } };
+      console.log(headerCell);
     }
-    const wb: XLSX.WorkBook = { Sheets: { 'data': ws }, SheetNames: ['data'] };     
+    const wb: XLSX.WorkBook = { Sheets: { 'data': ws }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     this.saveExcelFile(excelBuffer, fileName);
-  } 
+  }
 
   private saveExcelFile(buffer: any, fileName: string): void {
-    const data: Blob = new Blob([buffer], {type: EXCEL_TYPE});
+    const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
     FileSaver.saveAs(data, fileName + EXCEL_EXTENTION);
   }
 
+  public exportToPdf(data: any[], fileName: string) {
+    var dd = {
+      content: [
+        { text: 'Consumers', style: 'header' },
+        {
+          table: {
+            headerRows: 1,
+            body: [
+              [{ text: 'custom_id', style: 'tableHeader', color: 'white', bold: true },
+              { text: 'id', style: 'tableHeader', color: 'white', bold: true },
+              { text: 'tags', style: 'tableHeader', color: 'white', bold: true },
+              { text: 'username', style: 'tableHeader', color: 'white', bold: true },
+              { text: 'created', style: 'tableHeader', color: 'white', bold: true }]
+            ]
+          },
+          layout: {
+            fillColor: function (rowIndex, node, columnIndex) {
+              return (rowIndex % 2 === 0 && rowIndex != 0) ? '#FFFFFF' : (rowIndex === 0) ? '#5D9AD2' : '#DAECF9';
+            }
+          }
+        }
+      ]
+    }
+    for (let index = 0; index < data.length; index++) {
+      dd.content[1].table.body.push([data[index].custom_id, data[index].id, data[index].tags, data[index].username, data[index].created_at])
+    }
+    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    pdfMake.createPdf(dd).download(fileName);
+  }
 }

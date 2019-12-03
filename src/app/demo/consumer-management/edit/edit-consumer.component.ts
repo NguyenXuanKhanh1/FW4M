@@ -1,7 +1,7 @@
-import { Component,	OnInit,	ElementRef,	ViewChild, Input, AfterViewInit } from "@angular/core";
+import { Component, OnInit, ElementRef, ViewChild, Input, AfterViewInit } from "@angular/core";
 import { ConsumerViewModel } from "../../common/consumer.model";
 import { Observable, of } from "rxjs";
-import { ValidationOption, RequiredValidationRule, ClientValidator,	ValidationService, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
+import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
 import { EditConsumerService } from "./edit-consumer.service";
 import { LanguageEN, LanguageVN } from "../../common/language.model";
 import { Validation } from '../../common/validation';
@@ -11,10 +11,10 @@ import { Validation } from '../../common/validation';
 	templateUrl: "./edit-consumer.component.html",
 	styleUrls: ["./edit-consumer.component.scss"]
 })
+
 export class EditConsumerComponent implements AfterViewInit {
 	@ViewChild("formRef", { static: true }) public formRef: ElementRef;
 	@Input() public item = new ConsumerViewModel();
-
 	@Input() public reload: () => any;
 
 	public label = {

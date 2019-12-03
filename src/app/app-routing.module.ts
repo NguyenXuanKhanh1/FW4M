@@ -3,9 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { MenuTab, AdminLayoutComponent, AuthComponent } from 'ngx-fw4c';
 import { DashboardDemoComponent } from './demo/dashboard';
 import { ServiceManagementComponent } from './demo/service-management/service-management.component';
-import { ConsumerManagementComponent } from './demo/consumer-management/consumer-management.component';
 import { AddConsumerComponent } from './demo/consumer-management/add-consumer/add-consumer.component';
-import { EditConsumerComponent } from './demo/consumer-management/edit-consumer/edit-consumer.component';
+import { EditConsumerComponent } from './demo/consumer-management/edit/edit-consumer.component';
+import { ListConsumerComponent } from './demo/consumer-management/list/list-consumer.component';
 
 const menuTabs: MenuTab[] = [
   {
@@ -61,7 +61,7 @@ const routes: Routes = [
       },
       {
         path: 'consumer',
-        component: ConsumerManagementComponent
+        component: ListConsumerComponent
       },
       {
         path: 'create-consumer',

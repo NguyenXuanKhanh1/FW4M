@@ -1,24 +1,24 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, ValidationOption, CustomValidationRule } from "ngx-fw4c";
-import { ConsumerManagementService } from "./consumer-management.service";
-import { AddConsumerComponent } from "./add-consumer/add-consumer.component";
-import { EditConsumerComponent } from "./edit/edit-consumer.component";
-import { AddConsumerService } from "./add-consumer/add-consumer.service";
-import { EditConsumerService } from './edit/edit-consumer.service';
-import { ConsumerViewModel } from '../common/consumer.model';
-import { ImportConsumerComponent } from './import/import-consumer.component';
-import { Validation } from '../common/validation';
+import { ConsumerManagementService } from "../consumer-management.service";
+import { AddConsumerComponent } from "../add-consumer/add-consumer.component";
+import { EditConsumerComponent } from "../edit/edit-consumer.component";
+import { AddConsumerService } from "../add-consumer/add-consumer.service";
+import { EditConsumerService } from '../edit/edit-consumer.service';
+import { ConsumerViewModel } from '../consumer.model';
+import { ImportConsumerComponent } from '../import/import-consumer.component';
+import { Validation } from '../../common/validation';
 import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
-import { ExportConsumerComponent } from './export/export-consumer.component';
-import { ConsumerRequest } from './consumer.model';
+import { ExportConsumerComponent } from '../export/export-consumer.component';
+import { ConsumerRequest } from '../consumer.model';
 import { map } from 'rxjs/operators';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./list-consumer.component.html",
-	styleUrls: ["./consumer-management.component.scss"]
+	styleUrls: ["./list-consumer.component.scss"]
 })
 
-export class ConsumerManagementComponent implements OnInit {
+export class ListConsumerComponent implements OnInit {
 	public option: TableOption;
 	public data = [];
 	@ViewChild("tableTemplate", { static: true }) public tableTemplate: TableComponent;
@@ -180,14 +180,14 @@ export class ConsumerManagementComponent implements OnInit {
 								message: "Are you sure to copy this consumer?",
 								acceptCallback: () => {
 									this.tableTemplate.copy(consumer, true, (cloneItem: ConsumerViewModel) => {
-										delete cloneItem.created_at_2;
+										delete cloneItem.createdAtText;
 										if (cloneItem.username !== null) {
 											let checkUsername = cloneItem.username && this.data.filter((x: any) => x.username && x.username.includes(cloneItem.username)
 												&& x.username.length >= cloneItem.username.length + 6 && x.username.length <= cloneItem.username.length + 10)
 											if (checkUsername) {
-												if (cloneItem.custom_id !== null) {
+												if (cloneItem.customId !== null) {
 													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
-													cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkUsername.length + 1)
+													cloneItem.customId = cloneItem.customId + '_copy' + (checkUsername.length + 1)
 												}
 												else {
 													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
@@ -195,10 +195,10 @@ export class ConsumerManagementComponent implements OnInit {
 											}
 										}
 										if (cloneItem.username === null) {
-											let checkCustom_id = cloneItem.custom_id && this.data.filter((x: any) => x.custom_id && x.custom_id.includes(cloneItem.custom_id)
-												&& x.custom_id.length >= cloneItem.custom_id.length + 6 && x.custom_id.length <= cloneItem.custom_id.length + 10)
+											let checkCustom_id = cloneItem.customId && this.data.filter((x: any) => x.custom_id && x.custom_id.includes(cloneItem.customId)
+												&& x.custom_id.length >= cloneItem.customId.length + 6 && x.custom_id.length <= cloneItem.customId.length + 10)
 											if (checkCustom_id) {
-												cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkCustom_id.length + 1);
+												cloneItem.customId = cloneItem.customId + '_copy' + (checkCustom_id.length + 1);
 											}
 										}
 										this._addConsumerService.createConsumer(cloneItem).subscribe(() => {
