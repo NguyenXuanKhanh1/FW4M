@@ -1,38 +1,37 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Input, OnChanges } from '@angular/core';
-import { ConsumerViewModel } from '../../common/consumer.model';
-import { ValidationService, ValidationOption, RequiredValidationRule, ClientValidator, CustomValidationRule, ValidationRuleResponse } from 'ngx-fw4c';
-import { of, Observable } from 'rxjs';
-import { AddConsumerService } from './add-consumer.service';
-import { LanguageEN } from '../../common/language.model';
+import { Component, OnInit, ElementRef, ViewChild, Input, AfterViewInit } from "@angular/core";
+import { ConsumerViewModel } from "../../common/consumer.model";
+import { Observable, of } from "rxjs";
+import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
+import { EditConsumerService } from "./edit-consumer.service";
+import { LanguageEN, LanguageVN } from "../../common/language.model";
 import { Validation } from '../../common/validation';
+import { ConsumerConstant } from '../consumer.const';
 
 @Component({
-	selector: 'app-add-consumer',
-	templateUrl: './add-consumer.component.html',
-	styleUrls: ['./add-consumer.component.scss']
+	selector: "app-edit-consumer",
+	templateUrl: "./edit-consumer.component.html",
+	styleUrls: ["./edit-consumer.component.scss"]
 })
-export class AddConsumerComponent implements AfterViewInit, OnChanges {
+
+export class EditConsumerComponent implements AfterViewInit {
+	@ViewChild("formRef", { static: true }) public formRef: ElementRef;
 	@Input() public item = new ConsumerViewModel();
-	@Input() public reload: () => void;
-	@ViewChild('formRef', { static: true }) public formRef: ElementRef;
+	@Input() public reload: () => any;
+
 	public label = {
-		username: "Username",
-		custom_id: "Custom ID",
-		tags: "Tags",
-	}
+		username: ConsumerConstant.UserName,
+		custom_id: ConsumerConstant.Custom_Id,
+		tags: ConsumerConstant.Tags
+	};
 
 	constructor(
 		private _validationService: ValidationService,
-		private _addConsumerService: AddConsumerService,
+		private _editConsumerService: EditConsumerService,
 		private validation: Validation
 	) { }
 
 	ngAfterViewInit(): void {
 		this.initValidations();
-	}
-
-	ngOnChanges(): void {
-		var test = this.item;
 	}
 
 	public initValidations(): void {
@@ -44,7 +43,7 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 				rules: [
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
-							message: "At least one of these fields must be non-empty: 'custom_id', 'username'",
+							message: ConsumerConstant.MessageValidationEmpty,
 							status: this.item.username != undefined || this.item.custom_id != undefined
 						}));
 					}, true),
@@ -59,7 +58,7 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 				rules: [
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
-							message: "At least one of these fields must be non-empty: 'custom_id', 'username'",
+							message: ConsumerConstant.MessageValidationEmpty,
 							status: this.item.username != undefined || this.item.custom_id != undefined
 						}));
 					}),
@@ -73,7 +72,7 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 				valueResolver: () => this.item.tags,
 				rules: [
 					new CustomValidationRule(value => {
-						return this.validation.validateString(value);
+						return this.validation.validateTags(value);
 					})
 				]
 			})
@@ -89,13 +88,12 @@ export class AddConsumerComponent implements AfterViewInit, OnChanges {
 		return this._validationService.isValid(true, false);
 	}
 
-  public callback(): Observable<any> {
-    delete this.item.created_at_2;
-    return of(true);
-  }
+	public callback(): Observable<any> {
+		delete this.item.created_at_2;
+		return of(true)
+	}
 
 	public getValidator(): ValidationService {
 		return this._validationService;
 	}
-
 }

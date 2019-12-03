@@ -1,0 +1,18 @@
+<div>
+	<div class="form-group row">
+		<label class="col-sm-3 col-form-label">Select file type:</label>
+		<div class="col-sm-9">
+			<select class="form-control" id="fileType" name="fileType" [(ngModel)]="fileType">
+				<option value=".csv">CSV</option>
+				<option value=".xlsx">Excel</option>
+				<option value=".pdf">PDF</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="col-sm-3 col-form-label">Choose file:</label>
+		<div class="col-sm-9">
+			<input #formRef type="file" name="consumerFile" id="consumerFile" (change)="uploadFile($event)" [accept]="fileType" />
+		</div>
+	</div>
+</div>

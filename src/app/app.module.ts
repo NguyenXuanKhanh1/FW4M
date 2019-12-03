@@ -10,6 +10,7 @@ import { SystemConstant } from './demo/common/system-constant';
 import { Validation } from './demo/common/validation';
 import { ConsumerViewModel } from './demo/common/consumer.model';
 import { LanguageEN, LanguageVN } from './demo/common/language.model';
+import { IgxExcelExporterService } from 'igniteui-angular';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { LanguageEN, LanguageVN } from './demo/common/language.model';
     Validation,
     ConsumerViewModel,
     LanguageEN,
-    LanguageVN
+    LanguageVN,
+    IgxExcelExporterService
   ],
   bootstrap: [AppComponent]
 })

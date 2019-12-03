@@ -13,6 +13,7 @@ export class ImportConsumerComponent implements AfterViewInit {
 	public fileUploaded: File;
 	public data: any = [];
 	public arrayBuffer: any;
+	public fileType: string = ".csv";
 	@ViewChild('formRef', { static: true }) public formRef: ElementRef;
 
 	constructor(
@@ -44,23 +45,7 @@ export class ImportConsumerComponent implements AfterViewInit {
 		return this._validationService;
 	}
 
-	public readExcel(): any {
-		let readFile = new FileReader();
-		readFile.onload = () => {
-			const data = readFile.result;
-			let worksheet = XLSX.read(data, { type: "binary" });
-			let storeData = worksheet.SheetNames.reduce((initial, name) => {
-				const sheet = worksheet.Sheets[name];
-				initial[name] = XLSX.utils.sheet_to_json(sheet);
-				return initial;
-			}, {});
-			this.data = storeData;
-		};
-		console.log(this.data);
-		readFile.readAsBinaryString(this.fileUploaded);
-	}
-
-	upload() {
+	public upload(): void {
 		let fileReader = new FileReader();
 		fileReader.onload = () => {
 			this.arrayBuffer = fileReader.result;
@@ -74,7 +59,6 @@ export class ImportConsumerComponent implements AfterViewInit {
 			var element = XLSX.utils.sheet_to_json(worksheet, { raw: true });
 			this.data = element;
 		}
-		console.log(this.data);
 		fileReader.readAsArrayBuffer(this.fileUploaded);
 	}
 }
