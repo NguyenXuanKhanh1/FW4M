@@ -1,8 +1,13 @@
 import { Observable, of } from "rxjs";
 import { ValidationRuleResponse } from "ngx-fw4c";
+import { Injectable } from '@angular/core';
 
-export class Validation {
-	public validateString(string: string): Observable<ValidationRuleResponse> {
+@Injectable({
+    providedIn: "root"
+})
+
+export class ValidateConsumer{
+    public validateString(string: string): Observable<ValidationRuleResponse> {
 		let regex = /[<>:"\/\\|?*\.\s)]/;
 		return of(new ValidationRuleResponse({
 			status: !regex.test(string),

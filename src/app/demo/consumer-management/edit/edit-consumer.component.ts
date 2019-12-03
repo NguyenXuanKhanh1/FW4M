@@ -1,10 +1,8 @@
 import { Component, OnInit, ElementRef, ViewChild, Input, AfterViewInit } from "@angular/core";
-import { ConsumerViewModel } from "../../common/consumer.model";
+import { ConsumerViewModel } from "../consumer.model";
 import { Observable, of } from "rxjs";
 import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
-import { EditConsumerService } from "./edit-consumer.service";
-import { LanguageEN, LanguageVN } from "../../common/language.model";
-import { Validation } from '../../common/validation';
+import { ValidateConsumer } from '../../shared/validate';
 
 @Component({
 	selector: "app-edit-consumer",
@@ -25,8 +23,7 @@ export class EditConsumerComponent implements AfterViewInit {
 
 	constructor(
 		private _validationService: ValidationService,
-		private _editConsumerService: EditConsumerService,
-		private validation: Validation
+		private _validate: ValidateConsumer
 	) { }
 
 	ngAfterViewInit(): void {
@@ -47,7 +44,7 @@ export class EditConsumerComponent implements AfterViewInit {
 						}));
 					}, true),
 					new CustomValidationRule(value => {
-						return this.validation.validateString(value);
+						return this._validate.validateString(value);
 					})
 				]
 			}),
@@ -62,7 +59,7 @@ export class EditConsumerComponent implements AfterViewInit {
 						}));
 					}),
 					new CustomValidationRule(value => {
-						return this.validation.validateString(value);
+						return this._validate.validateString(value);
 					})
 				]
 			}),
@@ -71,7 +68,7 @@ export class EditConsumerComponent implements AfterViewInit {
 				valueResolver: () => this.item.tags,
 				rules: [
 					new CustomValidationRule(value => {
-						return this.validation.validateTags(value);
+						return this._validate.validateTags(value);
 					})
 				]
 			})
@@ -88,7 +85,7 @@ export class EditConsumerComponent implements AfterViewInit {
 	}
 
 	public callback(): Observable<any> {
-		delete this.item.created_at_2;
+		delete this.item.createdAtText;
 		return of(true)
 	}
 

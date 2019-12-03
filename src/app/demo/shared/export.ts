@@ -1,14 +1,16 @@
 import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { Injectable } from '@angular/core';
 
 const CSV_TYPE = 'text/csv;charset=utf-8';
 const CSV_EXTENSION = '.csv';
-const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-const EXCEL_EXTENTION = '.xlsx';
 
-export class exportFile {
+@Injectable({
+    providedIn: "root"
+})
+
+export class ExportFile {
     public exportToPdf(data: any[], fileName: string) {
         var dd = {
             content: [
