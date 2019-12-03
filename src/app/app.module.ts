@@ -6,11 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DemoModule } from './demo';
 import { HttpClientModule } from '@angular/common/http';
-import { SystemConstant } from './demo/common/system-constant';
-import { Validation } from './demo/common/validation';
 import { ConsumerViewModel } from './demo/common/consumer.model';
-import { LanguageEN, LanguageVN } from './demo/common/language.model';
 import { IgxExcelExporterService } from 'igniteui-angular';
+import { ExportFile } from './demo/shared/export';
+import { ValidateConsumer } from './demo/shared/validate';
 
 @NgModule({
   declarations: [
@@ -29,11 +28,9 @@ import { IgxExcelExporterService } from 'igniteui-angular';
     DemoModule
   ],
   providers: [
-    SystemConstant, 
-    Validation,
     ConsumerViewModel,
-    LanguageEN,
-    LanguageVN,
+    ExportFile,
+    ValidateConsumer,
     IgxExcelExporterService
   ],
   bootstrap: [AppComponent]

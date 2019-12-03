@@ -1,12 +1,18 @@
 import { BaseRequest, BaseResponse, SearchBaseRequest, SearchBaseResponse } from 'ngx-fw4c';
 
 export class ConsumerViewModel {
+    // id?: string;
+    // customId?: string;
+    // tags?: string[];
+    // username?: string;
+    // createdAtText: number;
+    // createdAt: number;
     id?: string;
-    customId?: string;
+    custom_id?: string;
     tags?: string[];
     username?: string;
     createdAtText: number;
-    createdAt: number;
+    created_at: number;
     constructor(init?: Partial<ConsumerViewModel>) {
         Object.assign(this, init);
     }
@@ -41,6 +47,21 @@ export class ConsumerSearchRequest extends SearchBaseRequest {
 export class ConsumerSearchResponse extends SearchBaseResponse<ConsumerViewModel> {
     token?: string;
     constructor(init?: Partial<ConsumerSearchResponse>) {
+        super();
+        Object.assign(this, init);
+    }
+}
+
+export class ConsumerDeleteRequest extends BaseRequest<ConsumerViewModel> {
+    ids: string[];
+    constructor(init?: Partial<ConsumerDeleteRequest>) {
+        super();
+        Object.assign(this, init);
+    }
+}
+
+export class ConsumerDeleteResponse extends BaseResponse<ConsumerViewModel> {
+    constructor(init?: Partial<ConsumerDeleteResponse>) {
         super();
         Object.assign(this, init);
     }

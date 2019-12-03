@@ -2,16 +2,15 @@ import { Component, ViewChild, OnInit } from "@angular/core";
 import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, ValidationOption, CustomValidationRule } from "ngx-fw4c";
 import { ConsumerManagementService } from "../consumer-management.service";
 import { EditConsumerComponent } from "../edit/edit-consumer.component";
-import { EditConsumerService } from '../edit/edit-consumer.service';
-import { ConsumerViewModel } from '../consumer.model';
+import { ConsumerViewModel, ConsumerDeleteRequest, ConsumerRequest } from '../consumer.model';
 import { ImportConsumerComponent } from '../import/import-consumer.component';
-import { Validation } from '../../common/validation';
 import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
 import { ExportConsumerComponent } from '../export/export-consumer.component';
-import { ConsumerRequest } from '../consumer.model';
 import { map } from 'rxjs/operators';
 import { of } from 'zen-observable';
 import { ConsumerConstant } from '../consumer.const';
+import { ExportFile } from '../../shared/export';
+import { ValidateConsumer } from '../../shared/validate';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./list-consumer.component.html",
@@ -27,9 +26,9 @@ export class ListConsumerComponent implements OnInit {
 		private _modalService: ModalService,
 		private _dataService: DataService,
 		private _consumerService: ConsumerManagementService,
-		private _editConsumerService: EditConsumerService,
 		private _excelExportService: IgxExcelExporterService,
-		private _validation: Validation
+		private _exportFile: ExportFile,
+		private _validateConsumer: ValidateConsumer
 	) { }
 
 	ngOnInit() {
@@ -68,7 +67,6 @@ export class ListConsumerComponent implements OnInit {
 								btnAcceptTitle: ConsumerConstant.Add,
 								acceptCallback: (response, close, provider: EditConsumerComponent) => {
 									item = provider.item;
-									console.log(item);									
 									this._consumerService.createConsumer(item).subscribe(() => {
 										this.tableTemplate.reload();
 									});
@@ -151,6 +149,7 @@ export class ListConsumerComponent implements OnInit {
 										response[index].tags = tags;
 									}
 									this._consumerService.createConsumer(response[index]).subscribe(() => {
+										this.tableTemplate.reload();
 									});
 								}
 							}
@@ -172,8 +171,7 @@ export class ListConsumerComponent implements OnInit {
 						for (let index = 0; index < editLine.length; index++) {
 							const element = editLine[index];
 							delete element.currentItem.created_at_2;
-							console.log(element.currentItem.created_at)
-							this._editConsumerService.updateConsumer(element.currentItem.id, element.currentItem).subscribe(() => {
+							this._consumerService.updateConsumer(element.currentItem.id, element.currentItem).subscribe(() => {
 								this.tableTemplate.changedRows = [];
 							})
 						}
@@ -195,9 +193,9 @@ export class ListConsumerComponent implements OnInit {
 											let checkUsername = cloneItem.username && this.data.filter((x: any) => x.username && x.username.includes(cloneItem.username)
 												&& x.username.length >= cloneItem.username.length + 6 && x.username.length <= cloneItem.username.length + 10)
 											if (checkUsername) {
-												if (cloneItem.customId !== null) {
+												if (cloneItem.custom_id !== null) {
 													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
-													cloneItem.customId = cloneItem.customId + '_copy' + (checkUsername.length + 1)
+													cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkUsername.length + 1)
 												}
 												else {
 													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
@@ -205,13 +203,14 @@ export class ListConsumerComponent implements OnInit {
 											}
 										}
 										if (cloneItem.username === null) {
-											let checkCustom_id = cloneItem.customId && this.data.filter((x: any) => x.custom_id && x.custom_id.includes(cloneItem.customId)
-												&& x.custom_id.length >= cloneItem.customId.length + 6 && x.custom_id.length <= cloneItem.customId.length + 10)
+											let checkCustom_id = cloneItem.custom_id && this.data.filter((x: any) => x.customId && x.customId.includes(cloneItem.custom_id)
+												&& x.customId.length >= cloneItem.custom_id.length + 6 && x.customId.length <= cloneItem.custom_id.length + 10)
 											if (checkCustom_id) {
-												cloneItem.customId = cloneItem.customId + '_copy' + (checkCustom_id.length + 1);
+												cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkCustom_id.length + 1);
 											}
 										}
 										this._consumerService.createConsumer(cloneItem).subscribe(() => {
+											this.tableTemplate.reload();
 										});
 									})
 								}
@@ -242,7 +241,7 @@ export class ListConsumerComponent implements OnInit {
 									this._consumerService.updateConsumer(provider.item.id, provider.item).subscribe(() => {
 										this.tableTemplate.reload()
 									});
-				
+
 								}
 							})
 						);
@@ -256,7 +255,9 @@ export class ListConsumerComponent implements OnInit {
 								btnAcceptTitle: ConsumerConstant.Delete,
 								message: ConsumerConstant.MessageDelete,
 								acceptCallback: () => {
-									this._consumerService.deleteConsumer(consumer.id).subscribe(() => {});
+									this._consumerService.deleteConsumer(consumer.id).subscribe(() => {
+										this.tableTemplate.reload();
+									});
 								}
 							})
 						);
@@ -272,9 +273,8 @@ export class ListConsumerComponent implements OnInit {
 						console.log(provider.selectedItems);
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
-							this._consumerService.deleteConsumer(select[index].id).subscribe(() => {});
+							this._consumerService.deleteConsumer(select[index].index).subscribe(() => { });
 						}
-						console.log(this.data);
 						this.tableTemplate.reload();
 					}
 				},
@@ -287,7 +287,7 @@ export class ListConsumerComponent implements OnInit {
 						let select = this._dataService.cloneItems(this.tableTemplate.selectedItems);
 						for (let index = 0; index < select.length; index++) {
 							let element = select[index];
-							delete element.created_at_2;
+							delete element.createdAtText;
 							if (element.username !== null) {
 								let checkUsername = element.username && this.data.filter((x: any) => x.username && x.username.includes(element.username)
 									&& x.username.length >= element.username.length + 5 && x.username.length <= element.username.length + 7)
@@ -309,7 +309,9 @@ export class ListConsumerComponent implements OnInit {
 								}
 							}
 							this.data.push(element)
-							this._consumerService.createConsumer(element).subscribe(() => {});
+							this._consumerService.createConsumer(element).subscribe(() => {
+								this.tableTemplate.reload();
+							});
 						}
 					}
 				}
@@ -325,7 +327,7 @@ export class ListConsumerComponent implements OnInit {
 					validationOption: new ValidationOption({
 						rules: [
 							new CustomValidationRule(value => {
-								return this._validation.validateString(value);
+								return this._validateConsumer.validateString(value);
 							})
 						]
 					})
@@ -338,7 +340,7 @@ export class ListConsumerComponent implements OnInit {
 					validationOption: new ValidationOption({
 						rules: [
 							new CustomValidationRule(value => {
-								return this._validation.validateString(value);
+								return this._validateConsumer.validateString(value);
 							})
 						]
 					})
@@ -351,7 +353,7 @@ export class ListConsumerComponent implements OnInit {
 					validationOption: new ValidationOption({
 						rules: [
 							new CustomValidationRule(value => {
-								return this._validation.validateTags(value);
+								return this._validateConsumer.validateTags(value);
 							})
 						]
 					})
@@ -364,7 +366,7 @@ export class ListConsumerComponent implements OnInit {
 				}
 			],
 			serviceProvider: {
-				searchAsync: (request) => /* return this._consumerService.search(request);*/ {
+				searchAsync: (request) => {
 					return this._consumerService.search(request);
 				}
 			}
