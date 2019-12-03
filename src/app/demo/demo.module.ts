@@ -6,20 +6,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { ServiceManagementComponent } from './service-management/service-management.component';
 import { AddServiceComponent } from './service-management/add-service/add-service.component';
-import { ConsumerManagementComponent } from './consumer-management/consumer-management.component';
-import { AddConsumerComponent } from './consumer-management/add-consumer/add-consumer.component';
-import { EditConsumerComponent } from './consumer-management/edit-consumer/edit-consumer.component';
-import { ImportConsumerComponent } from './consumer-management/import-consumer/import-consumer.component';
+import { ConsumerModule } from './consumer-management/index';
+// import { ListConsumerComponent } from './consumer-management/list';
+
 
 
 const declarations = [
   DashboardDemoComponent,
   ServiceManagementComponent,
   AddServiceComponent,
-  ConsumerManagementComponent,
-  AddConsumerComponent,
-  EditConsumerComponent,
-  ImportConsumerComponent
 ];
 
 @NgModule({
@@ -30,7 +25,8 @@ const declarations = [
     FormsModule,
     HttpClientModule,
     Framework4CModule.forRoot(),
-    BrowserModule
+    BrowserModule,
+    ConsumerModule
   ]
 })
 

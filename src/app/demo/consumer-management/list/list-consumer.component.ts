@@ -1,85 +1,76 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType } from "ngx-fw4c";
-import { ConsumerManagementService } from "./consumer-management.service";
-import { AddConsumerComponent } from "./add-consumer/add-consumer.component";
-import { EditConsumerComponent } from "./edit-consumer/edit-consumer.component";
-import { HttpClient } from "@angular/common/http";
-import { AddConsumerService } from "./add-consumer/add-consumer.service";
-import { of } from "rxjs";
-import { EditConsumerService } from './edit-consumer/edit-consumer.service';
-import { ConsumerViewModel } from '../common/consumer.model';
-import { ImportConsumerComponent } from './import-consumer/import-consumer.component';
+import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, ValidationOption, CustomValidationRule } from "ngx-fw4c";
+import { ConsumerManagementService } from "../consumer-management.service";
+import { EditConsumerComponent } from "../edit/edit-consumer.component";
+import { EditConsumerService } from '../edit/edit-consumer.service';
+import { ConsumerViewModel } from '../consumer.model';
+import { ImportConsumerComponent } from '../import/import-consumer.component';
+import { Validation } from '../../common/validation';
+import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
+import { ExportConsumerComponent } from '../export/export-consumer.component';
+import { ConsumerRequest } from '../consumer.model';
+import { map } from 'rxjs/operators';
+import { of } from 'zen-observable';
+import { ConsumerConstant } from '../consumer.const';
 @Component({
 	selector: "app-consumer-management",
-	templateUrl: "./consumer-management.component.html",
-	styleUrls: ["./consumer-management.component.scss"]
+	templateUrl: "./list-consumer.component.html",
+	styleUrls: ["./list-consumer.component.scss"]
 })
-export class ConsumerManagementComponent implements OnInit {
+
+export class ListConsumerComponent implements OnInit {
 	public option: TableOption;
-	@ViewChild("tableTemplate", { static: true })
-	public tableTemplate: TableComponent;
+	public data = [];
+	@ViewChild("tableTemplate", { static: true }) public tableTemplate: TableComponent;
+
 	constructor(
 		private _modalService: ModalService,
 		private _dataService: DataService,
-		private _addConsumerService: AddConsumerService,
-		private _consumerManagementService: ConsumerManagementService,
+		private _consumerService: ConsumerManagementService,
 		private _editConsumerService: EditConsumerService,
-		private http: HttpClient
+		private _excelExportService: IgxExcelExporterService,
+		private _validation: Validation
 	) { }
 
 	ngOnInit() {
-		this.getData();
 		this.initTable();
-	}
-	public data = [];
-	private getData(): void {
-		this.data = [];
-		this._consumerManagementService.readConsumer().subscribe(res => {
-			for (let index = 0; index < res.totalRecords; index++) {
-				this.data.push({
-					custom_id: res.items[index].custom_id,
-					id: res.items[index].id,
-					tags: res.items[index].tags,
-					username: res.items[index].username,
-					created_at_2: res.items[index].created_at_2,
-					created_at: res.items[index].created_at
-				});
-			}
-			this.tableTemplate.reload(true);
-		});
 	}
 
 	private initTable() {
 		this.option = new TableOption({
 			localData: () => {
-				return of(this.data);
+				return this._consumerService.search(new ConsumerRequest({})).pipe(map(s => s.items));
 			},
 			inlineEdit: true,
 			mode: TableMode.full,
 			searchFields: ["username", "tags", "custom_id"],
 			topButtons: [
 				{
+					icon: "fa fa-refresh",
+					customClass: "primary",
+					title: () => ConsumerConstant.Reload,
+					executeAsync: () => {
+						this.tableTemplate.reload();
+					}
+				},
+				{
 					icon: "fa fa-plus",
 					customClass: "primary",
-					title: () => "New",
+					title: () => ConsumerConstant.New,
 					executeAsync: item => {
 						this._modalService.showTemplateDialog(
 							new TemplateViewModel({
-								template: AddConsumerComponent,
-								validationKey: "AddConsumerComponent",
+								template: EditConsumerComponent,
+								validationKey: "EditConsumerComponent",
 								customSize: "modal-lg",
-								title: "Add New Consumer",
+								title: ConsumerConstant.MessageAdd,
 								icon: "fa fa-plus",
-								btnAcceptTitle: "Add",
-								data: {
-									reload: () => {
-										this.tableTemplate.reload().subscribe();
-									}
-								},
-								acceptCallback: (response, close, provider: AddConsumerComponent) => {
+								btnAcceptTitle: ConsumerConstant.Add,
+								acceptCallback: (response, close, provider: EditConsumerComponent) => {
 									item = provider.item;
-									this._addConsumerService.createConsumer(item).subscribe(() => {
-										this.getData();
+									console.log(item);
+									this._consumerService.createConsumer(item, new ConsumerRequest({})).subscribe(() => {
+										this.tableTemplate.reload();
 									});
 								}
 							})
@@ -87,35 +78,70 @@ export class ConsumerManagementComponent implements OnInit {
 					}
 				},
 				{
-					icon: 'fa fa-print',
-					customClass: 'success',
-					title: () => 'Export',
+					icon: "fa fa-print",
+					customClass: "success",
+					title: () => "Export",
 					executeAsync: () => {
-						for (let index = 0; index < this.data.length; index++) {
-							const element = this.data[index];
-							delete element.created_at_2;
-						}
-						this._consumerManagementService.exportToExcel(this.data, 'nxkhanh')
+						this._modalService.showTemplateDialog(
+							new TemplateViewModel({
+								template: ExportConsumerComponent,
+								validationKey: "ExportConsumerComponent",
+								title: ConsumerConstant.Export,
+								btnAcceptTitle: ConsumerConstant.Export,
+								acceptCallback: data => {
+									for (let index = 0; index < this.tableTemplate.items.length; index++) {
+										const element = this.tableTemplate.items[index];
+										element.tags = element.tags ? element.tags.toString() : null;
+										delete element.created_at_2
+									}
+									if (data === ConsumerConstant.CSV) {
+										this._consumerService.exportToCSV(this.tableTemplate.items, 'FW4C')
+									}
+									if (data === ConsumerConstant.Excel) {
+										this.tableTemplate.exportToExcel("FW4C_export_" + new Date().getTime());
+									}
+									if (data === ConsumerConstant.PDF) {
+										// exportToPdf(this.tableTemplate.items, "FW4C_export_" + new Date().getTime());
+									}
+								}
+							})
+						);
 					}
 				},
 				{
-
+					icon: 'fa fa-download',
+					customClass: 'info',
+					title: () => ConsumerConstant.Download,
+					executeAsync: () => {
+						var data = [
+							{
+								custom_id: this.option.mainColumns,
+								id: '',
+								username: '',
+								tags: '',
+								created_at: ''
+							}
+						];
+						this._excelExportService.exportData(data, new IgxExcelExporterOptions("template" + new Date().getTime()));
+					}
+				},
+				{
 					icon: "fa fa-download",
 					customClass: "success",
-					title: () => "Import",
-					executeAsync: item => {
+					title: () => ConsumerConstant.Import,
+					executeAsync: () => {
 						this._modalService.showTemplateDialog(new TemplateViewModel({
 							template: ImportConsumerComponent,
 							validationKey: "ImportConsumerComponent",
-							title: "Import Consumer",
+							title: ConsumerConstant.MessageImport,
 							icon: 'fa fa-download',
-							btnAcceptTitle: "Import",
+							btnAcceptTitle: ConsumerConstant.Import,
 							data: {
 								reload: () => {
 									this.tableTemplate.reload().subscribe();
 								}
 							},
-							acceptCallback: (response, close, provider: ImportConsumerComponent) => {
+							acceptCallback: (response) => {
 								for (let index = 0; index < response.length; index++) {
 									delete response[index].id;
 									delete response[index].created_at;
@@ -124,13 +150,8 @@ export class ConsumerManagementComponent implements OnInit {
 										delete response[index].tags;
 										response[index].tags = tags;
 									}
-									this._addConsumerService.createConsumer(response[index])
-										.subscribe(() => {
-											if (index == response.length - 1) {
-												this.getData()
-											}
-										});
-
+									this._consumerService.createConsumer(response[index], new ConsumerRequest({})).subscribe(() => {
+									});
 								}
 							}
 						}));
@@ -139,14 +160,14 @@ export class ConsumerManagementComponent implements OnInit {
 				{
 					icon: 'fa fa-save',
 					customClass: 'warning',
-					title: () => 'Save',
+					title: () => ConsumerConstant.Save,
 					hide: () => {
 						if (this.tableTemplate.changedRows.length > 0) {
 							return false;
 						}
 						else return true;
 					},
-					executeAsync: (consumer, element, provider: TableComponent) => {
+					executeAsync: () => {
 						let editLine = this.tableTemplate.changedRows;
 						for (let index = 0; index < editLine.length; index++) {
 							const element = editLine[index];
@@ -154,10 +175,8 @@ export class ConsumerManagementComponent implements OnInit {
 							console.log(element.currentItem.created_at)
 							this._editConsumerService.updateConsumer(element.currentItem.id, element.currentItem).subscribe(() => {
 								this.tableTemplate.changedRows = [];
-								this.getData();
 							})
 						}
-
 					}
 				}
 			],
@@ -167,18 +186,18 @@ export class ConsumerManagementComponent implements OnInit {
 					executeAsync: (consumer) => {
 						this._modalService.showConfirmDialog(
 							new ConfirmViewModel({
-								btnAcceptTitle: "Copy",
-								message: "Are you sure to copy this consumer?",
+								btnAcceptTitle: ConsumerConstant.Copy,
+								message: ConsumerConstant.MessageCopy,
 								acceptCallback: () => {
 									this.tableTemplate.copy(consumer, true, (cloneItem: ConsumerViewModel) => {
-										delete cloneItem.created_at_2;
+										delete cloneItem.createdAtText;
 										if (cloneItem.username !== null) {
 											let checkUsername = cloneItem.username && this.data.filter((x: any) => x.username && x.username.includes(cloneItem.username)
 												&& x.username.length >= cloneItem.username.length + 6 && x.username.length <= cloneItem.username.length + 10)
 											if (checkUsername) {
-												if (cloneItem.custom_id !== null) {
+												if (cloneItem.customId !== null) {
 													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
-													cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkUsername.length + 1)
+													cloneItem.customId = cloneItem.customId + '_copy' + (checkUsername.length + 1)
 												}
 												else {
 													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
@@ -186,14 +205,13 @@ export class ConsumerManagementComponent implements OnInit {
 											}
 										}
 										if (cloneItem.username === null) {
-											let checkCustom_id = cloneItem.custom_id && this.data.filter((x: any) => x.custom_id && x.custom_id.includes(cloneItem.custom_id)
-												&& x.custom_id.length >= cloneItem.custom_id.length + 6 && x.custom_id.length <= cloneItem.custom_id.length + 10)
+											let checkCustom_id = cloneItem.customId && this.data.filter((x: any) => x.custom_id && x.custom_id.includes(cloneItem.customId)
+												&& x.custom_id.length >= cloneItem.customId.length + 6 && x.custom_id.length <= cloneItem.customId.length + 10)
 											if (checkCustom_id) {
-												cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkCustom_id.length + 1);
+												cloneItem.customId = cloneItem.customId + '_copy' + (checkCustom_id.length + 1);
 											}
 										}
-										this._addConsumerService.createConsumer(cloneItem).subscribe(() => {
-											this.getData();
+										this._consumerService.createConsumer(cloneItem, new ConsumerRequest({})).subscribe(() => {
 										});
 									})
 								}
@@ -209,8 +227,8 @@ export class ConsumerManagementComponent implements OnInit {
 								validationKey: "EditConsumerComponent",
 								template: EditConsumerComponent,
 								customSize: "modal-lg",
-								title: "Edit Consumer",
-								btnAcceptTitle: "Edit",
+								title: ConsumerConstant.MessageEdit,
+								btnAcceptTitle: ConsumerConstant.Edit,
 								data: {
 									reload: () => {
 										this.tableTemplate.reload().subscribe();
@@ -220,8 +238,11 @@ export class ConsumerManagementComponent implements OnInit {
 								cancelCallback: () => {
 									this.tableTemplate.reload();
 								},
-								acceptCallback: (response, close) => {
-									this.getData();
+								acceptCallback: (response, close, provider) => {
+									this._consumerService.updateConsumer(provider.item.id, provider.item, new ConsumerRequest({})).subscribe(() => {
+										this.tableTemplate.reload()
+									});
+
 								}
 							})
 						);
@@ -232,14 +253,10 @@ export class ConsumerManagementComponent implements OnInit {
 					executeAsync: consumer => {
 						this._modalService.showConfirmDialog(
 							new ConfirmViewModel({
-								btnAcceptTitle: "Delete",
-								message: "Are you sure to delete this consumer?",
+								btnAcceptTitle: ConsumerConstant.Delete,
+								message: ConsumerConstant.MessageDelete,
 								acceptCallback: () => {
-									this._consumerManagementService
-										.deleteConsumer(consumer.id)
-										.subscribe(() => {
-											this.getData();
-										});
+									this._consumerService.deleteConsumer(consumer.id).subscribe(() => { });
 								}
 							})
 						);
@@ -248,18 +265,14 @@ export class ConsumerManagementComponent implements OnInit {
 				{
 					type: TableConstant.ActionType.Toolbar,
 					customClass: 'danger',
+					lazyload: true,
 					icon: "fa fa-trash-o",
-					title: () => "Remove",
+					title: () => ConsumerConstant.Remove,
 					executeAsync: (item, element, provider: TableComponent) => {
 						console.log(provider.selectedItems);
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
-							this._consumerManagementService.deleteConsumer(select[index].id).subscribe(() => {
-								if (index == select.length - 1) {
-									this.getData()
-								}
-							});
-
+							this._consumerService.deleteConsumer(select[index].id).subscribe(() => { });
 						}
 						console.log(this.data);
 						this.tableTemplate.reload();
@@ -269,7 +282,7 @@ export class ConsumerManagementComponent implements OnInit {
 					type: TableConstant.ActionType.Toolbar,
 					customClass: 'success',
 					icon: "fa fa-copyright",
-					title: () => "Copy",
+					title: () => ConsumerConstant.Copy,
 					executeAsync: () => {
 						let select = this._dataService.cloneItems(this.tableTemplate.selectedItems);
 						for (let index = 0; index < select.length; index++) {
@@ -296,11 +309,7 @@ export class ConsumerManagementComponent implements OnInit {
 								}
 							}
 							this.data.push(element)
-							this._addConsumerService.createConsumer(element).subscribe(() => {
-								if (index == select.length - 1) {
-									this.getData()
-								}
-							});
+							this._consumerService.createConsumer(element, new ConsumerRequest({})).subscribe(() => { });
 						}
 					}
 				}
@@ -308,34 +317,55 @@ export class ConsumerManagementComponent implements OnInit {
 			mainColumns: [
 				{
 					type: TableColumnType.String,
-					title: () => "Username",
+					title: () => ConsumerConstant.UserName,
 					valueRef: () => "username",
 					width: 300,
 					allowFilter: false,
 					editInline: true,
+					validationOption: new ValidationOption({
+						rules: [
+							new CustomValidationRule(value => {
+								return this._validation.validateString(value);
+							})
+						]
+					})
 				},
 				{
 					type: TableColumnType.String,
-					title: () => "Custom_ID",
+					title: () => ConsumerConstant.Custom_Id,
 					valueRef: () => "custom_id",
-					allowFilter: true
+					allowFilter: true,
+					validationOption: new ValidationOption({
+						rules: [
+							new CustomValidationRule(value => {
+								return this._validation.validateString(value);
+							})
+						]
+					})
 				},
 				{
 					type: TableColumnType.String,
-					title: () => "Tags",
+					title: () => ConsumerConstant.Tags,
 					valueRef: () => "tags",
-					allowFilter: true
+					allowFilter: true,
+					validationOption: new ValidationOption({
+						rules: [
+							new CustomValidationRule(value => {
+								return this._validation.validateTags(value);
+							})
+						]
+					})
 				},
 				{
 					type: TableColumnType.DateTime,
-					title: () => "Created",
+					title: () => ConsumerConstant.Created_At,
 					valueRef: () => "created_at_2",
 					allowFilter: true
 				}
 			],
 			serviceProvider: {
-				searchAsync: () => {
-					return of(true);
+				searchAsync: (request) => /* return this._consumerService.search(request);*/ {
+					return this._consumerService.search(request);
 				}
 			}
 		});
