@@ -28,8 +28,4 @@ export class Validation {
 			}));
 		}
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master
