@@ -1,9 +1,7 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, ValidationOption, CustomValidationRule } from "ngx-fw4c";
 import { ConsumerManagementService } from "../consumer-management.service";
-import { AddConsumerComponent } from "../add-consumer/add-consumer.component";
 import { EditConsumerComponent } from "../edit/edit-consumer.component";
-import { AddConsumerService } from "../add-consumer/add-consumer.service";
 import { EditConsumerService } from '../edit/edit-consumer.service';
 import { ConsumerViewModel } from '../consumer.model';
 import { ImportConsumerComponent } from '../import/import-consumer.component';
@@ -12,6 +10,7 @@ import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angul
 import { ExportConsumerComponent } from '../export/export-consumer.component';
 import { ConsumerRequest } from '../consumer.model';
 import { map } from 'rxjs/operators';
+import { of } from 'zen-observable';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./list-consumer.component.html",
@@ -26,7 +25,6 @@ export class ListConsumerComponent implements OnInit {
 	constructor(
 		private _modalService: ModalService,
 		private _dataService: DataService,
-		private _addConsumerService: AddConsumerService,
 		private _consumerService: ConsumerManagementService,
 		private _editConsumerService: EditConsumerService,
 		private _excelExportService: IgxExcelExporterService,
@@ -34,7 +32,24 @@ export class ListConsumerComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
+		// this.getData();
 		this.initTable();
+	}
+	private getData(): void {
+		this.data = [];
+		this._consumerService.readConsumer().subscribe(res => {
+			for (let index = 0; index < res.totalRecords; index++) {
+				this.data.push({
+					custom_id: res.items[index].custom_id,
+					id: res.items[index].id,
+					tags: res.items[index].tags,
+					username: res.items[index].username,
+					created_at_2: res.items[index].created_at_2,
+					created_at: res.items[index].created_at
+				});
+			}
+			this.tableTemplate.reload(true);
+		});
 	}
 
 	private initTable() {
@@ -47,21 +62,31 @@ export class ListConsumerComponent implements OnInit {
 			searchFields: ["username", "tags", "custom_id"],
 			topButtons: [
 				{
+					icon: "fa fa-refresh",
+					customClass: "primary",
+					title: () => "Reload",
+					executeAsync: () => {
+						this.tableTemplate.reload();
+					}
+				},
+				{
 					icon: "fa fa-plus",
 					customClass: "primary",
 					title: () => "New",
 					executeAsync: item => {
 						this._modalService.showTemplateDialog(
 							new TemplateViewModel({
-								template: AddConsumerComponent,
-								validationKey: "AddConsumerComponent",
+								template: EditConsumerComponent,
+								validationKey: "EditConsumerComponent",
 								customSize: "modal-lg",
 								title: "Add New Consumer",
 								icon: "fa fa-plus",
 								btnAcceptTitle: "Add",
-								acceptCallback: (response, close, provider: AddConsumerComponent) => {
+								acceptCallback: (response, close, provider: EditConsumerComponent) => {
 									item = provider.item;
-									this._addConsumerService.createConsumer(item).subscribe(() => {});
+									console.log(item);
+									
+									this._consumerService.createConsumer(item).subscribe(() => {});
 								}
 							})
 						);
@@ -140,7 +165,7 @@ export class ListConsumerComponent implements OnInit {
 										delete response[index].tags;
 										response[index].tags = tags;
 									}
-									this._addConsumerService.createConsumer(response[index]).subscribe(() => {
+									this._consumerService.createConsumer(response[index]).subscribe(() => {
 									});
 								}
 							}
@@ -201,7 +226,7 @@ export class ListConsumerComponent implements OnInit {
 												cloneItem.customId = cloneItem.customId + '_copy' + (checkCustom_id.length + 1);
 											}
 										}
-										this._addConsumerService.createConsumer(cloneItem).subscribe(() => {
+										this._consumerService.createConsumer(cloneItem).subscribe(() => {
 										});
 									})
 								}
@@ -295,7 +320,7 @@ export class ListConsumerComponent implements OnInit {
 								}
 							}
 							this.data.push(element)
-							this._addConsumerService.createConsumer(element).subscribe(() => {});
+							this._consumerService.createConsumer(element).subscribe(() => {});
 						}
 					}
 				}
@@ -350,7 +375,7 @@ export class ListConsumerComponent implements OnInit {
 				}
 			],
 			serviceProvider: {
-				searchAsync: (request) => {
+				searchAsync: (request) => /* return this._consumerService.search(request);*/ {
 					return this._consumerService.search(request);
 				}
 			}

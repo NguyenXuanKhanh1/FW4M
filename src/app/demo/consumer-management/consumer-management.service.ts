@@ -30,7 +30,15 @@ export class ConsumerManagementService extends MockService {
   }
 
   public search(request: ConsumerSearchRequest): Observable<ConsumerSearchResponse> {
-    return this.verify(this.http.get<ConsumerSearchResponse>(`${this.api}/search`, { params: request as any }), request.mockData);
+    return this.http.get<any>(`${this.api}`, { params: request as any }).pipe(map(s => new ConsumerSearchResponse({ items: s.data })));
+  }
+
+  public createConsumer(body: any): Observable<any> {
+    return this.http.post(this._system.apiURL + this._system.consumers, body, this._system.header);
+  }
+
+  public updateConsumer(id: string, body: any) {    
+    return this.http.put(this._system.apiURL + this._system.consumers + '/' + id, body, this._system.header);
   }
 
   public readConsumer(): Observable<ConsumerResponse> {
