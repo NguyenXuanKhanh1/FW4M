@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ValidationService, ClientValidator } from 'ngx-fw4c';
 import { Observable, of } from 'rxjs';
+import { ConsumerConstant } from '../consumer.const';
 
 @Component({
   selector: 'app-export-consumer',
@@ -28,7 +29,7 @@ export class ExportConsumerComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    this.data = 'CSV'
+    this.data = ConsumerConstant.CSV
   }
 
 	public isValid(): boolean {

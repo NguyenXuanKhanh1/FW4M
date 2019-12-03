@@ -5,6 +5,7 @@ import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationSe
 import { EditConsumerService } from "./edit-consumer.service";
 import { LanguageEN, LanguageVN } from "../../common/language.model";
 import { Validation } from '../../common/validation';
+import { ConsumerConstant } from '../consumer.const';
 
 @Component({
 	selector: "app-edit-consumer",
@@ -18,9 +19,9 @@ export class EditConsumerComponent implements AfterViewInit {
 	@Input() public reload: () => any;
 
 	public label = {
-		username: "Username",
-		custom_id: "Custom ID",
-		tags: "Tags"
+		username: ConsumerConstant.UserName,
+		custom_id: ConsumerConstant.Custom_Id,
+		tags: ConsumerConstant.Tags
 	};
 
 	constructor(
@@ -42,7 +43,7 @@ export class EditConsumerComponent implements AfterViewInit {
 				rules: [
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
-							message: "At least one of these fields must be non-empty: 'custom_id', 'username'",
+							message: ConsumerConstant.MessageValidationEmpty,
 							status: this.item.username != undefined || this.item.custom_id != undefined
 						}));
 					}, true),
@@ -57,7 +58,7 @@ export class EditConsumerComponent implements AfterViewInit {
 				rules: [
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
-							message: "At least one of these fields must be non-empty: 'custom_id', 'username'",
+							message: ConsumerConstant.MessageValidationEmpty,
 							status: this.item.username != undefined || this.item.custom_id != undefined
 						}));
 					}),

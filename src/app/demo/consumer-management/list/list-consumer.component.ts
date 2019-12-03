@@ -11,6 +11,7 @@ import { ExportConsumerComponent } from '../export/export-consumer.component';
 import { ConsumerRequest } from '../consumer.model';
 import { map } from 'rxjs/operators';
 import { of } from 'zen-observable';
+import { ConsumerConstant } from '../consumer.const';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./list-consumer.component.html",
@@ -47,7 +48,7 @@ export class ListConsumerComponent implements OnInit {
 				{
 					icon: "fa fa-refresh",
 					customClass: "primary",
-					title: () => "Reload",
+					title: () => ConsumerConstant.Reload,
 					executeAsync: () => {
 						this.tableTemplate.reload();
 					}
@@ -55,16 +56,16 @@ export class ListConsumerComponent implements OnInit {
 				{
 					icon: "fa fa-plus",
 					customClass: "primary",
-					title: () => "New",
+					title: () => ConsumerConstant.New,
 					executeAsync: item => {
 						this._modalService.showTemplateDialog(
 							new TemplateViewModel({
 								template: EditConsumerComponent,
 								validationKey: "EditConsumerComponent",
 								customSize: "modal-lg",
-								title: "Add New Consumer",
+								title: ConsumerConstant.MessageAdd,
 								icon: "fa fa-plus",
-								btnAcceptTitle: "Add",
+								btnAcceptTitle: ConsumerConstant.Add,
 								acceptCallback: (response, close, provider: EditConsumerComponent) => {
 									item = provider.item;
 									console.log(item);									
@@ -85,21 +86,21 @@ export class ListConsumerComponent implements OnInit {
 							new TemplateViewModel({
 								template: ExportConsumerComponent,
 								validationKey: "ExportConsumerComponent",
-								title: "Export",
-								btnAcceptTitle: "Export",
+								title: ConsumerConstant.Export,
+								btnAcceptTitle: ConsumerConstant.Export,
 								acceptCallback: data => {
 									for (let index = 0; index < this.tableTemplate.items.length; index++) {
 										const element = this.tableTemplate.items[index];
 										element.tags = element.tags ? element.tags.toString() : null;
 										delete element.created_at_2
 									}
-									if (data === 'CSV') {
+									if (data === ConsumerConstant.CSV) {
 										this._consumerService.exportToCSV(this.tableTemplate.items, 'FW4C')
 									}
-									if (data === 'Excel') {
+									if (data === ConsumerConstant.Excel) {
 										this.tableTemplate.exportToExcel("FW4C_export_" + new Date().getTime());
 									}
-									if (data === 'PDF') {
+									if (data === ConsumerConstant.PDF) {
 										// exportToPdf(this.tableTemplate.items, "FW4C_export_" + new Date().getTime());
 									}
 								}
@@ -110,7 +111,7 @@ export class ListConsumerComponent implements OnInit {
 				{
 					icon: 'fa fa-download',
 					customClass: 'info',
-					title: () => 'Download',
+					title: () => ConsumerConstant.Download,
 					executeAsync: () => {
 						var data = [
 							{
@@ -127,14 +128,14 @@ export class ListConsumerComponent implements OnInit {
 				{
 					icon: "fa fa-download",
 					customClass: "success",
-					title: () => "Import",
+					title: () => ConsumerConstant.Import,
 					executeAsync: () => {
 						this._modalService.showTemplateDialog(new TemplateViewModel({
 							template: ImportConsumerComponent,
 							validationKey: "ImportConsumerComponent",
-							title: "Import Consumer",
+							title: ConsumerConstant.MessageImport,
 							icon: 'fa fa-download',
-							btnAcceptTitle: "Import",
+							btnAcceptTitle: ConsumerConstant.Import,
 							data: {
 								reload: () => {
 									this.tableTemplate.reload().subscribe();
@@ -159,7 +160,7 @@ export class ListConsumerComponent implements OnInit {
 				{
 					icon: 'fa fa-save',
 					customClass: 'warning',
-					title: () => 'Save',
+					title: () => ConsumerConstant.Save,
 					hide: () => {
 						if (this.tableTemplate.changedRows.length > 0) {
 							return false;
@@ -185,8 +186,8 @@ export class ListConsumerComponent implements OnInit {
 					executeAsync: (consumer) => {
 						this._modalService.showConfirmDialog(
 							new ConfirmViewModel({
-								btnAcceptTitle: "Copy",
-								message: "Are you sure to copy this consumer?",
+								btnAcceptTitle: ConsumerConstant.Copy,
+								message: ConsumerConstant.MessageCopy,
 								acceptCallback: () => {
 									this.tableTemplate.copy(consumer, true, (cloneItem: ConsumerViewModel) => {
 										delete cloneItem.createdAtText;
@@ -226,8 +227,8 @@ export class ListConsumerComponent implements OnInit {
 								validationKey: "EditConsumerComponent",
 								template: EditConsumerComponent,
 								customSize: "modal-lg",
-								title: "Edit Consumer",
-								btnAcceptTitle: "Edit",
+								title: ConsumerConstant.MessageEdit,
+								btnAcceptTitle: ConsumerConstant.Edit,
 								data: {
 									reload: () => {
 										this.tableTemplate.reload().subscribe();
@@ -252,8 +253,8 @@ export class ListConsumerComponent implements OnInit {
 					executeAsync: consumer => {
 						this._modalService.showConfirmDialog(
 							new ConfirmViewModel({
-								btnAcceptTitle: "Delete",
-								message: "Are you sure to delete this consumer?",
+								btnAcceptTitle: ConsumerConstant.Delete,
+								message: ConsumerConstant.MessageDelete,
 								acceptCallback: () => {
 									this._consumerService.deleteConsumer(consumer.id).subscribe(() => {});
 								}
@@ -266,7 +267,7 @@ export class ListConsumerComponent implements OnInit {
 					customClass: 'danger',
 					lazyload: true,
 					icon: "fa fa-trash-o",
-					title: () => "Remove",
+					title: () => ConsumerConstant.Remove,
 					executeAsync: (item, element, provider: TableComponent) => {
 						console.log(provider.selectedItems);
 						let select = this.tableTemplate.selectedItems;
@@ -281,7 +282,7 @@ export class ListConsumerComponent implements OnInit {
 					type: TableConstant.ActionType.Toolbar,
 					customClass: 'success',
 					icon: "fa fa-copyright",
-					title: () => "Copy",
+					title: () => ConsumerConstant.Copy,
 					executeAsync: () => {
 						let select = this._dataService.cloneItems(this.tableTemplate.selectedItems);
 						for (let index = 0; index < select.length; index++) {
@@ -316,7 +317,7 @@ export class ListConsumerComponent implements OnInit {
 			mainColumns: [
 				{
 					type: TableColumnType.String,
-					title: () => "Username",
+					title: () => ConsumerConstant.UserName,
 					valueRef: () => "username",
 					width: 300,
 					allowFilter: false,
@@ -331,7 +332,7 @@ export class ListConsumerComponent implements OnInit {
 				},
 				{
 					type: TableColumnType.String,
-					title: () => "Custom_ID",
+					title: () => ConsumerConstant.Custom_Id,
 					valueRef: () => "custom_id",
 					allowFilter: true,
 					validationOption: new ValidationOption({
@@ -344,7 +345,7 @@ export class ListConsumerComponent implements OnInit {
 				},
 				{
 					type: TableColumnType.String,
-					title: () => "Tags",
+					title: () => ConsumerConstant.Tags,
 					valueRef: () => "tags",
 					allowFilter: true,
 					validationOption: new ValidationOption({
@@ -357,7 +358,7 @@ export class ListConsumerComponent implements OnInit {
 				},
 				{
 					type: TableColumnType.DateTime,
-					title: () => "Created",
+					title: () => ConsumerConstant.Created_At,
 					valueRef: () => "created_at_2",
 					allowFilter: true
 				}
