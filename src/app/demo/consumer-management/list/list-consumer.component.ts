@@ -275,11 +275,11 @@ export class ListConsumerComponent implements OnInit {
 						for (let index = 0; index < select.length; index++) {
 							this._consumerService.deleteConsumer(select[index].id).subscribe(() => {
 								if (index == select.length - 1) {
-
+									this.tableTemplate.reload();
 								}
 							});
 						}
-						this.tableTemplate.reload();
+
 					}
 				},
 				{
@@ -294,7 +294,7 @@ export class ListConsumerComponent implements OnInit {
 							delete element.createdAtText;
 							if (element.username !== null) {
 								let checkUsername = element.username && this.data.filter((x: any) => x.username && x.username.includes(element.username)
-									&& x.username.length >= element.username.length + 5 && x.username.length <= element.username.length + 7)
+									&& x.username.length >= element.username.length + 5 && x.username.length <= element.username.length + 10)
 								if (checkUsername) {
 									if (element.custom_id !== null) {
 										element.username = element.username + '_copy' + (checkUsername.length + 1);
@@ -307,14 +307,16 @@ export class ListConsumerComponent implements OnInit {
 							}
 							if (element.username === null) {
 								let checkCustom_id = element.custom_id && this.data.filter((x: any) => x.custom_id && x.custom_id.includes(element.custom_id)
-									&& x.custom_id.length >= element.custom_id.length + 5 && x.custom_id.length <= element.custom_id.length + 7)
+									&& x.custom_id.length >= element.custom_id.length + 5 && x.custom_id.length <= element.custom_id.length + 10)
 								if (checkCustom_id) {
 									element.custom_id = element.custom_id + '_copy' + (checkCustom_id.length + 1);
 								}
 							}
 							this.data.push(element)
 							this._consumerService.createConsumer(element, new ConsumerRequest({})).subscribe(() => {
-								this.tableTemplate.reload();
+								if (index === select.length - 1) {
+									this.tableTemplate.reload();
+								}
 							});
 						}
 					}

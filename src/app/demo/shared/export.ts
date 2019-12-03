@@ -47,7 +47,6 @@ export class ExportFile {
         }
         const separator = ',';
         const keys = Object.keys(data[0]);
-        console.log('keys: ', keys);
         const excel =
             keys.join(separator) +
             '\n' +
