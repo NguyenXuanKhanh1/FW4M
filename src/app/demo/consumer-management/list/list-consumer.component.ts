@@ -32,24 +32,7 @@ export class ListConsumerComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		// this.getData();
 		this.initTable();
-	}
-	private getData(): void {
-		this.data = [];
-		this._consumerService.readConsumer().subscribe(res => {
-			for (let index = 0; index < res.totalRecords; index++) {
-				this.data.push({
-					custom_id: res.items[index].custom_id,
-					id: res.items[index].id,
-					tags: res.items[index].tags,
-					username: res.items[index].username,
-					created_at_2: res.items[index].created_at_2,
-					created_at: res.items[index].created_at
-				});
-			}
-			this.tableTemplate.reload(true);
-		});
 	}
 
 	private initTable() {
