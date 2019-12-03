@@ -175,7 +175,7 @@ export class ListConsumerComponent implements OnInit {
 						for (let index = 0; index < editLine.length; index++) {
 							const element = editLine[index];
 							delete element.currentItem.created_at_2;
-							this._consumerService.updateConsumer(element.currentItem.id, element.currentItem).subscribe(() => {
+							this._consumerService.updateConsumer(element.currentItem.id, element.currentItem, new ConsumerRequest({})).subscribe(() => {
 								this.tableTemplate.changedRows = [];
 							})
 						}
