@@ -1,14 +1,15 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, ValidationOption, CustomValidationRule } from "ngx-fw4c";
+import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, TableConstant, TableMode, TableColumnType, CustomValidationRule, ValidationOption } from "ngx-fw4c";
 import { ConsumerManagementService } from "../consumer-management.service";
-import { EditConsumerComponent } from "../edit/edit-consumer.component";
-import { ConsumerViewModel, ConsumerDeleteRequest, ConsumerRequest } from '../consumer.model';
-import { ImportConsumerComponent } from '../import/import-consumer.component';
+import { HttpClient } from "@angular/common/http";
+import { of } from "rxjs";
 import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
 import { ExportConsumerComponent } from '../export/export-consumer.component';
+import { ConsumerRequest, ConsumerViewModel } from '../consumer.model';
 import { map } from 'rxjs/operators';
-import { of } from 'zen-observable';
 import { ConsumerConstant } from '../consumer.const';
+import { EditConsumerComponent } from '../edit';
+import { ImportConsumerComponent } from '../import';
 import { ExportFile } from '../../shared/export';
 import { ValidateConsumer } from '../../shared/validate';
 @Component({
@@ -67,7 +68,8 @@ export class ListConsumerComponent implements OnInit {
 								btnAcceptTitle: ConsumerConstant.Add,
 								acceptCallback: (response, close, provider: EditConsumerComponent) => {
 									item = provider.item;
-									this._consumerService.createConsumer(item).subscribe(() => {
+									console.log(item);
+									this._consumerService.createConsumer(item, new ConsumerRequest({})).subscribe(() => {
 										this.tableTemplate.reload();
 									});
 								}
@@ -148,8 +150,10 @@ export class ListConsumerComponent implements OnInit {
 										delete response[index].tags;
 										response[index].tags = tags;
 									}
-									this._consumerService.createConsumer(response[index]).subscribe(() => {
-										this.tableTemplate.reload();
+									this._consumerService.createConsumer(response[index], new ConsumerRequest({})).subscribe(() => {
+										if (index == response.length - 1) {
+
+										}
 									});
 								}
 							}
@@ -209,8 +213,7 @@ export class ListConsumerComponent implements OnInit {
 												cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkCustom_id.length + 1);
 											}
 										}
-										this._consumerService.createConsumer(cloneItem).subscribe(() => {
-											this.tableTemplate.reload();
+										this._consumerService.createConsumer(cloneItem, new ConsumerRequest({})).subscribe(() => {
 										});
 									})
 								}
@@ -238,7 +241,7 @@ export class ListConsumerComponent implements OnInit {
 									this.tableTemplate.reload();
 								},
 								acceptCallback: (response, close, provider) => {
-									this._consumerService.updateConsumer(provider.item.id, provider.item).subscribe(() => {
+									this._consumerService.updateConsumer(provider.item.id, provider.item, new ConsumerRequest({})).subscribe(() => {
 										this.tableTemplate.reload()
 									});
 
@@ -255,9 +258,7 @@ export class ListConsumerComponent implements OnInit {
 								btnAcceptTitle: ConsumerConstant.Delete,
 								message: ConsumerConstant.MessageDelete,
 								acceptCallback: () => {
-									this._consumerService.deleteConsumer(consumer.id).subscribe(() => {
-										this.tableTemplate.reload();
-									});
+									this._consumerService.deleteConsumer(consumer.id).subscribe(() => { });
 								}
 							})
 						);
@@ -273,7 +274,11 @@ export class ListConsumerComponent implements OnInit {
 						console.log(provider.selectedItems);
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
-							this._consumerService.deleteConsumer(select[index].index).subscribe(() => { });
+							this._consumerService.deleteConsumer(select[index].id).subscribe(() => {
+								if (index == select.length - 1) {
+
+								}
+							});
 						}
 						this.tableTemplate.reload();
 					}
@@ -309,9 +314,7 @@ export class ListConsumerComponent implements OnInit {
 								}
 							}
 							this.data.push(element)
-							this._consumerService.createConsumer(element).subscribe(() => {
-								this.tableTemplate.reload();
-							});
+							this._consumerService.createConsumer(element, new ConsumerRequest({})).subscribe(() => { });
 						}
 					}
 				}
