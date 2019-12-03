@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild, Input, AfterViewInit } from "
 import { ConsumerViewModel } from "../consumer.model";
 import { Observable, of } from "rxjs";
 import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
+import { ConsumerConstant } from '../consumer.const';
 import { ValidateConsumer } from '../../shared/validate';
 
 @Component({
@@ -16,9 +17,9 @@ export class EditConsumerComponent implements AfterViewInit {
 	@Input() public reload: () => any;
 
 	public label = {
-		username: "Username",
-		custom_id: "Custom ID",
-		tags: "Tags"
+		username: ConsumerConstant.UserName,
+		custom_id: ConsumerConstant.Custom_Id,
+		tags: ConsumerConstant.Tags
 	};
 
 	constructor(
@@ -39,7 +40,7 @@ export class EditConsumerComponent implements AfterViewInit {
 				rules: [
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
-							message: "At least one of these fields must be non-empty: 'custom_id', 'username'",
+							message: ConsumerConstant.MessageValidationEmpty,
 							status: this.item.username != undefined || this.item.custom_id != undefined
 						}));
 					}, true),
@@ -54,7 +55,7 @@ export class EditConsumerComponent implements AfterViewInit {
 				rules: [
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
-							message: "At least one of these fields must be non-empty: 'custom_id', 'username'",
+							message: ConsumerConstant.MessageValidationEmpty,
 							status: this.item.username != undefined || this.item.custom_id != undefined
 						}));
 					}),
