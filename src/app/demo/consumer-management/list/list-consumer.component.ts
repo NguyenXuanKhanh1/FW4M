@@ -84,9 +84,10 @@ export class ListConsumerComponent implements OnInit {
 								btnAcceptTitle: "Add",
 								acceptCallback: (response, close, provider: EditConsumerComponent) => {
 									item = provider.item;
-									console.log(item);
-									
-									this._consumerService.createConsumer(item).subscribe(() => {});
+									console.log(item);									
+									this._consumerService.createConsumer(item).subscribe(() => {
+										this.tableTemplate.reload();
+									});
 								}
 							})
 						);
@@ -116,7 +117,7 @@ export class ListConsumerComponent implements OnInit {
 										this.tableTemplate.exportToExcel("FW4C_export_" + new Date().getTime());
 									}
 									if (data === 'PDF') {
-										this._consumerService.exportToPdf(this.tableTemplate.items, "FW4C_export_" + new Date().getTime());
+										// exportToPdf(this.tableTemplate.items, "FW4C_export_" + new Date().getTime());
 									}
 								}
 							})
@@ -253,7 +254,11 @@ export class ListConsumerComponent implements OnInit {
 								cancelCallback: () => {
 									this.tableTemplate.reload();
 								},
-								acceptCallback: () => {
+								acceptCallback: (response, close, provider) => {
+									this._consumerService.updateConsumer(provider.item.id, provider.item).subscribe(() => {
+										this.tableTemplate.reload()
+									});
+				
 								}
 							})
 						);

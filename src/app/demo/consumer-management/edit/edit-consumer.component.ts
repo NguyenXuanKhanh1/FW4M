@@ -89,7 +89,7 @@ export class EditConsumerComponent implements AfterViewInit {
 
 	public callback(): Observable<any> {
 		delete this.item.created_at_2;
-		return this._editConsumerService.updateConsumer(this.item.id, this.item);
+		return of(true)
 	}
 
 	public getValidator(): ValidationService {

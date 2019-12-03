@@ -30,7 +30,20 @@ export class ConsumerManagementService extends MockService {
   }
 
   public search(request: ConsumerSearchRequest): Observable<ConsumerSearchResponse> {
-    return this.http.get<any>(`${this.api}`, { params: request as any }).pipe(map(s => new ConsumerSearchResponse({ items: s.data })));
+    // return this.http.get<any>(`${this.api}`, { params: request as any }).pipe(map(s => new ConsumerSearchResponse({ items: s.data })));
+    return this.http.get<any>(`${this.api}`, { params: request as any }).pipe(map(s => 
+      {
+        for (let i = 0; i < s.data.length; i++) {
+          s.data[i].created_at_2 = s.data[i].created_at * 1000;
+        }
+        var response = {
+          status: true,
+          totalRecords: s.data.length,
+          items: s.data,
+        };
+        return response;
+      }
+      ));
   }
 
   public createConsumer(body: any): Observable<any> {
@@ -89,98 +102,4 @@ export class ConsumerManagementService extends MockService {
     FileSaver.saveAs(blob, excelFileName + '_export_' + new Date().getTime() + CSV_EXTENSION);
   }
 
-  public exportToExcel(jsonData: any[], fileName: string): void {
-    var data = [];
-    for (let index = 0; index < jsonData.length; index++) {
-      const element = jsonData[index];
-      element.tags = element.tags ? element.tags.toString() : null;
-      data.push(element);
-    }
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-    console.log('ws: ', ws)
-    const wb: XLSX.WorkBook = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    this.saveExcelFile(excelBuffer, fileName);
-  }
-
-  public exportToExcelWithHeader(jsonData: any[], fileName: string): void {
-    var data = [];
-    for (let index = 0; index < jsonData.length; index++) {
-      const element = jsonData[index];
-      element.tags = element.tags ? element.tags.toString() : null;
-      data.push(element);
-    }
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-    var range = XLSX.utils.decode_range(worksheet['!ref']);
-    let R = range.s.r
-    // for(var R = range.s.r; R <= range.e.r; ++R) {
-    for (var C = range.s.c; C <= range.e.c; ++C) {
-      var cell_address = { c: C, r: R };
-      const headerCell = worksheet[XLSX.utils.encode_cell(cell_address)];
-      headerCell.s = { rgb: "#FFFFFF" };
-    }
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    this.saveExcelFile(excelBuffer, 'test');
-  }
-
-  public downloadTemplate(fileName: string): void {
-    var data = [
-      {
-        custom_id: '',
-        id: '',
-        username: '',
-        tags: '',
-        created_at: ''
-      }
-    ];
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-    var range = XLSX.utils.decode_range(ws['!ref']);
-    let R = range.s.r
-    // for(var R = range.s.r; R <= range.e.r; ++R) {
-    for (var C = range.s.c; C <= range.e.c; ++C) {
-      var cell_address = { c: C, r: R };
-      const headerCell = ws[XLSX.utils.encode_cell(cell_address)];
-      headerCell.s = { font: { color: { rgb: "FFFFAA00" } } };
-      console.log(headerCell);
-    }
-    const wb: XLSX.WorkBook = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    this.saveExcelFile(excelBuffer, fileName);
-  }
-
-  private saveExcelFile(buffer: any, fileName: string): void {
-    const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
-    FileSaver.saveAs(data, fileName + EXCEL_EXTENTION);
-  }
-
-  public exportToPdf(data: any[], fileName: string) {
-    var dd = {
-      content: [
-        { text: 'Consumers', style: 'header' },
-        {
-          table: {
-            headerRows: 1,
-            body: [
-              [{ text: 'custom_id', style: 'tableHeader', color: 'white', bold: true },
-              { text: 'id', style: 'tableHeader', color: 'white', bold: true },
-              { text: 'tags', style: 'tableHeader', color: 'white', bold: true },
-              { text: 'username', style: 'tableHeader', color: 'white', bold: true },
-              { text: 'created', style: 'tableHeader', color: 'white', bold: true }]
-            ]
-          },
-          layout: {
-            fillColor: function (rowIndex, node, columnIndex) {
-              return (rowIndex % 2 === 0 && rowIndex != 0) ? '#FFFFFF' : (rowIndex === 0) ? '#5D9AD2' : '#DAECF9';
-            }
-          }
-        }
-      ]
-    }
-    for (let index = 0; index < data.length; index++) {
-      dd.content[1].table.body.push([data[index].custom_id, data[index].id, data[index].tags, data[index].username, data[index].created_at])
-    }
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
-    pdfMake.createPdf(dd).download(fileName);
-  }
 }
