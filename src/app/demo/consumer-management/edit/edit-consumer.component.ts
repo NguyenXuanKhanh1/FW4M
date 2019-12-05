@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, Input, AfterViewInit } from "@angular/core";
+import { Component, ElementRef, ViewChild, Input, AfterViewInit } from "@angular/core";
 import { ConsumerViewModel } from "../consumer.model";
 import { Observable, of } from "rxjs";
 import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
@@ -41,7 +41,7 @@ export class EditConsumerComponent implements AfterViewInit {
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
 							message: ConsumerConstant.MessageValidationEmpty,
-							status: this.item.username != undefined || this.item.custom_id != undefined
+							status: this.item.username != undefined || this.item.customId != undefined
 						}));
 					}, true),
 					new CustomValidationRule(value => {
@@ -51,12 +51,12 @@ export class EditConsumerComponent implements AfterViewInit {
 			}),
 			new ValidationOption({
 				validationName: 'Custom_id',
-				valueResolver: () => this.item.custom_id,
+				valueResolver: () => this.item.customId,
 				rules: [
 					new CustomValidationRule(value => {
 						return of(new ValidationRuleResponse({
 							message: ConsumerConstant.MessageValidationEmpty,
-							status: this.item.username != undefined || this.item.custom_id != undefined
+							status: this.item.username != undefined || this.item.customId != undefined
 						}));
 					}),
 					new CustomValidationRule(value => {
@@ -86,7 +86,6 @@ export class EditConsumerComponent implements AfterViewInit {
 	}
 
 	public callback(): Observable<any> {
-		delete this.item.createdAtText;
 		return of(true)
 	}
 
