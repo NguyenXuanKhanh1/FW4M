@@ -13,7 +13,7 @@ const header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }
 })
 
 export class ConsumerManagementService {
-	protected api: string = 'http://192.168.110.61:8001/consumers';
+	protected api: string = 'http://13.251.173.60:8001/consumers';
 	constructor(private http: HttpClient, private _system: SystemConstant) { }
 	public search(request: ConsumerSearchRequest): Observable<any> {
 		return this.http.get<any>(`${this.api}`, { params: request as any }).pipe(map(s => {
@@ -37,8 +37,6 @@ export class ConsumerManagementService {
 		return this.http.patch<any>(`${this.api}/${id}`, body, header);
 	}
 	public deleteConsumer(id: string) {
-		return this.http.delete(
-			this._system.apiURL + this._system.consumers + "/" + id
-		);
+		return this.http.delete<any>(`${this.api}/${id}`);
 	}
 }

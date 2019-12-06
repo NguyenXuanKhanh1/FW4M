@@ -43,8 +43,6 @@ export class ListConsumerComponent implements OnInit {
 						let consumer = new ConsumerViewModel(s.items[index].id, s.items[index].custom_id, s.items[index].tags, s.items[index].username, s.items[index].created_at * 1000);
 						consumers.push(consumer);
 					}
-					console.log(consumers);
-					
 					return consumers;
 				}));
 			},
@@ -75,9 +73,6 @@ export class ListConsumerComponent implements OnInit {
 								btnAcceptTitle: ConsumerConstant.Add,
 								acceptCallback: (response, close, provider: EditConsumerComponent) => {
 									var consumer = new ConsumerKongModel(provider.item.customId, provider.item.tags, provider.item.username)
-
-									console.log(consumer);
-									
 									this._consumerService.createConsumer(consumer, new ConsumerRequest({})).subscribe(() => {
 										this.tableTemplate.reload();
 									});
@@ -186,45 +181,48 @@ export class ListConsumerComponent implements OnInit {
 				}
 			],
 			actions: [
-				// {
-				// 	icon: "fa fa-copy",
-				// 	executeAsync: (consumer) => {
-				// 		this._modalService.showConfirmDialog(
-				// 			new ConfirmViewModel({
-				// 				btnAcceptTitle: ConsumerConstant.Copy,
-				// 				message: ConsumerConstant.MessageCopy,
-				// 				acceptCallback: () => {
-				// 					this.tableTemplate.copy(consumer, true, (cloneItem: ConsumerViewModel) => {
-				// 						delete cloneItem.createdAtText;
-				// 						if (cloneItem.username !== null) {
-				// 							let checkUsername = cloneItem.username && this.data.filter((x: any) => x.username && x.username.includes(cloneItem.username)
-				// 								&& x.username.length >= cloneItem.username.length + 6 && x.username.length <= cloneItem.username.length + 10)
-				// 							if (checkUsername) {
-				// 								if (cloneItem.custom_id !== null) {
-				// 									cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
-				// 									cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkUsername.length + 1)
-				// 								}
-				// 								else {
-				// 									cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
-				// 								}
-				// 							}
-				// 						}
-				// 						if (cloneItem.username === null) {
-				// 							let checkCustom_id = cloneItem.custom_id && this.data.filter((x: any) => x.customId && x.customId.includes(cloneItem.custom_id)
-				// 								&& x.customId.length >= cloneItem.custom_id.length + 6 && x.customId.length <= cloneItem.custom_id.length + 10)
-				// 							if (checkCustom_id) {
-				// 								cloneItem.custom_id = cloneItem.custom_id + '_copy' + (checkCustom_id.length + 1);
-				// 							}
-				// 						}
-				// 						this._consumerService.createConsumer(cloneItem, new ConsumerRequest({})).subscribe(() => {
-				// 							this.tableTemplate.reload();
-				// 						});
-				// 					})
-				// 				}
-				// 			})
-				// 		);
-				// 	}
-				// },
+				{
+					icon: "fa fa-copy",
+					executeAsync: (consumer) => {
+						this._modalService.showConfirmDialog(
+							new ConfirmViewModel({
+								btnAcceptTitle: ConsumerConstant.Copy,
+								message: ConsumerConstant.MessageCopy,
+								acceptCallback: () => {
+									this.tableTemplate.copy(consumer, true, (cloneItem: ConsumerViewModel) => {
+										console.log(consumer);
+										console.log(this.data);
+										
+										
+										if (cloneItem.username !== null) {
+											let checkUsername = cloneItem.username && this.data.filter((x: any) => x.username && x.username.includes(cloneItem.username)
+												&& x.username.length >= cloneItem.username.length + 6 && x.username.length <= cloneItem.username.length + 10)
+											if (checkUsername) {
+												if (cloneItem.customId !== null) {
+													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
+													cloneItem.customId = cloneItem.customId + '_copy' + (checkUsername.length + 1)
+												}
+												else {
+													cloneItem.username = cloneItem.username + '_copy' + (checkUsername.length + 1);
+												}
+											}
+										}
+										if (cloneItem.username === null) {
+											let checkCustom_id = cloneItem.customId && this.data.filter((x: any) => x.customId && x.customId.includes(cloneItem.customId)
+												&& x.customId.length >= cloneItem.customId.length + 6 && x.customId.length <= cloneItem.customId.length + 10)
+											if (checkCustom_id) {
+												cloneItem.customId = cloneItem.customId + '_copy' + (checkCustom_id.length + 1);
+											}
+										}
+										this._consumerService.createConsumer(new ConsumerKongModel(cloneItem.customId, cloneItem.tags, cloneItem.username), new ConsumerRequest({})).subscribe(() => {
+											this.tableTemplate.reload();
+										});
+									})
+								}
+							})
+						);
+					}
+				},
 				{
 					icon: "fa fa-edit",
 					executeAsync: consumer => {
@@ -292,17 +290,16 @@ export class ListConsumerComponent implements OnInit {
 					icon: "fa fa-copyright",
 					title: () => ConsumerConstant.Copy,
 					executeAsync: () => {
-						let select = this._dataService.cloneItems(this.tableTemplate.selectedItems);
+						let select = this._dataService.cloneItems(this.tableTemplate.selectedItems);				
 						for (let index = 0; index < select.length; index++) {
 							let element = select[index];
-							delete element.createdAtText;
 							if (element.username !== null) {
 								let checkUsername = element.username && this.data.filter((x: any) => x.username && x.username.includes(element.username)
 									&& x.username.length >= element.username.length + 5 && x.username.length <= element.username.length + 10)
 								if (checkUsername) {
-									if (element.custom_id !== null) {
+									if (element.customId !== null) {
 										element.username = element.username + '_copy' + (checkUsername.length + 1);
-										element.custom_id = element.custom_id + '_copy' + (checkUsername.length + 1)
+										element.customId = element.customId + '_copy' + (checkUsername.length + 1)
 									}
 									else {
 										element.username = element.username + '_copy' + (checkUsername.length + 1);
@@ -310,14 +307,16 @@ export class ListConsumerComponent implements OnInit {
 								}
 							}
 							if (element.username === null) {
-								let checkCustom_id = element.custom_id && this.data.filter((x: any) => x.custom_id && x.custom_id.includes(element.custom_id)
-									&& x.custom_id.length >= element.custom_id.length + 5 && x.custom_id.length <= element.custom_id.length + 10)
+								let checkCustom_id = element.customId && this.data.filter((x: any) => x.customId && x.customId.includes(element.customId)
+									&& x.customId.length >= element.customId.length + 5 && x.customId.length <= element.customId.length + 10)
 								if (checkCustom_id) {
-									element.custom_id = element.custom_id + '_copy' + (checkCustom_id.length + 1);
+									element.customId = element.customId + '_copy' + (checkCustom_id.length + 1);
 								}
 							}
+							
 							this.data.push(element)
-							this._consumerService.createConsumer(element, new ConsumerRequest({})).subscribe(() => {
+							
+							this._consumerService.createConsumer(new ConsumerKongModel(element.customId, element.tags, element.username), new ConsumerRequest({})).subscribe(() => {
 								if (index === select.length - 1) {
 									this.tableTemplate.reload();
 								}
