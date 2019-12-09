@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild, Input, AfterViewInit } from "@angular/core";
 import { ConsumerViewModel } from "../consumer.model";
 import { Observable, of } from "rxjs";
-import { ValidationOption, RequiredValidationRule, ClientValidator, ValidationService, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
+import { ValidationOption, ClientValidator, ValidationService, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
 import { ConsumerConstant } from '../consumer.const';
 import { ValidateConsumer } from '../../shared/validate';
 
@@ -17,9 +17,9 @@ export class EditConsumerComponent implements AfterViewInit {
 	@Input() public reload: () => any;
 
 	public label = {
-		username: ConsumerConstant.UserName,
-		custom_id: ConsumerConstant.Custom_Id,
-		tags: ConsumerConstant.Tags
+		username: ConsumerConstant.UserNameLabel,
+		custom_id: ConsumerConstant.Custom_IdLabel,
+		tags: ConsumerConstant.TagsLabel
 	};
 
 	constructor(
@@ -38,7 +38,7 @@ export class EditConsumerComponent implements AfterViewInit {
 				valueResolver: () => this.item.username,
 				relevantFields: () => ['Custom_id'],
 				rules: [
-					new CustomValidationRule(value => {
+					new CustomValidationRule(() => {
 						return of(new ValidationRuleResponse({
 							message: ConsumerConstant.MessageValidationEmpty,
 							status: this.item.username != undefined || this.item.customId != undefined
@@ -53,7 +53,7 @@ export class EditConsumerComponent implements AfterViewInit {
 				validationName: 'Custom_id',
 				valueResolver: () => this.item.customId,
 				rules: [
-					new CustomValidationRule(value => {
+					new CustomValidationRule(() => {
 						return of(new ValidationRuleResponse({
 							message: ConsumerConstant.MessageValidationEmpty,
 							status: this.item.username != undefined || this.item.customId != undefined

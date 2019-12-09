@@ -4,7 +4,6 @@ export class ConsumerKongModel {
     custom_id?: string;
     tags?: string[];
     username?: string;
-
     constructor(custom_id?: string, tags?: string[], username?: string) {
         this.custom_id = custom_id;
         this.tags = tags;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ValidationService, ClientValidator } from 'ngx-fw4c';
 import { Observable, of } from 'rxjs';
 import * as XLSX from 'xlsx';
@@ -9,7 +9,6 @@ import * as XLSX from 'xlsx';
 	styleUrls: ['./import-consumer.component.scss']
 })
 export class ImportConsumerComponent implements AfterViewInit {
-
 	public fileUploaded: File;
 	public data: any = [];
 	public arrayBuffer: any;

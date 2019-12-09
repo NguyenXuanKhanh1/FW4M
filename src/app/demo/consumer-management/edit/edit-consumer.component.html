@@ -1,9 +1,9 @@
 <katana-card>
     <div #formRef>
       <katana-form [column]="1">
-        <katana-textbox [title]= "label.username" [validationName]="'Username'" [(model)]="item.username" *katana-item></katana-textbox>
+        <katana-textbox [title]= "label.username" [validationName]="'Username'" [(model)]="item.username" *katana-item></katana-textbox>   
         <katana-textbox [title]="label.custom_id" [validationName]="'Custom_id'" [(model)]="item.customId" *katana-item></katana-textbox>		
       </katana-form>
-      <katana-chips [title]="label.tags" name="tags" id="tags" [validationName]="'Tags'" [(model)]="item.tags"></katana-chips>
+      <katana-chips [title]="label.tags" name="tags" id="tags" [validationName]="'Tags (optional)'" [(model)]="item.tags"></katana-chips>
     </div>
   </katana-card>
