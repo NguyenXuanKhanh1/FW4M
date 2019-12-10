@@ -1,8 +1,7 @@
 <katana-card>
-    <katana-table [option]="option" #tableTemplate>
-      <ng-template let-item="item" katana-row-detail>
-        <pre>{{ item | json }}</pre>
-      </ng-template>
-    </katana-table>
-  </katana-card>
-  
+  <katana-table [option]="option" #tableTemplate>
+    <ng-template let-item="item" katana-row-detail>
+      <pre>{{ item | json }}</pre>
+    </ng-template>
+  </katana-table>
+</katana-card>

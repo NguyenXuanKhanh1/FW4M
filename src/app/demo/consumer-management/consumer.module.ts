@@ -8,7 +8,6 @@ import { ImportConsumerComponent } from './import';
 import { ExportConsumerComponent } from './export';
 import { EditConsumerComponent } from './edit';
 
-
 const declarations = [
   ListConsumerComponent,
   EditConsumerComponent,

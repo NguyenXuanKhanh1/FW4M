@@ -35,7 +35,7 @@ export class ExportFile {
             ]
         }
         for (let index = 0; index < data.length; index++) {
-            dd.content[1].table.body.push([data[index].custom_id, data[index].id, data[index].tags, data[index].username, data[index].created_at])
+            dd.content[1].table.body.push([data[index].customId, data[index].id, data[index].tags, data[index].username, data[index].createdAt])
         }
         pdfMake.vfs = pdfFonts.pdfMake.vfs;
         pdfMake.createPdf(dd).download(fileName);

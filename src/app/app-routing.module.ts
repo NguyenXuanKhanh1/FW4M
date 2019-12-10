@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MenuTab, AdminLayoutComponent, AuthComponent } from 'ngx-fw4c';
 import { DashboardDemoComponent } from './demo/dashboard';
-import { ServiceManagementComponent } from './demo/service-management/service-management.component';
-import { EditConsumerComponent } from './demo/consumer-management/edit';
 import { ListConsumerComponent } from './demo/consumer-management/list';
 
 const menuTabs: MenuTab[] = [
@@ -18,15 +16,8 @@ const menuTabs: MenuTab[] = [
         ]
       },
       {
-        label: 'Service Management',
-        icon: 'fa fa-bar-chart',
-        children: [
-          { state: 'service', name: 'Service', type: 'link', icon: 'fa fa-calendar-check-o' }
-        ]
-      },
-      {
         label: 'Consumer Management',
-        icon: 'fa fa-line-chart',
+        icon: 'fa fa-user-circle',
         children: [
           { state: 'consumer', name: 'Consumer', type: 'link', icon: 'fa fa-calendar-check-o' }
         ]
@@ -45,19 +36,13 @@ const routes: Routes = [
       },
       menuTabs: menuTabs,
       menuType: 'TOP',
-      // recommendation: {
-      //   template: ConsumerManagementComponent
-      // }
     },
     children: [      
       {
         path: 'dashboard',
         component: DashboardDemoComponent
       },
-      {
-        path: 'service',
-        component: ServiceManagementComponent
-      },
+
       {
         path: 'consumer',
         component: ListConsumerComponent

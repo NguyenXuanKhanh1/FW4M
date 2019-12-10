@@ -1,16 +1,11 @@
-import { Injectable, OnInit } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import * as FileSaver from 'file-saver';
-import { ConsumerRequest, ConsumerSearchRequest, ConsumerSearchResponse, ConsumerDeleteRequest, ConsumerDeleteResponse } from './consumer.model';
+import { ConsumerRequest, ConsumerSearchRequest, ConsumerSearchResponse, ConsumerDeleteRequest, ConsumerDeleteResponse, ConsumerViewModel } from './consumer.model';
 import { ConsumerResponse } from './consumer.model';
 import { SystemConstant } from '../common/system-constant';
 
-const CSV_TYPE = 'text/csv;charset=utf-8';
-const CSV_EXTENSION = '.csv';
-const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-const EXCEL_EXTENTION = '.xlsx';
 const header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
 @Injectable({
@@ -18,21 +13,20 @@ const header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }
 })
 
 export class ConsumerManagementService {
-	protected api: string = 'http://192.168.110.61:8001/consumers';
+	// protected api: string = 'http://13.251.173.60:8001/consumers';
+	protected api: string = 'http://192.168.35.108:8001/consumers';
+
 	constructor(private http: HttpClient, private _system: SystemConstant) { }
-	public search(request: ConsumerSearchRequest): Observable<ConsumerSearchResponse> {
+	
+	public search(request: ConsumerSearchRequest): Observable<any> {
 		return this.http.get<any>(`${this.api}`, { params: request as any }).pipe(map(s => {
-			for (let i = 0; i < s.data.length; i++) {
-				s.data[i].createdAtText = s.data[i].created_at * 1000;
-			}
 			var response = {
 				status: true,
 				totalRecords: s.data.length,
-				items: s.data,
+				items: s.data
 			};
 			return response;
-		}
-		));
+		}));
 	}
 
 	public createConsumer(body: any, request: ConsumerRequest): Observable<ConsumerResponse> {
@@ -40,11 +34,9 @@ export class ConsumerManagementService {
 	}
 
 	public updateConsumer(id: string, body: any, request: ConsumerRequest): Observable<ConsumerResponse> {
-		return this.http.put<any>(`${this.api}/${id}`, body, header);
+		return this.http.patch<any>(`${this.api}/${id}`, body, header);
 	}
-	public deleteConsumer(id: string) {
-		return this.http.delete(
-			this._system.apiURL + this._system.consumers + "/" + id
-		);
+	public deleteConsumer(id: string, request: ConsumerDeleteRequest): Observable<ConsumerDeleteResponse> {
+		return this.http.delete(`${this.api}/${id}`);
 	}
 }
