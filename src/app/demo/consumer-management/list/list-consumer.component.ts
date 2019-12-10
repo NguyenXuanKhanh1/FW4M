@@ -49,16 +49,8 @@ export class ListConsumerComponent implements OnInit {
 			},
 			inlineEdit: true,
 			mode: TableMode.full,
-			searchFields: ["username", "tags", "custom_id"],
+			searchFields: ["username", "tags", "customId"],
 			topButtons: [
-				{
-					icon: "fa fa-refresh",
-					customClass: "primary",
-					title: () => ConsumerConstant.Reload,
-					executeAsync: () => {
-						this.tableTemplate.reload();
-					}
-				},
 				{
 					icon: "fa fa-plus",
 					customClass: "primary",
@@ -74,9 +66,6 @@ export class ListConsumerComponent implements OnInit {
 								btnAcceptTitle: ConsumerConstant.Add,
 								acceptCallback: (response, close, provider: EditConsumerComponent) => {
 									var consumer = new ConsumerKongModel(provider.item.customId, provider.item.tags, provider.item.username)
-
-									console.log(consumer);
-
 									this._consumerService.createConsumer(consumer, new ConsumerRequest({})).subscribe(() => {
 										this.tableTemplate.reload();
 									});
@@ -131,7 +120,7 @@ export class ListConsumerComponent implements OnInit {
 					}
 				},
 				{
-					icon: "fa fa-download",
+					icon: "fa fa-upload",
 					customClass: "success",
 					title: () => ConsumerConstant.Import,
 					executeAsync: () => {
@@ -143,7 +132,6 @@ export class ListConsumerComponent implements OnInit {
 							btnAcceptTitle: ConsumerConstant.Import,
 							acceptCallback: (response) => {
 								for (let index = 0; index < response.length; index++) {
-									console.log('abc: ', response[index])
 									delete response[index].createdAt
 									delete response[index].customId
 									if (response[index].tags !== undefined) {
@@ -184,6 +172,7 @@ export class ListConsumerComponent implements OnInit {
 			actions: [
 				{
 					icon: "fa fa-edit",
+					customClass: "info",
 					executeAsync: consumer => {
 						this._modalService.showTemplateDialog(
 							new TemplateViewModel({
@@ -210,7 +199,8 @@ export class ListConsumerComponent implements OnInit {
 					}
 				},
 				{
-					icon: "fa fa-remove",
+					icon: "fa fa-trash",
+					customClass: "danger",
 					executeAsync: consumer => {
 						this._modalService.showConfirmDialog(
 							new ConfirmViewModel({
@@ -245,7 +235,7 @@ export class ListConsumerComponent implements OnInit {
 				{
 					type: TableConstant.ActionType.Toolbar,
 					customClass: 'success',
-					icon: "fa fa-copyright",
+					icon: "fa fa-clone",
 					title: () => ConsumerConstant.Copy,
 					executeAsync: () => {
 						var itemCopy = this._dataService.cloneItems(this.tableTemplate.selectedItems);
@@ -289,7 +279,7 @@ export class ListConsumerComponent implements OnInit {
 					type: TableColumnType.String,
 					title: () => ConsumerConstant.UserName,
 					valueRef: () => "username",
-					width: 300,
+					// width: 300,
 					allowFilter: false,
 					editInline: true,
 					validationOption: new ValidationOption({
@@ -303,6 +293,7 @@ export class ListConsumerComponent implements OnInit {
 				{
 					type: TableColumnType.String,
 					title: () => ConsumerConstant.Custom_Id,
+					// width: 200,
 					valueRef: () => "customId",
 					allowFilter: true,
 					validationOption: new ValidationOption({
@@ -315,6 +306,7 @@ export class ListConsumerComponent implements OnInit {
 				},
 				{
 					type: TableColumnType.String,
+					width: 200,
 					title: () => ConsumerConstant.Tags,
 					valueRef: () => "tags",
 					allowFilter: true,
@@ -328,6 +320,7 @@ export class ListConsumerComponent implements OnInit {
 				},
 				{
 					type: TableColumnType.DateTime,
+					width: 200,
 					title: () => ConsumerConstant.Created_At,
 					valueRef: () => "createdAt",
 					allowFilter: true
