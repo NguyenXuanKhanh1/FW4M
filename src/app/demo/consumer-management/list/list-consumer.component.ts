@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, 
-	TableConstant, TableMode, TableColumnType, CustomValidationRule, ValidationOption } from "ngx-fw4c";
+	TableConstant, TableMode, TableColumnType, CustomValidationRule, ValidationOption, AggregatorService, KeyConst } from "ngx-fw4c";
 import { ConsumerManagementService } from "../consumer-management.service";
 import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
 import { ExportConsumerComponent } from '../export/export-consumer.component';
@@ -28,10 +28,12 @@ export class ListConsumerComponent implements OnInit {
 		private _consumerService: ConsumerManagementService,
 		private _excelExportService: IgxExcelExporterService,
 		private _exportFile: ExportFile,
-		private _validateConsumer: ValidateConsumer
+		private _validateConsumer: ValidateConsumer,
+		private _agregatorService: AggregatorService,
 	) { }
 
 	ngOnInit() {
+		this.registerEvents()
 		this.initTable();
 	}
 
@@ -280,7 +282,7 @@ export class ListConsumerComponent implements OnInit {
 					title: () => ConsumerConstant.UserName,
 					valueRef: () => "username",
 					// width: 300,
-					allowFilter: false,
+					allowFilter: true,
 					editInline: true,
 					validationOption: new ValidationOption({
 						rules: [
@@ -331,6 +333,16 @@ export class ListConsumerComponent implements OnInit {
 					return this._consumerService.search(request);
 				}
 			}
+		});
+	}
+
+	private registerEvents(): void {
+		console.log('abc: ',KeyConst.Search);
+		this._agregatorService.subscribe(KeyConst.Search,(response: any) => {
+		  var filter = response.keyword;
+		  console.log('xyz: ',response.keyword)
+		  this.tableTemplate.setFilter('searchText',filter);
+		  this.tableTemplate.reload(true).subscribe();
 		});
 	}
 }
