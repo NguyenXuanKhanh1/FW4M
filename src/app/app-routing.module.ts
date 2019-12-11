@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MenuTab, AdminLayoutComponent, AuthComponent } from 'ngx-fw4c';
+import { MenuTab, AdminLayoutComponent, AuthComponent, AggregatorService, KeyConst, RecommendationComponent } from 'ngx-fw4c';
 import { DashboardDemoComponent } from './demo/dashboard';
 import { ListConsumerComponent } from './demo/consumer-management/list';
 
@@ -36,6 +36,12 @@ const routes: Routes = [
       },
       menuTabs: menuTabs,
       menuType: 'TOP',
+      recommendation: {
+        template: RecommendationComponent,
+        // data: {
+        //   item: KeyConst.Search
+        // }
+      }
     },
     children: [      
       {
