@@ -3,6 +3,7 @@ import { ValidationService, ClientValidator, ValidationOption, RequiredValidatio
 import { Observable, of } from 'rxjs';
 import { ConsumerConstant } from '../../../consumer.const';
 import { HttpClient } from '@angular/common/http';
+import { GroupViewModel, ConsumerViewModel } from '../../../consumer.model';
 
 @Component({
 	selector: 'app-group',
@@ -13,13 +14,12 @@ export class AddGroupComponent {
 
 	@ViewChild("formRef", { static: true }) public formRef: ElementRef;
 	@Input() public reload: () => any;
+	@Input() public groupViewModel = new GroupViewModel();
+	@Input() public item = new ConsumerViewModel();
 
-	public name: any;
-	public username: any;
-	public customId: any;
 
 	protected api: string = 'http://192.168.110.61:8001/consumers';
-
+	public groupName: any;
 	public label = {
 		name: ConsumerConstant.GroupLabel
 	};
@@ -35,13 +35,13 @@ export class AddGroupComponent {
 	}
 
 	public getName(): void {
-		this.username = [];
-		this._http.get(this.api).subscribe((res: any) => {
+		this.groupName = [];
+		this._http.get(this.api + '/' + this.item.id + '/' + 'acls').subscribe((res: any) => {
 			for (let index = 0; index < res.data.length; index++) {
-				if (res.data[index].username === this.name) {
+				if (res.data[index].username === this.groupViewModel.group) {
 					continue;
 				}
-				this.username.push(res.data[index].username);
+				this.groupName.push(res.data[index].username);
 			}
 		});
 	}
@@ -50,7 +50,7 @@ export class AddGroupComponent {
 		var options = [
 			new ValidationOption({
 				validationName: 'Name',
-				valueResolver: () => this.name,
+				valueResolver: () => this.groupViewModel.group,
 				rules: [
 					new RequiredValidationRule()
 				]

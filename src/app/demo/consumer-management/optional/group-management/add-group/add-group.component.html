@@ -1,1 +1,7 @@
-<p>add-group works!</p>
+<katana-card>
+	<div #formRef>
+		<katana-form [column]="1">
+			<katana-textbox [title]="label.name" [validationName]="'Name'" [(model)]="groupViewModel.group" *katana-item></katana-textbox>
+		</katana-form>
+	</div>
+</katana-card>

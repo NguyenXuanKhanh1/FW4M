@@ -82,12 +82,12 @@ export class ConsumerDeleteResponse extends BaseResponse<ConsumerViewModel> {
 //group
 export class GroupViewModel {
 	id?: string;
-	name?: string;
+	group?: string;
 	createdAt: number;
-	constructor(id?: string, name?: string, created_at?:number, init?: Partial<GroupViewModel>) {
+	constructor(id?: string, group?: string, created_at?:number, init?: Partial<GroupViewModel>) {
 		Object.assign(this, init);
 		this.id = id;
-		this.name = name;
+		this.group = group;
 		this.createdAt = created_at;
 	}
 }

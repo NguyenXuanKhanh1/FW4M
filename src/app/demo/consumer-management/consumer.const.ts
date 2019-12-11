@@ -25,6 +25,8 @@ export const enum ConsumerConstant {
 	GroupName = 'Group name',
 	OptionalLabel = 'Optional',
 	GroupLabel = 'Group name (required)',
+	MessageAddGroup = 'Add new group',
+	MessageDeleteGroup = 'Are you sure to delete this group?',
 	GroupListLabel = 'List group',
 	MessageAdd = 'Add New Consumer',
 	MessageImport = 'Import Consumer',
