@@ -11,6 +11,7 @@ import { IgxExcelExporterService } from 'igniteui-angular';
 import { ExportFile } from './demo/shared/export';
 import { ValidateConsumer } from './demo/shared/validate';
 import { SystemConstant } from './demo/common/system-constant';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { SystemConstant } from './demo/common/system-constant';
     FormsModule,
     ReactiveFormsModule,
     DemoModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule
   ],
   exports: [
     DemoModule

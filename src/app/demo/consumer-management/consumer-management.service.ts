@@ -14,7 +14,7 @@ const header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }
 
 export class ConsumerManagementService {
 	// protected api: string = 'http://13.251.173.60:8001/consumers';
-	protected api: string = 'http://192.168.35.108:8001/consumers';
+	protected api: string = 'http://192.168.110.61:8001/consumers';
 
 	constructor(private http: HttpClient, private _system: SystemConstant) { }
 	

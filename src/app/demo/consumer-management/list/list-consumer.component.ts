@@ -1,6 +1,8 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
-import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, 
-	TableConstant, TableMode, TableColumnType, CustomValidationRule, ValidationOption, AggregatorService, KeyConst } from "ngx-fw4c";
+import {
+	TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel,
+	TableConstant, TableMode, TableColumnType, CustomValidationRule, ValidationOption, AggregatorService, KeyConst
+} from "ngx-fw4c";
 import { ConsumerManagementService } from "../consumer-management.service";
 import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
 import { ExportConsumerComponent } from '../export/export-consumer.component';
@@ -11,6 +13,8 @@ import { EditConsumerComponent } from '../edit';
 import { ImportConsumerComponent } from '../import';
 import { ExportFile } from '../../shared/export';
 import { ValidateConsumer } from '../../shared/validate';
+import { ListGroupComponent } from '../optional/group-management/list-group';
+import { OptionalConsumerComponent } from '../optional';
 @Component({
 	selector: "app-consumer-management",
 	templateUrl: "./list-consumer.component.html",
@@ -172,6 +176,30 @@ export class ListConsumerComponent implements OnInit {
 				}
 			],
 			actions: [
+				{
+					icon: "fa fa-group",
+					customClass: "info",
+					executeAsync: consumer => {
+						this._modalService.showTemplateDialog(
+							new TemplateViewModel({
+								template: OptionalConsumerComponent,
+								customSize: "modal-lg",
+								icon: 'fa fa-info-circle',
+								title: ConsumerConstant.OptionalLabel,
+								btnAcceptTitle: 'Done' ,
+								data: {
+									item: this._dataService.cloneItem(consumer)
+								},
+								cancelCallback: () => {
+									this.tableTemplate.reload();
+								},
+								acceptCallback: () => {
+									this.tableTemplate.reload();
+								}
+							})
+						);
+					}
+				},
 				{
 					icon: "fa fa-edit",
 					customClass: "info",
@@ -337,12 +365,12 @@ export class ListConsumerComponent implements OnInit {
 	}
 
 	private registerEvents(): void {
-		console.log('abc: ',KeyConst.Search);
-		this._agregatorService.subscribe(KeyConst.Search,(response: any) => {
-		  var filter = response.keyword;
-		  console.log('xyz: ',response.keyword)
-		  this.tableTemplate.setFilter('searchText',filter);
-		  this.tableTemplate.reload(true).subscribe();
+		console.log('abc: ', KeyConst.Search);
+		this._agregatorService.subscribe(KeyConst.Search, (response: any) => {
+			var filter = response.keyword;
+			console.log('xyz: ', response.keyword)
+			this.tableTemplate.setFilter('searchText', filter);
+			this.tableTemplate.reload(true).subscribe();
 		});
 	}
 }
