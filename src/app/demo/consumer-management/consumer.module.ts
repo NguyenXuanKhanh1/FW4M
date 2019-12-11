@@ -7,24 +7,30 @@ import { ListConsumerComponent } from './list';
 import { ImportConsumerComponent } from './import';
 import { ExportConsumerComponent } from './export';
 import { EditConsumerComponent } from './edit';
+import { ListGroupComponent } from './optional/group-management/list-group';
+import { AddGroupComponent } from './optional/group-management/add-group';
+import { OptionalConsumerComponent } from './optional';
 
 const declarations = [
-  ListConsumerComponent,
-  EditConsumerComponent,
-  ImportConsumerComponent,
-  ExportConsumerComponent
+	ListConsumerComponent,
+	EditConsumerComponent,
+	ImportConsumerComponent,
+	ExportConsumerComponent,
+	ListGroupComponent,
+	AddGroupComponent,
+	OptionalConsumerComponent
 ];
 
 @NgModule({
-  declarations: declarations,
-  exports: declarations,
-  entryComponents: declarations,
-  imports: [
-    FormsModule,
-    HttpClientModule,
-    Framework4CModule.forRoot(),
-    BrowserModule,
-  ]
+	declarations: declarations,
+	exports: declarations,
+	entryComponents: declarations,
+	imports: [
+		FormsModule,
+		HttpClientModule,
+		Framework4CModule.forRoot(),
+		BrowserModule,
+	]
 })
 
 export class ConsumerModule { }
