@@ -7,12 +7,16 @@ import { ListConsumerComponent } from './list';
 import { ImportConsumerComponent } from './import';
 import { ExportConsumerComponent } from './export';
 import { EditConsumerComponent } from './edit';
+import { CredentialComponent } from './credential-management/list';
+import { EditCredentialComponent } from './credential-management/edit';
 
 const declarations = [
   ListConsumerComponent,
   EditConsumerComponent,
   ImportConsumerComponent,
-  ExportConsumerComponent
+  ExportConsumerComponent,
+  CredentialComponent,
+  EditCredentialComponent,
 ];
 
 @NgModule({

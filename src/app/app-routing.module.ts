@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { MenuTab, AdminLayoutComponent, AuthComponent, AggregatorService, KeyConst, RecommendationComponent } from 'ngx-fw4c';
 import { DashboardDemoComponent } from './demo/dashboard';
 import { ListConsumerComponent } from './demo/consumer-management/list';
+import { CredentialComponent } from './demo/consumer-management/credential-management/list';
 
 const menuTabs: MenuTab[] = [
   {
@@ -21,6 +22,13 @@ const menuTabs: MenuTab[] = [
         children: [
           { state: 'consumer', name: 'Consumer', type: 'link', icon: 'fa fa-calendar-check-o' }
         ]
+      }, 
+      {
+        label: 'basic',
+        icon: 'fa fa-shield',
+        children: [
+          { state: 'basic-auth', name: 'Basic', type: 'link', icon: 'fa fa-shield' }
+        ]
       } 
     ]
   }
@@ -37,7 +45,7 @@ const routes: Routes = [
       menuTabs: menuTabs,
       menuType: 'TOP',
       recommendation: {
-        template: RecommendationComponent,
+        template: ListConsumerComponent,
         // data: {
         //   item: KeyConst.Search
         // }
@@ -51,7 +59,17 @@ const routes: Routes = [
 
       {
         path: 'consumer',
-        component: ListConsumerComponent
+        component: ListConsumerComponent,
+        children: [
+          // {
+          //   path: 'basic-auth',
+          //   component: CredentialComponent
+          // }
+        ]
+      },
+      {
+        path: 'basic-auth',
+        component: CredentialComponent
       },
       {
         path: 'auth',

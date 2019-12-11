@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from "@angular/core";
+import { Component, ViewChild, OnInit, TemplateRef } from "@angular/core";
 import { TableOption, ModalService, DataService, TemplateViewModel, TableComponent, ConfirmViewModel, 
 	TableConstant, TableMode, TableColumnType, CustomValidationRule, ValidationOption, AggregatorService, KeyConst } from "ngx-fw4c";
 import { ConsumerManagementService } from "../consumer-management.service";
@@ -21,6 +21,7 @@ export class ListConsumerComponent implements OnInit {
 	public option: TableOption;
 	public data = [];
 	@ViewChild("tableTemplate", { static: true }) public tableTemplate: TableComponent;
+	@ViewChild("detailTemplate", {static: true}) public datailTemplate: TemplateRef<any>;
 
 	constructor(
 		private _modalService: ModalService,
@@ -96,7 +97,8 @@ export class ListConsumerComponent implements OnInit {
 										this._exportFile.exportToCSV(this.tableTemplate.items, 'FW4C')
 									}
 									if (data === ConsumerConstant.XLSX) {
-										this._excelExportService.exportData(this.tableTemplate.items, new IgxExcelExporterOptions("FW4C_export_" + new Date().getTime()));
+										this.tableTemplate.exportToExcel('FW4C');
+										// this._excelExportService.exportData(this.tableTemplate.items, new IgxExcelExporterOptions("FW4C_export_" + new Date().getTime()));
 									}
 									if (data === ConsumerConstant.PDF) {
 										this._exportFile.exportToPdf(this.tableTemplate.items, "FW4C_export_" + new Date().getTime());
@@ -165,7 +167,7 @@ export class ListConsumerComponent implements OnInit {
 							const element = editLine[index].currentItem;
 							var consumer = new ConsumerKongModel(element.customId, element.tags, element.username)
 							this._consumerService.updateConsumer(element.id, consumer, new ConsumerRequest({})).subscribe(() => {
-								this.tableTemplate.changedRows = [];
+								this.tableTemplate.resetChanges();
 							})
 						}
 					}
@@ -281,7 +283,6 @@ export class ListConsumerComponent implements OnInit {
 					type: TableColumnType.String,
 					title: () => ConsumerConstant.UserName,
 					valueRef: () => "username",
-					// width: 300,
 					allowFilter: true,
 					editInline: true,
 					validationOption: new ValidationOption({
@@ -295,7 +296,6 @@ export class ListConsumerComponent implements OnInit {
 				{
 					type: TableColumnType.String,
 					title: () => ConsumerConstant.Custom_Id,
-					// width: 200,
 					valueRef: () => "customId",
 					allowFilter: true,
 					validationOption: new ValidationOption({
@@ -339,6 +339,7 @@ export class ListConsumerComponent implements OnInit {
 	private registerEvents(): void {
 		console.log('abc: ',KeyConst.Search);
 		this._agregatorService.subscribe(KeyConst.Search,(response: any) => {
+			debugger
 		  var filter = response.keyword;
 		  console.log('xyz: ',response.keyword)
 		  this.tableTemplate.setFilter('searchText',filter);
