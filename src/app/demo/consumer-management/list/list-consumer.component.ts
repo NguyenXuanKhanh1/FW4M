@@ -177,7 +177,7 @@ export class ListConsumerComponent implements OnInit {
 			],
 			actions: [
 				{
-					icon: "fa fa-group",
+					icon: "fa fa-info",
 					customClass: "info",
 					executeAsync: consumer => {
 						this._modalService.showTemplateDialog(
@@ -365,10 +365,8 @@ export class ListConsumerComponent implements OnInit {
 	}
 
 	private registerEvents(): void {
-		console.log('abc: ', KeyConst.Search);
 		this._agregatorService.subscribe(KeyConst.Search, (response: any) => {
 			var filter = response.keyword;
-			console.log('xyz: ', response.keyword)
 			this.tableTemplate.setFilter('searchText', filter);
 			this.tableTemplate.reload(true).subscribe();
 		});

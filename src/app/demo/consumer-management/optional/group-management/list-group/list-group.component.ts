@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { TableComponent, ModalService, AggregatorService, KeyConst, TableOption, TableMode, TemplateViewModel, ConfirmViewModel, TableConstant, TableColumnType, ValidationOption, CustomValidationRule } from 'ngx-fw4c';
+import { TableComponent, ModalService, AggregatorService, KeyConst, TableOption, TableMode, TemplateViewModel, ConfirmViewModel, TableConstant, TableColumnType, ValidationOption, CustomValidationRule, ListComponent } from 'ngx-fw4c';
 import { GroupManagementService } from '../group-management.service';
 import { GroupRequest, GroupDeleteRequest, GroupViewModel, ConsumerViewModel } from '../../../consumer.model';
 import { map } from 'rxjs/operators';
@@ -16,7 +16,7 @@ export class ListGroupComponent implements OnInit {
 	public option: TableOption;
 	public data = [];
 	@ViewChild("tableTemplate", { static: true }) public tableTemplate: TableComponent;
-	@Input() public item = new ConsumerViewModel();
+	@Input() public consumerViewModel = new ConsumerViewModel();
 
 	constructor(
 		private _modalService: ModalService,
@@ -25,7 +25,6 @@ export class ListGroupComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		console.log(this.item);
 		this.registerEvents()
 		this.initTable();
 	}
@@ -34,12 +33,11 @@ export class ListGroupComponent implements OnInit {
 		this.option = new TableOption({
 			localData: () => {
 				var groups = [];
-				return this._groupService.search(this.item.id, new GroupRequest({})).pipe(map(s => {
+				return this._groupService.search(this.consumerViewModel.id, new GroupRequest({})).pipe(map(s => {
 					for (let index = 0; index < s.items.length; index++) {
 						let group = new GroupViewModel(s.items[index].id, s.items[index].group, s.items[index].created_at * 1000);
 						groups.push(group);
 					}
-					console.log(groups);
 					return groups;
 				}));
 			},
@@ -55,13 +53,16 @@ export class ListGroupComponent implements OnInit {
 						this._modalService.showTemplateDialog(
 							new TemplateViewModel({
 								template: AddGroupComponent,
-								validationKey: "AddGroupComponent",
+								validationKey: 'AddGroupComponent',
 								customSize: "modal-lg",
-								title: ConsumerConstant.MessageAdd,
+								title: ConsumerConstant.MessageAddGroup,
 								icon: "fa fa-plus",
+								data: {
+									item: this.consumerViewModel
+								},
 								btnAcceptTitle: ConsumerConstant.Add,
 								acceptCallback: (response, close, provider: AddGroupComponent) => {
-									this._groupService.createGroup(this.item.id, item, new GroupRequest({})).subscribe(() => {
+									this._groupService.createGroup(this.consumerViewModel.id, provider.groupViewModel, new GroupRequest({})).subscribe(() => {
 										this.tableTemplate.reload();
 									});
 								}
@@ -78,9 +79,9 @@ export class ListGroupComponent implements OnInit {
 						this._modalService.showConfirmDialog(
 							new ConfirmViewModel({
 								btnAcceptTitle: ConsumerConstant.Delete,
-								message: ConsumerConstant.MessageDelete,
+								message: ConsumerConstant.MessageDeleteGroup,
 								acceptCallback: () => {
-									this._groupService.deleteGroup(this.item.id, consumer.id, new GroupDeleteRequest).subscribe(() => {
+									this._groupService.deleteGroup(this.consumerViewModel.id, consumer.id, new GroupDeleteRequest).subscribe(() => {
 										this.tableTemplate.reload();
 									});
 								}
@@ -97,7 +98,7 @@ export class ListGroupComponent implements OnInit {
 					executeAsync: (item, element, provider: TableComponent) => {
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
-							this._groupService.deleteGroup(this.item.id, select[index].id, new GroupDeleteRequest).subscribe(() => {
+							this._groupService.deleteGroup(this.consumerViewModel.id, select[index].id, new GroupDeleteRequest).subscribe(() => {
 								if (index == select.length - 1) {
 									this.tableTemplate.reload();
 								}
@@ -110,7 +111,7 @@ export class ListGroupComponent implements OnInit {
 				{
 					type: TableColumnType.String,
 					title: () => ConsumerConstant.GroupName,
-					valueRef: () => "name",
+					valueRef: () => "group",
 					width: 300,
 					allowFilter: true
 				},
@@ -123,17 +124,15 @@ export class ListGroupComponent implements OnInit {
 			],
 			serviceProvider: {
 				searchAsync: (request) => {
-					return this._groupService.search(this.item.id, request);
+					return this._groupService.search(this.consumerViewModel.id, request);
 				}
 			}
 		});
 	}
 
 	private registerEvents(): void {
-		console.log('abc: ', KeyConst.Search);
 		this._agregatorService.subscribe(KeyConst.Search, (response: any) => {
 			var filter = response.keyword;
-			console.log('xyz: ', response.keyword)
 			this.tableTemplate.setFilter('searchText', filter);
 			this.tableTemplate.reload(true).subscribe();
 		});
