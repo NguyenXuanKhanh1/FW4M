@@ -62,6 +62,7 @@ export declare class TableComponent implements OnInit, AfterViewInit, OnDestroy 
     callback(): Observable<any>;
     copy(item: any, refresh?: boolean, execute?: (item: any) => void, callback?: (copyItem: any) => void): void;
     exportToExcel(fileName?: string, callback?: () => any): void;
+    resetChanges(): void;
     acceptInlineEdit(item: any, field: string, index: number, ref?: any, validationOption?: ValidationOption, callback?: (item: any, field: string) => any): void;
     cancelInlineEdit(item: any, field: string, index: number): void;
     closeInlineEdit(field: string, index: number): void;

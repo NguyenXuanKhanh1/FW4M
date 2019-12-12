@@ -37,7 +37,7 @@ const routes: Routes = [
 			menuTabs: menuTabs,
 			menuType: 'TOP',
 			recommendation: {
-				template: RecommendationComponent,
+				template: ListConsumerComponent,
 				// data: {
 				//   item: KeyConst.Search
 				// }
