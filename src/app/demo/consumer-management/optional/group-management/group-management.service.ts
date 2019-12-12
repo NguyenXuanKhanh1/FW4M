@@ -11,7 +11,6 @@ const header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }
 })
 export class GroupManagementService {
 	protected api: string = 'http://13.251.173.60:8001/consumers';
-	// protected api: string = 'http://192.168.110.61:8001/consumers';
 
 	constructor(private http: HttpClient) { }
 

@@ -10,6 +10,10 @@ import { EditConsumerComponent } from './edit';
 import { ListGroupComponent } from './optional/group-management/list-group';
 import { AddGroupComponent } from './optional/group-management/add-group';
 import { OptionalConsumerComponent } from './optional';
+import { ListBasicAuthComponent } from './optional/credentials-management/basicAuth-management/list-basic-auth/list-basic-auth.component';
+import { EditBasicAuthComponent } from './optional/credentials-management/basicAuth-management/edit-basic-auth';
+import { ListApiKeyComponent } from './optional/credentials-management/apiKey-management/list-api-key';
+import { EditApiKeyComponent } from './optional/credentials-management/apiKey-management/edit-api-key';
 
 const declarations = [
 	ListConsumerComponent,
@@ -18,7 +22,11 @@ const declarations = [
 	ExportConsumerComponent,
 	ListGroupComponent,
 	AddGroupComponent,
-	OptionalConsumerComponent
+	OptionalConsumerComponent,
+	ListBasicAuthComponent,
+	EditBasicAuthComponent,
+	ListApiKeyComponent,
+	EditApiKeyComponent
 ];
 
 @NgModule({

@@ -17,9 +17,9 @@ const menuTabs: MenuTab[] = [
 			},
 			{
 				label: 'Consumer Management',
-				icon: 'fa fa-user-circle',
+				icon: 'fa fa-user',
 				children: [
-					{ state: 'consumers', name: 'Consumer', type: 'link', icon: 'fa fa-calendar-check-o' }
+					{ state: 'consumers', name: 'Consumer', type: 'link', icon: 'fa fa-user-circle-o' }
 				]
 			}
 		]
@@ -38,9 +38,9 @@ const routes: Routes = [
 			menuType: 'TOP',
 			recommendation: {
 				template: ListConsumerComponent,
-				// data: {
-				//   item: KeyConst.Search
-				// }
+				data: {
+					item: KeyConst.KeywordChanged
+				}
 			}
 		},
 		children: [

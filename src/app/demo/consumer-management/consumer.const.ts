@@ -33,5 +33,7 @@ export const enum ConsumerConstant {
 	MessageCopy = 'Are you sure to copy this consumer?',
 	MessageEdit = 'Edit Consumer',
 	MessageDelete = 'Are you sure to delete this consumer?',
-	MessageValidationEmpty = "At least one of these fields must be non-empty: 'custom_id', 'username'"
+	MessageValidationEmpty = "At least one of these fields must be non-empty: 'custom_id', 'username'",
+	Password = 'Password',
+	Key = 'Key'
 }

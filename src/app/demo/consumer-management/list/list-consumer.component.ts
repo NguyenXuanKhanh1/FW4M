@@ -309,7 +309,6 @@ export class ListConsumerComponent implements OnInit {
 					type: TableColumnType.String,
 					title: () => ConsumerConstant.UserName,
 					valueRef: () => "username",
-					// width: 300,
 					allowFilter: true,
 					editInline: true,
 					validationOption: new ValidationOption({
@@ -323,7 +322,6 @@ export class ListConsumerComponent implements OnInit {
 				{
 					type: TableColumnType.String,
 					title: () => ConsumerConstant.Custom_Id,
-					// width: 200,
 					valueRef: () => "customId",
 					allowFilter: true,
 					validationOption: new ValidationOption({
@@ -369,6 +367,13 @@ export class ListConsumerComponent implements OnInit {
 			var filter = response.keyword;
 			this.tableTemplate.setFilter('searchText', filter);
 			this.tableTemplate.reload(true).subscribe();
+		});
+
+		this._agregatorService.subscribe(KeyConst.KeywordChanged, (response: any) => {
+			var filter = response.keyword;
+			this.tableTemplate.setFilter('searchText', filter);
+			this.tableTemplate.reload(true).subscribe();
+
 		});
 	}
 }

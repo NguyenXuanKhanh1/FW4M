@@ -3,8 +3,15 @@
 		<katana-tab [name]="'Group'" [icon]="'fa fa-group'">
 			<app-list-group [consumerViewModel]="item">Loading...</app-list-group>
 		</katana-tab>
-		<katana-tab [name]="'Người dùng'" [icon]="'fa fa-twitter'">
-			<katana-daterange-picker></katana-daterange-picker>
+		<katana-tab [name]="'Credential'" [icon]="'fa fa-shield'">
+			<katana-tabs [displayMode]="'full'">
+				<katana-tab [name]="'Basic'" [icon]="'fa fa-user-secret'">
+					<app-list-basic-auth [consumerViewModel]="item"></app-list-basic-auth>
+				</katana-tab>
+				<katana-tab [name]="'Api Keys'" [icon]="'fa fa-key'">
+					<app-list-api-key [consumerViewModel]="item"></app-list-api-key>
+				</katana-tab>
+			</katana-tabs>
 		</katana-tab>
 		<katana-tab [name]="'Khác'" [icon]="'fa fa-search'">
 			<katana-editor></katana-editor>
