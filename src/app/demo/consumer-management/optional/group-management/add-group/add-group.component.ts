@@ -17,8 +17,8 @@ export class AddGroupComponent {
 	@Input() public groupViewModel = new GroupViewModel();
 	@Input() public item = new ConsumerViewModel();
 
-
-	protected api: string = 'http://192.168.110.61:8001/consumers';
+	protected api: string = 'http://13.251.173.60:8001/consumers';
+	// protected api: string = 'http://192.168.110.61:8001/consumers';
 	public groupName: any;
 	public label = {
 		name: ConsumerConstant.GroupLabel

@@ -21,7 +21,8 @@ export class EditConsumerComponent implements AfterViewInit {
 	public username: any;
 	public customId: any;
 
-	protected api: string = 'http://192.168.35.108:8001/consumers';
+	protected api: string = 'http://13.251.173.60:8001/consumers';
+	// protected api: string = 'http://192.168.35.108:8001/consumers';
 
 	public label = {
 		username: ConsumerConstant.UserNameLabel,

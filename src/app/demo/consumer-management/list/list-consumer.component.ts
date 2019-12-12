@@ -190,6 +190,7 @@ export class ListConsumerComponent implements OnInit {
 								data: {
 									item: this._dataService.cloneItem(consumer)
 								},
+								
 								cancelCallback: () => {
 									this.tableTemplate.reload();
 								},
@@ -369,6 +370,14 @@ export class ListConsumerComponent implements OnInit {
 			var filter = response.keyword;
 			this.tableTemplate.setFilter('searchText', filter);
 			this.tableTemplate.reload(true).subscribe();
+		});
+
+		this._agregatorService.subscribe(KeyConst.KeywordChanged, (response: any) => {
+			console.log(response.keyword);
+			var filter = response.keyword;
+			this.tableTemplate.setFilter('searchText', filter);
+			this.tableTemplate.reload(true).subscribe();
+
 		});
 	}
 }
