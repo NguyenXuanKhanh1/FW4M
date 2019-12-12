@@ -1,15 +1,9 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { TableOption, TableComponent, ModalService, DataService, AggregatorService, TableMode, TemplateViewModel, ConfirmViewModel, TableConstant, TableColumnType, ValidationOption, CustomValidationRule, KeyConst } from 'ngx-fw4c';
+import { TableOption, TableComponent, ModalService, DataService, TableMode, TemplateViewModel, ConfirmViewModel, TableConstant, TableColumnType } from 'ngx-fw4c';
 import { ConsumerManagementService } from '../../consumer-management.service';
-import { IgxExcelExporterService, IgxExcelExporterOptions } from 'igniteui-angular';
-import { ExportFile } from '../../../shared/export';
-import { ValidateConsumer } from '../../../shared/validate';
-import { ConsumerRequest, ConsumerViewModel, ConsumerKongModel, ConsumerDeleteRequest } from '../../consumer.model';
+import { ConsumerRequest, ConsumerKongModel, ConsumerDeleteRequest } from '../../consumer.model';
 import { map } from 'rxjs/operators';
 import { ConsumerConstant } from '../../consumer.const';
-import { EditConsumerComponent } from '../../edit';
-import { ExportConsumerComponent } from '../../export';
-import { ImportConsumerComponent } from '../../import';
 import { BasicAuthRequest, BasicAuthViewModel, BasicAuthKongModel, BasicAuthDeleteRequest } from '../../basic-auth.model';
 import { CredentialManagementService } from '../credential-management.service';
 import { EditCredentialComponent } from '../edit';
@@ -33,9 +27,6 @@ export class CredentialComponent implements OnInit {
 		private _dataService: DataService,
 		private _credentialService: CredentialManagementService,
 		private _consumerService: ConsumerManagementService,
-		private _excelExportService: IgxExcelExporterService,
-		private _exportFile: ExportFile,
-		private _validateConsumer: ValidateConsumer,
 	) { }
 
 	ngOnInit() {
@@ -63,7 +54,7 @@ export class CredentialComponent implements OnInit {
 					icon: "fa fa-plus",
 					customClass: "primary",
 					title: () => ConsumerConstant.New,
-					executeAsync: item => {
+					executeAsync: () => {
 						this._modalService.showTemplateDialog(
 							new TemplateViewModel({
 								template: EditCredentialComponent,
@@ -156,7 +147,7 @@ export class CredentialComponent implements OnInit {
 					lazyload: true,
 					icon: "fa fa-trash-o",
 					title: () => ConsumerConstant.Remove,
-					executeAsync: (item, element, provider: TableComponent) => {
+					executeAsync: () => {
 						let select = this.tableTemplate.selectedItems;
 						for (let index = 0; index < select.length; index++) {
 							this._consumerService.deleteConsumer(select[index].id, new ConsumerDeleteRequest).subscribe(() => {
@@ -200,7 +191,7 @@ export class CredentialComponent implements OnInit {
 							currentItem.tags = element.tags;
 							currentItem.custom_id = element.customId;
 							this.data.push(element);
-							this._consumerService.createConsumer(currentItem, new ConsumerRequest({})).subscribe(res => {
+							this._consumerService.createConsumer(currentItem, new ConsumerRequest({})).subscribe(() => {
 								if (index == itemCopy.length - 1) {
 									this.tableTemplate.reload();
 								}
