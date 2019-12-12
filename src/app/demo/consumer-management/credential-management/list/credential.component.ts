@@ -72,27 +72,6 @@ export class CredentialComponent implements OnInit {
 							})
 						);
 					}
-				},
-				{
-					icon: 'fa fa-save',
-					customClass: 'warning',
-					title: () => ConsumerConstant.Save,
-					hide: () => {
-						if (this.tableTemplate.changedRows.length > 0) {
-							return false;
-						}
-						else return true;
-					},
-					executeAsync: () => {
-						let editLine = this.tableTemplate.changedRows;
-						for (let index = 0; index < editLine.length; index++) {
-							const element = editLine[index].currentItem;
-							var consumer = new ConsumerKongModel(element.customId, element.tags, element.username);
-							this._consumerService.updateConsumer(element.id, consumer, new ConsumerRequest({})).subscribe(() => {
-								this.tableTemplate.resetChanges();
-							})
-						}
-					}
 				}
 			],
 			actions: [

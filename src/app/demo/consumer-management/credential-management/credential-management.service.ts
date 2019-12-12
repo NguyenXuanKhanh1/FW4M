@@ -13,7 +13,8 @@ const header = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }
 })
 export class CredentialManagementService {
 
-	protected api: string = 'http://13.251.173.60:8001/consumers/4ce5ba52-782d-4563-8c88-11bed2184679/basic-auth';
+	protected api: string = 'http://13.251.173.60:8001/consumers/c098faac-ee27-4ab1-a309-8169b69736c9/basic-auth';
+	protected apikey: string = 'http://13.251.173.60:8001/consumers/c098faac-ee27-4ab1-a309-8169b69736c9/key-auth';
 	protected id = '4ce5ba52-782d-4563-8c88-11bed2184679';
 
 	constructor(private _http: HttpClient) { }
@@ -41,7 +42,7 @@ export class CredentialManagementService {
 	}
 
 	public searchApiKey(request: ApiKeySearchRequest): Observable<any> {
-		return this._http.get<any>(`${this.api}`, { params: request as any }).pipe(map(s => {
+		return this._http.get<any>(`${this.apikey}`, { params: request as any }).pipe(map(s => {
 			var response = {
 				status: true,
 				totalRecords: s.data.length,
@@ -52,13 +53,13 @@ export class CredentialManagementService {
 	}
 
 	public createApiKey(body: any, request: ApiKeyRequest): Observable<ApiKeyResponse> {
-		return this._http.post<any>(`${this.api}`, body, header);
+		return this._http.post<any>(`${this.apikey}`, body, header);
 	}
 
 	public updateApiKey(id: string, body: any, request: ApiKeyRequest): Observable<ApiKeyResponse> {
-		return this._http.patch<any>(`${this.api}/${id}`, body, header);
+		return this._http.patch<any>(`${this.apikey}/${id}`, body, header);
 	}
 	public deleteApiKey(id: string, request: ApiKeyDeleteRequest): Observable<ApiKeyDeleteResponse> {
-		return this._http.delete(`${this.api}/${id}`);
+		return this._http.delete(`${this.apikey}/${id}`);
 	}
 }
