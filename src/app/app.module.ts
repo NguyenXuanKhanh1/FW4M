@@ -6,11 +6,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DemoModule } from './demo';
 import { HttpClientModule } from '@angular/common/http';
-import { ConsumerViewModel } from './demo/common/consumer.model';
 import { IgxExcelExporterService } from 'igniteui-angular';
 import { ExportFile } from './demo/shared/export';
 import { ValidateConsumer } from './demo/shared/validate';
-import { SystemConstant } from './demo/common/system-constant';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
@@ -31,9 +29,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     DemoModule
   ],
   providers: [
-    ConsumerViewModel,
     ExportFile,
-    SystemConstant,
     ValidateConsumer,
     IgxExcelExporterService
   ],
