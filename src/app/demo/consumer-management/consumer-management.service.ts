@@ -34,6 +34,7 @@ export class ConsumerManagementService {
 	public updateConsumer(id: string, body: any, request: ConsumerRequest): Observable<ConsumerResponse> {
 		return this.http.patch<any>(`${this.api}/${id}`, body, header);
 	}
+	
 	public deleteConsumer(id: string, request: ConsumerDeleteRequest): Observable<ConsumerDeleteResponse> {
 		return this.http.delete(`${this.api}/${id}`);
 	}
