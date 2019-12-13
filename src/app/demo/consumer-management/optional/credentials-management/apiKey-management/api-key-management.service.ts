@@ -15,8 +15,8 @@ export class ApiKeyManagementService {
 
 	constructor(private _http: HttpClient) { }
 
-	public search(customId: string, request: BasicAuthSearchRequest): Observable<any> {
-		return this._http.get<any>(`${this.api}/${customId}/key-auth`, { params: request as any }).pipe(map(s => {
+	public search(consumerId: string, request: BasicAuthSearchRequest): Observable<any> {
+		return this._http.get<any>(`${this.api}/${consumerId}/key-auth`, { params: request as any }).pipe(map(s => {
 			var response = {
 				status: true,
 				totalRecords: s.data.length,
@@ -26,15 +26,15 @@ export class ApiKeyManagementService {
 		}));
 	}
 
-	public createApiKey(customId: string, body: any, request: BasicAuthRequest): Observable<BasicAuthResponse> {
-		return this._http.post<any>(`${this.api}/${customId}/key-auth`, body, header);
+	public createApiKey(consumerId: string, body: any, request: BasicAuthRequest): Observable<BasicAuthResponse> {
+		return this._http.post<any>(`${this.api}/${consumerId}/key-auth`, body, header);
 	}
 
-	public updateApiKey(customId: string , id: string, body: any, request: BasicAuthRequest): Observable<BasicAuthResponse> {
-		return this._http.patch<any>(`${this.api}/${customId}/key-auth/${id}`, body, header);
+	public updateApiKey(consumerId: string , id: string, body: any, request: BasicAuthRequest): Observable<BasicAuthResponse> {
+		return this._http.patch<any>(`${this.api}/${consumerId}/key-auth/${id}`, body, header);
   }
   
-	public deleteApiKey(customId: string, id: string, request: BasicAuthDeleteRequest): Observable<BasicAuthDeleteResponse> {
-		return this._http.delete(`${this.api}/${customId}//${id}`);
+	public deleteApiKey(consumerId: string, id: string, request: BasicAuthDeleteRequest): Observable<BasicAuthDeleteResponse> {
+		return this._http.delete(`${this.api}/${consumerId}//${id}`);
 	}
 }

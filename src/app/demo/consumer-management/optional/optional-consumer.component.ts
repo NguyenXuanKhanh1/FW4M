@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { GroupViewModel, ConsumerViewModel } from '../consumer.model';
+import { ConsumerViewModel } from '../consumer.model';
 
 @Component({
 	selector: 'app-optional',

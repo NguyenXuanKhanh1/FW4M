@@ -15,8 +15,8 @@ export class BasicAuthManagementService {
 
 	constructor(private _http: HttpClient) { }
 
-	public search(customId: string, request: BasicAuthSearchRequest): Observable<any> {
-		return this._http.get<any>(`${this.api}/${customId}/basic-auth`, { params: request as any }).pipe(map(s => {
+	public search(consumerId: string, request: BasicAuthSearchRequest): Observable<any> {
+		return this._http.get<any>(`${this.api}/${consumerId}/basic-auth`, { params: request as any }).pipe(map(s => {
 			var response = {
 				status: true,
 				totalRecords: s.data.length,
@@ -26,12 +26,12 @@ export class BasicAuthManagementService {
 		}));
 	}
 
-	public createBasicAuth(customId: string, body: any, request: BasicAuthRequest): Observable<BasicAuthResponse> {
-		return this._http.post<any>(`${this.api}/${customId}/basic-auth`, body, header);
+	public createBasicAuth(consumerId: string, body: any, request: BasicAuthRequest): Observable<BasicAuthResponse> {
+		return this._http.post<any>(`${this.api}/${consumerId}/basic-auth`, body, header);
 	}
 
-	public updateBasicAuth(customId: string, id: string, body: any, request: BasicAuthRequest): Observable<BasicAuthResponse> {
-		return this._http.patch<any>(`${this.api}/${customId}/basic-auth/${id}`, body, header);
+	public updateBasicAuth(consumerId: string, id: string, body: any, request: BasicAuthRequest): Observable<BasicAuthResponse> {
+		return this._http.patch<any>(`${this.api}/${consumerId}/basic-auth/${id}`, body, header);
 	}
 
 	public deleteBasicAuth(customId: string, id: string, request: BasicAuthDeleteRequest): Observable<BasicAuthDeleteResponse> {
