@@ -16,20 +16,21 @@ export class ValidateConsumer {
 	}
 
 	public validateTags(tags: string[]): Observable<ValidationRuleResponse> {
-		let regex = /[<>:"\/\\|?*\.\s)]/;
+		let regex = /^[A-Za-z0-9\.\-\_]+$/i;
 		let isFail = true;
 		if (tags.length > 0) {
 			for (let index = 0; index < tags.length; index++) {
 				const element = tags[index];
-				if (!regex.test(element)) {
+				if (regex.test(element)) {
 					continue;
 				} else {
 					isFail = false;
+					break;
 				}
 			}
 			return of(new ValidationRuleResponse({
 				status: isFail,
-				message: "Can't contain any of the following characters: \\ / : * ? \" < > |"
+				message: "Invalid value. Can only contain following characters: alphabet characters, numeric characters, ., -, _"
 			}));
 		}
 	}
