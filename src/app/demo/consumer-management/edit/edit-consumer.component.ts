@@ -43,7 +43,7 @@ export class EditConsumerComponent implements AfterViewInit {
 	public getUsername(): void {
 		this.username = [];
 		this._http.get(this.api).subscribe((res: any) => {
-			for (let index = 0; index < res.data.length; index++) { 
+			for (let index = 0; index < res.data.length; index++) {
 				if (res.data[index].username === this.item.username) {
 					continue;
 				}
@@ -55,7 +55,7 @@ export class EditConsumerComponent implements AfterViewInit {
 	public getCustomId(): void {
 		this.customId = [];
 		this._http.get(this.api).subscribe((res: any) => {
-			for (let index = 0; index < res.data.length; index++) { 
+			for (let index = 0; index < res.data.length; index++) {
 				if (res.data[index].custom_id === this.item.customId) {
 					continue;
 				}

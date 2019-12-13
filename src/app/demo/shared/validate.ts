@@ -33,6 +33,11 @@ export class ValidateConsumer {
 				message: "Invalid value. Can only contain following characters: alphabet characters, numeric characters, ., -, _"
 			}));
 		}
+		else {
+			return of(new ValidationRuleResponse({
+				status: true
+			}));
+		}		
 	}
 
 	public validateUnique(name: string, data): Observable<ValidationRuleResponse> {
