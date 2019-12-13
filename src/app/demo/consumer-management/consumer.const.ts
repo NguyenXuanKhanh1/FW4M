@@ -5,7 +5,7 @@ export const enum ConsumerConstant {
 	Tags = 'Tags',
 	UserNameLabel = 'Username (semi-optional)',
 	Custom_IdLabel = 'Custom ID (semi-optional)',
-	TagsLabel = 'Tags (semi-optional)',
+	TagsLabel = 'Tags (optional)',
 	Created_At = "Created At",
 	Action = 'Action',
 	Reload = 'Reload',
