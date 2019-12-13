@@ -94,16 +94,19 @@ export class ListConsumerComponent implements OnInit {
 								acceptCallback: data => {
 									for (let index = 0; index < this.tableTemplate.items.length; index++) {
 										const element = this.tableTemplate.items[index];
-										element.tags = element.tags ? element.tags.toString() : null;
+										element.tags = element.tags ? element.tags.toString() : null;										
 									}
 									if (data === ConsumerConstant.CSV) {
-										this._exportFile.exportToCSV(this.tableTemplate.items, 'FW4C')
+										this._exportFile.exportToCSV(this.tableTemplate.items, "FW4C_export_" + new Date().getTime());
+										this.tableTemplate.reload();
 									}
 									if (data === ConsumerConstant.XLSX) {
 										this._excelExportService.exportData(this.tableTemplate.items, new IgxExcelExporterOptions("FW4C_export_" + new Date().getTime()));
+										this.tableTemplate.reload();
 									}
 									if (data === ConsumerConstant.PDF) {
 										this._exportFile.exportToPdf(this.tableTemplate.items, "FW4C_export_" + new Date().getTime());
+										this.tableTemplate.reload();
 									}
 								}
 							})
@@ -139,13 +142,16 @@ export class ListConsumerComponent implements OnInit {
 							acceptCallback: (response) => {
 								for (let index = 0; index < response.length; index++) {
 									delete response[index].createdAt
-									delete response[index].customId
 									if (response[index].tags !== undefined) {
 										let tags = response[index].tags.split(',');
 										delete response[index].tags;
 										response[index].tags = tags;
 									}
-									this._consumerService.createConsumer(response[index], new ConsumerRequest({})).subscribe(() => {
+									var currentItem = new ConsumerKongModel();
+									currentItem.username = response[index].username;
+									currentItem.tags = response[index].tags;
+									currentItem.custom_id = response[index].customId;
+									this._consumerService.createConsumer(currentItem, new ConsumerRequest({})).subscribe(() => {
 										this.tableTemplate.reload();
 									});
 								}
@@ -169,7 +175,7 @@ export class ListConsumerComponent implements OnInit {
 							const element = editLine[index].currentItem;
 							var consumer = new ConsumerKongModel(element.customId, element.tags, element.username)
 							this._consumerService.updateConsumer(element.id, consumer, new ConsumerRequest({})).subscribe(() => {
-								this.tableTemplate.changedRows = [];
+								this.tableTemplate.resetChanges();
 							})
 						}
 					}
@@ -186,7 +192,7 @@ export class ListConsumerComponent implements OnInit {
 								customSize: "modal-lg",
 								icon: 'fa fa-info-circle',
 								title: ConsumerConstant.OptionalLabel,
-								btnAcceptTitle: 'Done' ,
+								btnAcceptTitle: 'Done',
 								data: {
 									item: this._dataService.cloneItem(consumer)
 								},
@@ -202,7 +208,7 @@ export class ListConsumerComponent implements OnInit {
 				},
 				{
 					icon: "fa fa-edit",
-					customClass: "info",
+					customClass: "primary",
 					executeAsync: consumer => {
 						this._modalService.showTemplateDialog(
 							new TemplateViewModel({
@@ -222,7 +228,6 @@ export class ListConsumerComponent implements OnInit {
 									this._consumerService.updateConsumer(provider.item.id, consumer, new ConsumerRequest({})).subscribe(() => {
 										this.tableTemplate.reload()
 									});
-
 								}
 							})
 						);

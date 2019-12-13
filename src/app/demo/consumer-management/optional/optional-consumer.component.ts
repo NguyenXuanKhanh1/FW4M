@@ -11,7 +11,6 @@ export class OptionalConsumerComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit() {
-		console.log(this.item);
 	}
 
 }

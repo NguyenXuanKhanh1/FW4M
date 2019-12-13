@@ -1,23 +1,22 @@
 import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
-import { TableComponent, TableOption, ModalService, DataService, TableMode, TemplateViewModel, ConfirmViewModel, TableConstant, TableColumnType } from 'ngx-fw4c';
-import { ConsumerManagementService } from 'src/app/demo/consumer-management/consumer-management.service';
+import { TableComponent, TableOption, ModalService, DataService, TableMode, TemplateViewModel, ConfirmViewModel, TableConstant, TableColumnType, AggregatorService, KeyConst } from 'ngx-fw4c';
 import { BasicAuthRequest, BasicAuthViewModel, BasicAuthKongModel, BasicAuthDeleteRequest, BasicAuthSearchRequest } from '../basicAuth.model';
 import { map } from 'rxjs/operators';
 import { ConsumerConstant } from 'src/app/demo/consumer-management/consumer.const';
-import { ConsumerDeleteRequest, ConsumerKongModel, ConsumerRequest, ConsumerViewModel } from 'src/app/demo/consumer-management/consumer.model';
+import { ConsumerViewModel } from 'src/app/demo/consumer-management/consumer.model';
 import { BasicAuthManagementService } from '../basic-auth-management.service';
 import { EditBasicAuthComponent } from '../edit-basic-auth';
 
 @Component({
-  selector: 'app-list-basic-auth',
-  templateUrl: './list-basic-auth.component.html',
-  styleUrls: ['./list-basic-auth.component.scss']
+	selector: 'app-list-basic-auth',
+	templateUrl: './list-basic-auth.component.html',
+	styleUrls: ['./list-basic-auth.component.scss']
 })
 export class ListBasicAuthComponent implements OnInit {
 
 	@ViewChild("tableTemplate", { static: true }) public tableTemplate: TableComponent;
-  @ViewChild("detailTemplate", { static: true }) public datailTemplate: TemplateRef<any>;
-  @Input() public consumerViewModel = new ConsumerViewModel();
+	@ViewChild("detailTemplate", { static: true }) public datailTemplate: TemplateRef<any>;
+	@Input() public consumerViewModel = new ConsumerViewModel();
 
 	public option: TableOption;
 	public data = [];
@@ -25,8 +24,8 @@ export class ListBasicAuthComponent implements OnInit {
 	constructor(
 		private _modalService: ModalService,
 		private _dataService: DataService,
-    private _consumerService: ConsumerManagementService,
-    private _basicAuthService: BasicAuthManagementService,
+		private _basicAuthService: BasicAuthManagementService,
+		private _agregatorService: AggregatorService,
 	) { }
 
 	ngOnInit() {
@@ -42,7 +41,6 @@ export class ListBasicAuthComponent implements OnInit {
 						let consumer = new BasicAuthViewModel(s.items[index].id, s.items[index].tags, s.items[index].username, s.items[index].password, s.items[index].created_at * 1000);
 						consumers.push(consumer);
 					}
-					console.log(consumers)
 					return consumers;
 				}));
 			},
@@ -54,14 +52,17 @@ export class ListBasicAuthComponent implements OnInit {
 					icon: "fa fa-plus",
 					customClass: "primary",
 					title: () => ConsumerConstant.New,
-					executeAsync: () => {
+					executeAsync: (consumerViewModel) => {
 						this._modalService.showTemplateDialog(
 							new TemplateViewModel({
 								template: EditBasicAuthComponent,
 								validationKey: "EditBasicAuthComponent",
 								customSize: "modal-lg",
-								title: ConsumerConstant.MessageAdd,
+								title: ConsumerConstant.MessageAddBasicAuth,
 								icon: "fa fa-plus",
+								data: {
+									consumerViewModel: this.consumerViewModel
+								},
 								btnAcceptTitle: ConsumerConstant.Add,
 								acceptCallback: (response, close, provider: EditBasicAuthComponent) => {
 									var basicAuth = new BasicAuthKongModel(provider.item.username, provider.item.password, provider.item.tags)
@@ -71,6 +72,27 @@ export class ListBasicAuthComponent implements OnInit {
 								}
 							})
 						);
+					}
+				},
+				{
+					icon: 'fa fa-save',
+					customClass: 'warning',
+					title: () => ConsumerConstant.Save,
+					hide: () => {
+						if (this.tableTemplate.changedRows.length > 0) {
+							return false;
+						}
+						else return true;
+					},
+					executeAsync: () => {
+						let editLine = this.tableTemplate.changedRows;
+						for (let index = 0; index < editLine.length; index++) {
+							const element = editLine[index].currentItem;
+							var basicAuth = new BasicAuthKongModel(element.username, element.password, element.tags)
+							this._basicAuthService.updateBasicAuth(this.consumerViewModel.id, element.id, basicAuth, new BasicAuthRequest({})).subscribe(() => {
+								this.tableTemplate.resetChanges();
+							})
+						}
 					}
 				}
 			],
@@ -87,12 +109,11 @@ export class ListBasicAuthComponent implements OnInit {
 								title: ConsumerConstant.MessageEdit,
 								btnAcceptTitle: ConsumerConstant.Edit,
 								data: {
-									item: this._dataService.cloneItem(basicAuth)									
+									item: this._dataService.cloneItem(basicAuth)
 								},
 								cancelCallback: () => {
 									this.tableTemplate.reload();
-								},							
-
+								},
 								acceptCallback: (response, close, provider: EditBasicAuthComponent) => {
 									var basicAuth = new BasicAuthKongModel(provider.item.username, provider.item.password, provider.item.tags)
 									this._basicAuthService.createBasicAuth(this.consumerViewModel.id, basicAuth, new BasicAuthRequest({})).subscribe(() => {
@@ -118,6 +139,23 @@ export class ListBasicAuthComponent implements OnInit {
 								}
 							})
 						);
+					}
+				},
+				{
+					type: TableConstant.ActionType.Toolbar,
+					customClass: 'danger',
+					lazyload: true,
+					icon: "fa fa-trash-o",
+					title: () => ConsumerConstant.Remove,
+					executeAsync: () => {
+						let select = this.tableTemplate.selectedItems;
+						for (let index = 0; index < select.length; index++) {
+							this._basicAuthService.deleteBasicAuth(this.consumerViewModel.id, select[index].id, new BasicAuthDeleteRequest).subscribe(() => {
+								if (index == select.length - 1) {
+									this.tableTemplate.reload();
+								}
+							});
+						}
 					}
 				}
 			],
@@ -151,7 +189,7 @@ export class ListBasicAuthComponent implements OnInit {
 			],
 			serviceProvider: {
 				searchAsync: (request) => {
-					return this._consumerService.search(request);
+					return this._basicAuthService.search(this.consumerViewModel.id, request);
 				}
 			}
 		});

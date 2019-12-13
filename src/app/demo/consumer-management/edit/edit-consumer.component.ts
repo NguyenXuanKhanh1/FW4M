@@ -1,10 +1,9 @@
-import { Component, ElementRef, ViewChild, Input, AfterViewInit, OnInit } from "@angular/core";
+import { Component, ElementRef, ViewChild, Input, AfterViewInit } from "@angular/core";
 import { ConsumerViewModel } from "../consumer.model";
 import { Observable, of } from "rxjs";
 import { ValidationOption, ClientValidator, ValidationService, CustomValidationRule, ValidationRuleResponse } from "ngx-fw4c";
 import { ConsumerConstant } from '../consumer.const';
 import { ValidateConsumer } from '../../shared/validate';
-import { ConsumerManagementService } from '../consumer-management.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -21,7 +20,7 @@ export class EditConsumerComponent implements AfterViewInit {
 	public username: any;
 	public customId: any;
 
-	protected api: string = 'http://192.168.35.108:8001/consumers';
+	protected api: string = 'http://13.251.173.60:8001/consumers';
 
 	public label = {
 		username: ConsumerConstant.UserNameLabel,

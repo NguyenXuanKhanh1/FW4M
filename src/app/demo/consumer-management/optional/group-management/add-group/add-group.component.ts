@@ -1,9 +1,10 @@
 import { Component, ViewChild, Input, ElementRef } from '@angular/core';
-import { ValidationService, ClientValidator, ValidationOption, RequiredValidationRule } from 'ngx-fw4c';
+import { ValidationService, ClientValidator, ValidationOption, RequiredValidationRule, CustomValidationRule } from 'ngx-fw4c';
 import { Observable, of } from 'rxjs';
 import { ConsumerConstant } from '../../../consumer.const';
 import { HttpClient } from '@angular/common/http';
 import { GroupViewModel, ConsumerViewModel } from '../../../consumer.model';
+import { ValidateConsumer } from 'src/app/demo/shared/validate';
 
 @Component({
 	selector: 'app-group',
@@ -17,8 +18,8 @@ export class AddGroupComponent {
 	@Input() public groupViewModel = new GroupViewModel();
 	@Input() public item = new ConsumerViewModel();
 
-
 	protected api: string = 'http://13.251.173.60:8001/consumers';
+
 	public groupName: any;
 	public label = {
 		name: ConsumerConstant.GroupLabel
@@ -26,7 +27,8 @@ export class AddGroupComponent {
 
 	constructor(
 		private _validationService: ValidationService,
-		private _http: HttpClient
+		private _http: HttpClient,
+		private _validate: ValidateConsumer
 	) { }
 
 	ngAfterViewInit(): void {
@@ -36,12 +38,12 @@ export class AddGroupComponent {
 
 	public getName(): void {
 		this.groupName = [];
-		this._http.get(this.api + '/' + this.item.id + '/' + 'acls').subscribe((res: any) => {
+		this._http.get(`${this.api}/${this.item.id}/acls`).subscribe((res: any) => {
 			for (let index = 0; index < res.data.length; index++) {
-				if (res.data[index].username === this.groupViewModel.group) {
+				if (res.data[index].group === this.groupViewModel.group) {
 					continue;
 				}
-				this.groupName.push(res.data[index].username);
+				this.groupName.push(res.data[index].group);
 			}
 		});
 	}
@@ -52,7 +54,10 @@ export class AddGroupComponent {
 				validationName: 'Name',
 				valueResolver: () => this.groupViewModel.group,
 				rules: [
-					new RequiredValidationRule()
+					new RequiredValidationRule(),
+					new CustomValidationRule(value => {
+						return this._validate.validateUnique(value, this.groupName);
+					}),
 				]
 			})
 		]
@@ -74,5 +79,4 @@ export class AddGroupComponent {
 	public getValidator(): ValidationService {
 		return this._validationService;
 	}
-
 }

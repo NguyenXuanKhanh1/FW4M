@@ -5,6 +5,7 @@ import { ValidateConsumer } from 'src/app/demo/shared/validate';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { ConsumerViewModel } from 'src/app/demo/consumer-management/consumer.model';
+import { debug } from 'util';
 
 @Component({
   selector: 'app-edit-basic-auth',
@@ -20,7 +21,7 @@ export class EditBasicAuthComponent implements AfterViewInit {
 
   public username: any;
 
-  protected api: string = 'http://13.251.173.60:8001/consumers/';
+  protected api: string = 'http://13.251.173.60:8001/consumers';
 
   constructor(
     private _validationService: ValidationService,
@@ -52,9 +53,6 @@ export class EditBasicAuthComponent implements AfterViewInit {
         valueResolver: () => this.item.username,
         rules: [
           new RequiredValidationRule(),
-          new CustomValidationRule(value => {
-            return this._validate.validateString(value);
-          }),
           new CustomValidationRule(value => {
             return this._validate.validateUnique(value, this.username);
           }),

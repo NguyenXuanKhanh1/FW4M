@@ -18,7 +18,7 @@ export class ListApiKeyComponent implements OnInit {
 
 	@ViewChild("tableTemplate", { static: true }) public tableTemplate: TableComponent;
 	@ViewChild("detailTemplate", { static: true }) public datailTemplate: TemplateRef<any>;
-	
+
 	@Input() public consumerViewModel = new ConsumerViewModel();
 
 	public option: TableOption;
@@ -44,7 +44,6 @@ export class ListApiKeyComponent implements OnInit {
 						let consumer = new ApiKeyViewModel(s.items[index].id, s.items[index].tags, s.items[index].key, s.items[index].created_at * 1000);
 						consumers.push(consumer);
 					}
-					console.log(consumers)
 					return consumers;
 				}));
 			},
@@ -56,14 +55,17 @@ export class ListApiKeyComponent implements OnInit {
 					icon: "fa fa-plus",
 					customClass: "primary",
 					title: () => ConsumerConstant.New,
-					executeAsync: () => {
+					executeAsync: (consumerViewModel) => {
 						this._modalService.showTemplateDialog(
 							new TemplateViewModel({
 								template: EditApiKeyComponent,
 								validationKey: "EditApiKeyComponent",
 								customSize: "modal-lg",
-								title: ConsumerConstant.MessageAdd,
+								title: ConsumerConstant.MessageAddApiKey,
 								icon: "fa fa-plus",
+								data: {
+									consumerViewModel: this.consumerViewModel
+								},
 								btnAcceptTitle: ConsumerConstant.Add,
 								acceptCallback: (response, close, provider: EditApiKeyComponent) => {
 									var apiKey = new ApiKeyKongModel(provider.item.key, provider.item.tags)

@@ -25,7 +25,6 @@ export class ListGroupComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this.registerEvents()
 		this.initTable();
 	}
 
@@ -119,7 +118,6 @@ export class ListGroupComponent implements OnInit {
 					type: TableColumnType.DateTime,
 					title: () => ConsumerConstant.Created_At,
 					valueRef: () => "createdAt",
-					// width: 300,
 				}
 			],
 			serviceProvider: {
@@ -127,14 +125,6 @@ export class ListGroupComponent implements OnInit {
 					return this._groupService.search(this.consumerViewModel.id, request);
 				}
 			}
-		});
-	}
-
-	private registerEvents(): void {
-		this._agregatorService.subscribe(KeyConst.Search, (response: any) => {
-			var filter = response.keyword;
-			this.tableTemplate.setFilter('searchText', filter);
-			this.tableTemplate.reload(true).subscribe();
 		});
 	}
 }

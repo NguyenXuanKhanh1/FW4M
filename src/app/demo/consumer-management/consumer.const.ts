@@ -35,5 +35,7 @@ export const enum ConsumerConstant {
 	MessageDelete = 'Are you sure to delete this consumer?',
 	MessageValidationEmpty = "At least one of these fields must be non-empty: 'custom_id', 'username'",
 	Password = 'Password',
-	Key = 'Key'
+	Key = 'Key',
+	MessageAddBasicAuth = 'Add new Basic Auth',
+	MessageAddApiKey = 'Add new Api Key'
 }
