@@ -49,13 +49,13 @@
     "pdfmake": "^0.1.62",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
-    "webpack": "^4.41.2",
+    "webpack": "^5.104.1",
     "xlsx": "^0.15.3",
     "xlsx-style": "^0.8.13",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.803.20",
+    "@angular-devkit/build-angular": "^21.0.5",
     "@angular-devkit/build-ng-packagr": "^0.803.20",
     "@angular/cli": "^8.3.20",
     "@angular/compiler-cli": "^8.2.14",
